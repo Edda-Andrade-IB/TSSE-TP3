@@ -22,6 +22,7 @@
 #include "API_delay.h"
 #include "API_debounce.h"
 #include "API_uart.h"
+#include "API_lcd1602_i2c.h"
 
 /**
  * Define the debounce time for the FSM, the button state will be checked at
@@ -49,6 +50,8 @@ int main(void) {
 		Error_Handler();
 	}
 
+	LCD1602_Init();
+
 	// Configure button pin (GPIOA Pin 0) as input with interrupt
 	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
@@ -70,6 +73,8 @@ int main(void) {
 	 */
 	setPressedCallback(ButtonPressedCallback);
 	setReleasedCallback(ButtonReleasedCallback);
+
+	LCD1602_Print("A banana!!");
 
 	/* Infinite loop */
 	while (1) {

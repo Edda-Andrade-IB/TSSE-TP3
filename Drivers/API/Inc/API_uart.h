@@ -44,6 +44,4 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size);
  */
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
 
-char uartReceiveChar();
-
 #endif /* API_INC_API_UART_H_ */

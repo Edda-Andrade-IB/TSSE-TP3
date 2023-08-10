@@ -125,10 +125,3 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size) {
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size) {
 	HAL_UART_Receive(&UartHandle, pstring, size, UART_TIMEOUT_MS);
 }
-
-char uartReceiveChar() {
-	char ch;
-	HAL_UART_Receive_IT(&UartHandle, (uint8_t*) &ch, sizeof(ch),
-			UART_TIMEOUT_MS);
-	return ch;
-}

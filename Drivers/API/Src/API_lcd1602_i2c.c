@@ -7,15 +7,18 @@
 
 #include "API_lcd1602_i2c.h"
 #include "stm32f4xx_hal.h" // For HAL_GetTick()
+#include <stdbool.h>
 #include <string.h>
 
 #define I2C_TIMEOUT 1000
-#define DISPLAY_SIZE 20
+#define DISPLAY_SIZE 17
 #define BUFFER_SIZE 256
 
 typedef enum {
 	NO_ANIMATION, SLIDE, NUM_DISPLAY_ALGORITHMS,
 } display_algorithm;
+
+typedef bool bool_t;
 
 static I2C_HandleTypeDef hi2c1;
 static display_algorithm current_mode = 0;
@@ -30,6 +33,13 @@ static void LCD1602_SendData(uint8_t data);
 
 static void LCD1602_NoAnimationPrint(void);
 static void LCD1602_SlidePrint(void);
+
+static void ShiftStringLeft(char *string, int numElements);
+
+// Non empty or only spaces string
+static bool_t StringHasChars(const char *string);
+
+static void FillString(char *string, char ch, uint32_t up_to);
 
 void LCD1602_Init(void) {
 	MX_I2C1_Init();
@@ -50,10 +60,10 @@ void LCD1602_Init(void) {
 }
 
 void LCD1602_AddToBuffer(const char *pString) {
-//	LCD1602_CursorPosition(0, 0);
-	strcpy(DISPLAY_BUFFER, pString);
+	//	LCD1602_CursorPosition(0, 0);
+	strcpy(TEXT_BUFFER, pString);
 
-	LCD1602_NoAnimationPrint();
+	/* LCD1602_NoAnimationPrint(); */
 }
 
 void LCD1602_PrintMode(uint8_t mode) {
@@ -111,13 +121,43 @@ static void LCD1602_SendData(uint8_t data) {
 }
 
 static void LCD1602_NoAnimationPrint(void) {
-	const char *pString = DISPLAY_BUFFER;
-	while (*pString) {
-		LCD1602_SendData(*pString++);
+	LCD1602_CursorPosition(0, 0);
+	int need_update = strncmp(DISPLAY_BUFFER, TEXT_BUFFER, BUFFER_SIZE);
+
+	if (need_update) {
+		size_t length = strlen(TEXT_BUFFER);
+
+		if (length < DISPLAY_SIZE) {
+			FillString(TEXT_BUFFER, ' ', DISPLAY_SIZE - 1);
+		}
+
+		strncpy(DISPLAY_BUFFER, TEXT_BUFFER, DISPLAY_SIZE - 1);
+		DISPLAY_BUFFER[DISPLAY_SIZE] = '\0';
+
+		const char *pString = DISPLAY_BUFFER;
+		while (*pString) {
+			LCD1602_SendData(*pString++);
+		}
 	}
+
+	/*
+	 if () {
+	 strncpy(DISPLAY_BUFFER, TEXT_BUFFER, DISPLAY_SIZE);
+	 DISPLAY_BUFFER[DISPLAY_SIZE - 1] = '\0';
+
+	 const char *pString = DISPLAY_BUFFER;
+	 while (*pString) {
+	 LCD1602_SendData(*pString++);
+	 }
+	 }
+	 */
 }
 
 static void LCD1602_SlidePrint(void) {
+	LCD1602_CursorPosition(0, 0);
+	ShiftStringLeft(TEXT_BUFFER, 1);
+	strncpy(DISPLAY_BUFFER, TEXT_BUFFER, DISPLAY_SIZE);
+	DISPLAY_BUFFER[DISPLAY_SIZE - 1] = '\0';
 }
 
 static void MX_I2C1_Init(void) {
@@ -149,4 +189,36 @@ static void MX_I2C1_Init(void) {
 		// TODO: Handle error
 		// Error_Handler();
 	}
+}
+
+static void ShiftStringLeft(char *string, int numElements) {
+	int length = strlen(string);
+	if (numElements <= length) {
+		return;
+	}
+
+	for (int i = 0; i < length - numElements; i++) {
+		string[i] = string[i + numElements];
+	}
+
+	string[length - numElements] = '\0';
+}
+
+static bool_t StringHasChars(const char *string) {
+	while (*string) {
+		if (*string != ' ') {
+			return true;
+		}
+		string++; // Increment the pointer after the check
+	}
+	return false;
+}
+
+static void FillString(char *string, char ch, uint32_t up_to) {
+	size_t length = strlen(string);
+
+	for (int i = length; i < up_to; ++i) {
+		string[i] = ch;
+	}
+	string[up_to] = '\0';
 }

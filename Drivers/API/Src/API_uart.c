@@ -112,7 +112,7 @@ bool_t uartInit() {
 		sprintf(message, conf_message, BAUD_RATE, WORD_LENGTH, STOP_BITS,
 				parity, flow_constrol);
 
-		uartSendString(message);
+		uartSendString((uint8_t*) message);
 
 		// Enable interruoptions
 		HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
@@ -147,7 +147,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	++str_size;
 	if (readed_char == '\r' || str_size == BUFFER_SIZE - 1) {
 
-		appendCharToString(ACCUMULATE_BUFFER, readed_char);
+		if (readed_char != '\r') {
+			appendCharToString(ACCUMULATE_BUFFER, readed_char);
+		}
 		memset(RETURN_BUFFER, '\0', BUFFER_SIZE);
 		strcpy(RETURN_BUFFER, ACCUMULATE_BUFFER);
 		memset(ACCUMULATE_BUFFER, '\0', BUFFER_SIZE);

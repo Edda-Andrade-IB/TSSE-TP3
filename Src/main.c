@@ -105,6 +105,8 @@ int main(void) {
 			LCD1602_AddToBuffer(uart_readed_string);
 		}
 
+		LCD1602_FSM_Update();
+
 		//		uartReceiveStringSize(buffer, 8);
 		//		buffer[8] = '\0';
 	}

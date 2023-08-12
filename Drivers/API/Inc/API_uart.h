@@ -13,12 +13,9 @@
 
 typedef bool bool_t;
 
-// Define the callback function signature
-typedef void (*UARTReceiveCallback)(uint8_t *data, uint32_t size);
-
 /**
- * Perform all UART initialization and print through the serial terminal a message
- * with its configuration parameters.
+ * Perform all UART initialization and print through the serial terminal a
+ * message with its configuration parameters.
  *
  * The function returns:
  * - true: if the initialization is successful.
@@ -34,9 +31,9 @@ bool_t uartInit();
 void uartSendString(uint8_t *pstring);
 
 /**
- * Receives a pointer to a string to be sent via the UART and an integer with the
- * number of characters to send. The function uses HAL_UART_Transmit(...) behind
- * the escene to transmit the string.
+ * Receives a pointer to a string to be sent via the UART and an integer with
+ * the number of characters to send. The function uses HAL_UART_Transmit(...)
+ * behind the escene to transmit the string.
  */
 void uartSendStringSize(uint8_t *pstring, uint16_t size);
 
@@ -48,7 +45,6 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size);
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
 
 // TODO(Nico):
-void uartAddReceiveCallback(UARTReceiveCallback uartCallback, uint8_t *pString,
-                            uint32_t size);
+const char *readString(void);
 
 #endif /* API_INC_API_UART_H_ */

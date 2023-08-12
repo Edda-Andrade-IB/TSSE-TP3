@@ -16,18 +16,18 @@ typedef void (*DebounceCallback)(void);
 /**
  * SetUp the initial state for the FSM.
  */
-void debounceFSM_init();
+void debounceFSM_init(void);
 
 /**
  * This function must be called continuously. It will check the button state and the
  * exposed button state. It will update the state if needed.
  */
-void debounceFSM_update();
+void debounceFSM_update(void);
 
 /**
  * Return if the button is pressed or not.
  */
-bool_t readKey();
+bool_t readKey(void);
 
 /**
  * Set a callback to be executed the the ButtonPressed/ButtonReleased event

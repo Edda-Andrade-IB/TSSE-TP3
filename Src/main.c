@@ -19,10 +19,10 @@
  */
 
 #include "main.h"
-#include "API_delay.h"
 #include "API_debounce.h"
-#include "API_uart.h"
+#include "API_delay.h"
 #include "API_lcd1602_i2c.h"
+#include "API_uart.h"
 
 /**
  * Define the debounce time for the FSM, the button state will be checked at
@@ -30,18 +30,12 @@
  */
 #define DEBOUNCE_TIME_MS 40
 
-static char buffer[256] = { 0 };
-
 // Forward declarations
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
 static void ButtonPressedCallback(void);
 static void ButtonReleasedCallback(void);
-
-static void UartCallback(uint8_t *data, uint32_t size) {
-	LCD1602_AddToBuffer((char*) data);
-}
 
 int main(void) {
 
@@ -52,7 +46,6 @@ int main(void) {
 	BSP_LED_Init(LED2);
 
 	// Init uart, if fail go to Error Handler.
-	uartAddReceiveCallback(UartCallback, (uint8_t*) buffer, 1);
 	if (!uartInit()) {
 		Error_Handler();
 	}
@@ -75,17 +68,13 @@ int main(void) {
 	uint32_t current_frequency = 100;
 
 	/**
-	 * Set pressed and released callback. These functions will be called when those
-	 * events happen.
+	 * Set pressed and released callback. These functions will be called when
+	 * those events happen.
 	 */
 	setPressedCallback(ButtonPressedCallback);
 	setReleasedCallback(ButtonReleasedCallback);
 
-	LCD1602_AddToBuffer("Hello World!");
-
-	LCD1602_AddToBuffer("Nicoaalas");
-
-	/* LCD1602_FSM_Update(); */
+	// TODO(Nico):
 	__enable_irq();
 
 	/* Infinite loop */
@@ -107,14 +96,17 @@ int main(void) {
 
 			BSP_LED_Toggle(LED2);
 			delayWrite(&button_pressed_delay, current_frequency);
-			uartReceiveStringSize((uint8_t*) buffer, 8);
-			buffer[8] = '\0';
-			LCD1602_AddToBuffer(buffer);
+
+			//			LCD1602_AddToBuffer(buffer);
 		}
 
-//		uartReceiveStringSize(buffer, 8);
-//		buffer[8] = '\0';
+		char *uart_readed_string = readString();
+		if (uart_readed_string != NULL) {
+			LCD1602_AddToBuffer(uart_readed_string);
+		}
 
+		//		uartReceiveStringSize(buffer, 8);
+		//		buffer[8] = '\0';
 	}
 }
 
@@ -122,11 +114,11 @@ int main(void) {
  * The callback should print to the UART the event of pressed and released.
  */
 static void ButtonPressedCallback(void) {
-	uartSendString("Button pressed\r\n");
+	uartSendString((uint8_t*) "Button pressed\r\n");
 }
 
 static void ButtonReleasedCallback(void) {
-	uartSendString("Button released\r\n");
+	uartSendString((uint8_t*) "Button released\r\n");
 }
 
 /**
@@ -157,9 +149,9 @@ static void SystemClock_Config(void) {
 	/* Enable Power Control clock */
 	__HAL_RCC_PWR_CLK_ENABLE();
 
-	/* The voltage scaling allows optimizing the power consumption when the device is
-	 clocked below the maximum system frequency, to update the voltage scaling value
-	 regarding system frequency refer to product datasheet.  */
+	/* The voltage scaling allows optimizing the power consumption when the device
+	 is clocked below the maximum system frequency, to update the voltage scaling
+	 value regarding system frequency refer to product datasheet.  */
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
 	/* Enable HSE Oscillator and activate PLL with HSE as source */
@@ -183,8 +175,8 @@ static void SystemClock_Config(void) {
 
 	/* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
 	 clocks dividers */
-	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
+	RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
@@ -193,7 +185,6 @@ static void SystemClock_Config(void) {
 		/* Initialization Error */
 		Error_Handler();
 	}
-
 }
 /**
  * @brief  This function is executed in case of error occurrence.
@@ -207,22 +198,21 @@ static void Error_Handler(void) {
 	}
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
+void assert_failed(uint8_t *file, uint32_t line) {
+  /* User can add his own implementation to report the file name and line
+     number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
+     line) */
 
   /* Infinite loop */
-  while (1)
-  {
+  while (1) {
   }
 }
 #endif

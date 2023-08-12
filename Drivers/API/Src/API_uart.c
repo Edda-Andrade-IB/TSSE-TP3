@@ -20,11 +20,20 @@
 #define MODE UART_MODE_TX_RX
 
 #define UART_TIMEOUT_MS 0xFFFFFFFF /* 3 seconds */
+#define BUFFER_SIZE 17
+
+// TODO(Nico):
+typedef enum {
+	ACCUMULATING, DONE,
+} uartState_t;
 
 static UART_HandleTypeDef UartHandle;
-static UARTReceiveCallback UartCallback = NULL;
-static uint8_t *Buffer = NULL;
-static uint32_t BufferSize = 0;
+static uartState_t current_state = ACCUMULATING;
+static char ACCUMULATE_BUFFER[BUFFER_SIZE];
+static char RETURN_BUFFER[BUFFER_SIZE];
+static char readed_char;
+
+static void appendCharToString(char *str, char c);
 
 static const char* const ParityAsString(uint32_t parity) {
 	const char *parity_str;
@@ -104,15 +113,15 @@ bool_t uartInit() {
 				parity, flow_constrol);
 
 		uartSendString(message);
-	} else {
-		return_value = false;
-	}
-	uint32_t ret = 0;
-	// Callback was enabled
-	if (UartCallback != NULL) {
+
+		// Enable interruoptions
 		HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
 		HAL_NVIC_EnableIRQ(USART3_IRQn);
-		ret = HAL_UART_Receive_IT(&UartHandle, Buffer, BufferSize);
+		return_value = HAL_UART_Receive_IT(&UartHandle, (uint8_t*) &readed_char,
+				sizeof(char)) == HAL_OK;
+
+	} else {
+		return_value = false;
 	}
 
 	/* Initialization Error */
@@ -132,22 +141,48 @@ void uartReceiveStringSize(uint8_t *pstring, uint16_t size) {
 	HAL_UART_Receive(&UartHandle, pstring, size, UART_TIMEOUT_MS);
 }
 
-void uartAddReceiveCallback(UARTReceiveCallback uartCallback, uint8_t *pString,
-		uint32_t size) {
-	UartCallback = uartCallback;
-	Buffer = pString;
-	BufferSize = size;
-}
-
 // UART receive complete callback
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	UartCallback(Buffer, BufferSize);
+	static uint8_t str_size = 0;
+	++str_size;
+	if (readed_char == '\r' || str_size == BUFFER_SIZE - 1) {
 
-	if (UartCallback != NULL) {
-		HAL_UART_Receive_IT(&UartHandle, Buffer, BufferSize);
+		appendCharToString(ACCUMULATE_BUFFER, readed_char);
+		memset(RETURN_BUFFER, '\0', BUFFER_SIZE);
+		strcpy(RETURN_BUFFER, ACCUMULATE_BUFFER);
+		memset(ACCUMULATE_BUFFER, '\0', BUFFER_SIZE);
+
+		current_state = DONE;
+		str_size = 0;
+	} else {
+		appendCharToString(ACCUMULATE_BUFFER, readed_char);
+
 	}
+
+	// Wait on non clocking mode for another char.
+	HAL_UART_Receive_IT(&UartHandle, (uint8_t*) &readed_char, sizeof(char));
+}
+
+const char* readString(void) {
+	const char *return_value;
+	switch (current_state) {
+	case ACCUMULATING:
+		return_value = NULL;
+		break;
+	case DONE:
+		return_value = RETURN_BUFFER;
+		break;
+	}
+	current_state = ACCUMULATING;
+	return return_value;
 }
 
 void USART3_IRQHandler(void) {
 	HAL_UART_IRQHandler(&UartHandle);
+}
+
+static void appendCharToString(char *str, char c) {
+	int length = strlen(str);
+	str[length] = c;
+	str[length + 1] = '\0';
 }

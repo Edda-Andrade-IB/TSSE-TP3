@@ -50,9 +50,8 @@ void LCD1602_Init(void) {
 }
 
 void LCD1602_AddToBuffer(const char *pString) {
-  LCD1602_CursorPosition(0, 0);
+//	LCD1602_CursorPosition(0, 0);
 	strcpy(DISPLAY_BUFFER, pString);
-  /* memset(DISPLAY_BUFFER, ' ', BUFFER_SIZE); */
 
 	LCD1602_NoAnimationPrint();
 }

@@ -13,6 +13,9 @@
 
 typedef bool bool_t;
 
+// Define the callback function signature
+typedef void (*UARTReceiveCallback)(uint8_t *data, uint32_t size);
+
 /**
  * Perform all UART initialization and print through the serial terminal a message
  * with its configuration parameters.
@@ -43,5 +46,9 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size);
  *
  */
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
+
+// TODO(Nico):
+void uartAddReceiveCallback(UARTReceiveCallback uartCallback, uint8_t *pString,
+                            uint32_t size);
 
 #endif /* API_INC_API_UART_H_ */

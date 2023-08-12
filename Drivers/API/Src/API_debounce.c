@@ -20,8 +20,8 @@ typedef enum {
  * Global state of the button.
  */
 static debounceState_t current_state;
-static Callback pressed_callback = NULL;
-static Callback released_callback = NULL;
+static DebounceCallback pressed_callback = NULL;
+static DebounceCallback released_callback = NULL;
 
 /**
  * @brief Private global boolean variable that is set to true on a falling edge event
@@ -90,11 +90,11 @@ bool_t readKey() {
 	return return_value;
 }
 
-void setPressedCallback(Callback callback) {
+void setPressedCallback(DebounceCallback callback) {
 	pressed_callback = callback;
 }
 
-void setReleasedCallback(Callback callback) {
+void setReleasedCallback(DebounceCallback callback) {
 	released_callback = callback;
 }
 

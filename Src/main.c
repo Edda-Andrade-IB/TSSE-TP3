@@ -30,7 +30,7 @@
  */
 #define DEBOUNCE_TIME_MS 40
 
-UART_HandleTypeDef UartHandle;
+static char buffer[256] = { 0 };
 
 // Forward declarations
 static void SystemClock_Config(void);
@@ -39,13 +39,20 @@ static void Error_Handler(void);
 static void ButtonPressedCallback(void);
 static void ButtonReleasedCallback(void);
 
+static void UartCallback(uint8_t *data, uint32_t size) {
+	LCD1602_AddToBuffer((char*) data);
+}
+
 int main(void) {
+
 	HAL_Init(); // Initialize HAL
+
 	SystemClock_Config();
 
 	BSP_LED_Init(LED2);
 
 	// Init uart, if fail go to Error Handler.
+	uartAddReceiveCallback(UartCallback, (uint8_t*) buffer, 1);
 	if (!uartInit()) {
 		Error_Handler();
 	}
@@ -74,7 +81,12 @@ int main(void) {
 	setPressedCallback(ButtonPressedCallback);
 	setReleasedCallback(ButtonReleasedCallback);
 
-	LCD1602_Print("A banana!!");
+	LCD1602_AddToBuffer("Hello World!");
+
+	LCD1602_AddToBuffer("Nicoaalas");
+
+	/* LCD1602_FSM_Update(); */
+	__enable_irq();
 
 	/* Infinite loop */
 	while (1) {
@@ -95,7 +107,13 @@ int main(void) {
 
 			BSP_LED_Toggle(LED2);
 			delayWrite(&button_pressed_delay, current_frequency);
+			uartReceiveStringSize((uint8_t*) buffer, 8);
+			buffer[8] = '\0';
+			LCD1602_AddToBuffer(buffer);
 		}
+
+//		uartReceiveStringSize(buffer, 8);
+//		buffer[8] = '\0';
 
 	}
 }
@@ -175,6 +193,7 @@ static void SystemClock_Config(void) {
 		/* Initialization Error */
 		Error_Handler();
 	}
+
 }
 /**
  * @brief  This function is executed in case of error occurrence.

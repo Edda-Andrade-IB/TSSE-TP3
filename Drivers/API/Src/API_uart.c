@@ -8,7 +8,7 @@
 #include "API_uart.h"
 #include "main.h"
 #include "stm32f4xx_nucleo_144.h"
-#include <stdio.h> // For printf
+#include <stdio.h>  // For printf
 #include <string.h> // For strlen
 
 /* Definition for USARTx clock resources */
@@ -19,9 +19,12 @@
 #define FLOW_CONTROL UART_HWCONTROL_NONE
 #define MODE UART_MODE_TX_RX
 
-#define UART_TIMEOUT_MS 3000 /* 3 seconds */
+#define UART_TIMEOUT_MS 0xFFFFFFFF /* 3 seconds */
 
 static UART_HandleTypeDef UartHandle;
+static UARTReceiveCallback UartCallback = NULL;
+static uint8_t *Buffer = NULL;
+static uint32_t BufferSize = 0;
 
 static const char* const ParityAsString(uint32_t parity) {
 	const char *parity_str;
@@ -97,20 +100,23 @@ bool_t uartInit() {
 
 		char message[256];
 
-		sprintf(message, conf_message,
-		BAUD_RATE,
-		WORD_LENGTH,
-		STOP_BITS, parity, flow_constrol);
+		sprintf(message, conf_message, BAUD_RATE, WORD_LENGTH, STOP_BITS,
+				parity, flow_constrol);
 
 		uartSendString(message);
 	} else {
 		return_value = false;
 	}
+	uint32_t ret = 0;
+	// Callback was enabled
+	if (UartCallback != NULL) {
+		HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+		HAL_NVIC_EnableIRQ(USART3_IRQn);
+		ret = HAL_UART_Receive_IT(&UartHandle, Buffer, BufferSize);
+	}
 
 	/* Initialization Error */
-
 	return return_value;
-
 }
 
 void uartSendString(uint8_t *pstring) {
@@ -124,4 +130,24 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size) {
 
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size) {
 	HAL_UART_Receive(&UartHandle, pstring, size, UART_TIMEOUT_MS);
+}
+
+void uartAddReceiveCallback(UARTReceiveCallback uartCallback, uint8_t *pString,
+		uint32_t size) {
+	UartCallback = uartCallback;
+	Buffer = pString;
+	BufferSize = size;
+}
+
+// UART receive complete callback
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	UartCallback(Buffer, BufferSize);
+
+	if (UartCallback != NULL) {
+		HAL_UART_Receive_IT(&UartHandle, Buffer, BufferSize);
+	}
+}
+
+void USART3_IRQHandler(void) {
+	HAL_UART_IRQHandler(&UartHandle);
 }

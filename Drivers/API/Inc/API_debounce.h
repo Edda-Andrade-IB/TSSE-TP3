@@ -11,7 +11,7 @@
 #include "API_delay.h" // bool_t
 
 // Define the callback function signature
-typedef void (*Callback)(void);
+typedef void (*DebounceCallback)(void);
 
 /**
  * SetUp the initial state for the FSM.
@@ -38,7 +38,7 @@ bool_t readKey();
  *
  * If you want to remove a callback use as argument of the function `NULL`.
  */
-void setPressedCallback(Callback callback);
-void setReleasedCallback(Callback callback);
+void setPressedCallback(DebounceCallback callback);
+void setReleasedCallback(DebounceCallback callback);
 
 #endif /* API_INC_API_DEBOUNCE_H_ */

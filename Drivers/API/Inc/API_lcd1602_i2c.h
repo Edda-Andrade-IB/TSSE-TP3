@@ -8,12 +8,11 @@
 #ifndef API_INC_API_LCD1602_I2C_H_
 #define API_INC_API_LCD1602_I2C_H_
 
-#include <string.h>
 #include <stdint.h>
 
 void LCD1602_Init(void);
-void LCD1602_SendCommand(uint8_t command);
-void LCD1602_SendData(uint8_t data);
-void LCD1602_Print(const char *text);
+void LCD1602_AddToBuffer(const char *pString);
+void LCD1602_PrintMode(uint8_t mode);
+void LCD1602_FSM_Update();
 
 #endif /* API_INC_API_LCD1602_I2C_H_ */

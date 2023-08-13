@@ -40,11 +40,14 @@ void uartSendStringSize(uint8_t *pstring, uint16_t size);
 /**
  * Receives a string from the UART of size `size` and store it on `pString`. The
  * function uses HAL_UART_Receive(...) under the hood.
- *
  */
 void uartReceiveStringSize(uint8_t *pstring, uint16_t size);
 
-// TODO(Nico):
-const char *readString(void);
+/**
+ * Read the accumulated string from UART if ready. If the string is not ready
+ * (The buffer wasn't completely full or return '\r' char detected) this
+ * functions returns `NULL`.
+ */
+const char* readString(void);
 
 #endif /* API_INC_API_UART_H_ */

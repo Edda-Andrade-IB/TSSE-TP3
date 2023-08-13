@@ -1,44 +1,44 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_cryp_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended CRYP HAL module driver
-  *          This file provides firmware functions to manage the following
-  *          functionalities of CRYP extension peripheral:
-  *           + Extended AES processing functions
-  *
-  @verbatim
-  ==============================================================================
-                     ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The CRYP extension HAL driver can be used as follows:
-    (#)After AES-GCM or AES-CCM  Encryption/Decryption user can start following API
-       to get the  authentication messages :
-      (##) HAL_CRYPEx_AESGCM_GenerateAuthTAG
-      (##) HAL_CRYPEx_AESCCM_GenerateAuthTAG
+ ******************************************************************************
+ * @file    stm32f4xx_hal_cryp_ex.c
+ * @author  MCD Application Team
+ * @brief   Extended CRYP HAL module driver
+ *          This file provides firmware functions to manage the following
+ *          functionalities of CRYP extension peripheral:
+ *           + Extended AES processing functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ The CRYP extension HAL driver can be used as follows:
+ (#)After AES-GCM or AES-CCM  Encryption/Decryption user can start following API
+ to get the  authentication messages :
+ (##) HAL_CRYPEx_AESGCM_GenerateAuthTAG
+ (##) HAL_CRYPEx_AESCCM_GenerateAuthTAG
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 #if defined (AES)  || defined (CRYP)
 #if defined (CRYP_CR_ALGOMODE_AES_GCM)|| defined (AES)
 /** @defgroup CRYPEx CRYPEx
@@ -177,7 +177,7 @@ HAL_StatusTypeDef HAL_CRYPEx_AESGCM_GenerateAuthTAG(CRYP_HandleTypeDef *hcryp, u
     /* Select final phase */
     MODIFY_REG(hcryp->Instance->CR, CRYP_CR_GCM_CCMPH, CRYP_PHASE_FINAL);
 
-    /*ALGODIR bit must be set to ‘0’.*/
+    /*ALGODIR bit must be set to ï¿½0ï¿½.*/
     hcryp->Instance->CR &=  ~CRYP_CR_ALGODIR;
 
     /* Enable the CRYP peripheral */
@@ -395,7 +395,7 @@ HAL_StatusTypeDef HAL_CRYPEx_AESCCM_GenerateAuthTAG(CRYP_HandleTypeDef *hcryp, u
     /* Disable CRYP to start the final phase */
     __HAL_CRYP_DISABLE(hcryp);
 
-    /* Select final phase & ALGODIR bit must be set to ‘0’. */
+    /* Select final phase & ALGODIR bit must be set to ï¿½0ï¿½. */
     MODIFY_REG(hcryp->Instance->CR, CRYP_CR_GCM_CCMPH | CRYP_CR_ALGODIR, CRYP_PHASE_FINAL | CRYP_OPERATINGMODE_ENCRYPT);
 
     /* Enable the CRYP peripheral */
@@ -671,11 +671,11 @@ void  HAL_CRYPEx_DisableAutoKeyDerivation(CRYP_HandleTypeDef *hcryp)
   */
 #endif /* TinyAES or CRYP*/
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

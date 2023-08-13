@@ -1,69 +1,69 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_ll_fsmc.c
-  * @author  MCD Application Team
-  * @brief   FSMC Low Layer HAL module driver.
-  *    
-  *          This file provides firmware functions to manage the following 
-  *          functionalities of the Flexible Static Memory Controller (FSMC) peripheral memories:
-  *           + Initialization/de-initialization functions
-  *           + Peripheral Control functions 
-  *           + Peripheral State functions
-  *         
-  @verbatim
-  ==============================================================================
-                        ##### FSMC peripheral features #####
-  ==============================================================================                  
-    [..] The Flexible static memory controller (FSMC) includes two memory controllers:
-         (+) The NOR/PSRAM memory controller
-         (+) The NAND/PC Card memory controller
-       
-    [..] The FSMC functional block makes the interface with synchronous and asynchronous static
-         memories, SDRAM memories, and 16-bit PC memory cards. Its main purposes are:
-         (+) to translate AHB transactions into the appropriate external device protocol.
-         (+) to meet the access time requirements of the external memory devices.
-   
-    [..] All external memories share the addresses, data and control signals with the controller.
-         Each external device is accessed by means of a unique Chip Select. The FSMC performs
-         only one access at a time to an external device.
-         The main features of the FSMC controller are the following:
-          (+) Interface with static-memory mapped devices including:
-             (++) Static random access memory (SRAM).
-             (++) Read-only memory (ROM).
-             (++) NOR Flash memory/OneNAND Flash memory.
-             (++) PSRAM (4 memory banks).
-             (++) 16-bit PC Card compatible devices.
-             (++) Two banks of NAND Flash memory with ECC hardware to check up to 8 Kbytes of
-                  data.
-          (+) Independent Chip Select control for each memory bank.
-          (+) Independent configuration for each memory bank.          
-        
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ ******************************************************************************
+ * @file    stm32f4xx_ll_fsmc.c
+ * @author  MCD Application Team
+ * @brief   FSMC Low Layer HAL module driver.
+ *    
+ *          This file provides firmware functions to manage the following 
+ *          functionalities of the Flexible Static Memory Controller (FSMC) peripheral memories:
+ *           + Initialization/de-initialization functions
+ *           + Peripheral Control functions 
+ *           + Peripheral State functions
+ *         
+ @verbatim
+ ==============================================================================
+ ##### FSMC peripheral features #####
+ ==============================================================================                  
+ [..] The Flexible static memory controller (FSMC) includes two memory controllers:
+ (+) The NOR/PSRAM memory controller
+ (+) The NAND/PC Card memory controller
+ 
+ [..] The FSMC functional block makes the interface with synchronous and asynchronous static
+ memories, SDRAM memories, and 16-bit PC memory cards. Its main purposes are:
+ (+) to translate AHB transactions into the appropriate external device protocol.
+ (+) to meet the access time requirements of the external memory devices.
+ 
+ [..] All external memories share the addresses, data and control signals with the controller.
+ Each external device is accessed by means of a unique Chip Select. The FSMC performs
+ only one access at a time to an external device.
+ The main features of the FSMC controller are the following:
+ (+) Interface with static-memory mapped devices including:
+ (++) Static random access memory (SRAM).
+ (++) Read-only memory (ROM).
+ (++) NOR Flash memory/OneNAND Flash memory.
+ (++) PSRAM (4 memory banks).
+ (++) 16-bit PC Card compatible devices.
+ (++) Two banks of NAND Flash memory with ECC hardware to check up to 8 Kbytes of
+ data.
+ (+) Independent Chip Select control for each memory bank.
+ (+) Independent configuration for each memory bank.          
+ 
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup FSMC_LL  FSMC Low Layer
-  * @brief FSMC driver modules
-  * @{
-  */
+ * @brief FSMC driver modules
+ * @{
+ */
 
 #if defined (HAL_SRAM_MODULE_ENABLED) || defined(HAL_NOR_MODULE_ENABLED) || defined(HAL_NAND_MODULE_ENABLED) || defined(HAL_PCCARD_MODULE_ENABLED)
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) || defined(STM32F412Zx) ||\
@@ -1000,10 +1000,10 @@ HAL_StatusTypeDef FSMC_PCCARD_DeInit(FSMC_PCCARD_TypeDef *Device)
 #endif /* HAL_SRAM_MODULE_ENABLED || HAL_NOR_MODULE_ENABLED || HAL_NAND_MODULE_ENABLED || HAL_PCCARD_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

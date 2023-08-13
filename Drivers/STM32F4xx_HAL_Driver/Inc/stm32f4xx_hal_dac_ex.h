@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_dac_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of DAC HAL Extended module.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f4xx_hal_dac_ex.h
+ * @author  MCD Application Team
+ * @brief   Header file of DAC HAL Extended module.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef STM32F4xx_HAL_DAC_EX_H
@@ -26,8 +26,8 @@ extern "C" {
 #endif
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal_def.h"
@@ -35,24 +35,24 @@ extern "C" {
 #if defined(DAC)
 
 /** @addtogroup DACEx
-  * @{
-  */
+ * @{
+ */
 
 /* Exported types ------------------------------------------------------------*/
 
 /**
-  * @brief  HAL State structures definition
-  */
+ * @brief  HAL State structures definition
+ */
 
 /* Exported constants --------------------------------------------------------*/
 
 /** @defgroup DACEx_Exported_Constants DACEx Exported Constants
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup DACEx_lfsrunmask_triangleamplitude DACEx lfsrunmask triangle amplitude
-  * @{
-  */
+ * @{
+ */
 #define DAC_LFSRUNMASK_BIT0                0x00000000UL                                                        /*!< Unmask DAC channel LFSR bit0 for noise wave generation */
 #define DAC_LFSRUNMASK_BITS1_0             (                                                   DAC_CR_MAMP1_0) /*!< Unmask DAC channel LFSR bit[1:0] for noise wave generation */
 #define DAC_LFSRUNMASK_BITS2_0             (                                  DAC_CR_MAMP1_1                 ) /*!< Unmask DAC channel LFSR bit[2:0] for noise wave generation */
@@ -79,21 +79,20 @@ extern "C" {
 #define DAC_TRIANGLEAMPLITUDE_4095         (DAC_CR_MAMP1_3                  | DAC_CR_MAMP1_1 | DAC_CR_MAMP1_0) /*!< Select max triangle amplitude of 4095 */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Exported macro ------------------------------------------------------------*/
-
 
 /* Private macro -------------------------------------------------------------*/
 
 /** @defgroup DACEx_Private_Macros DACEx Private Macros
-  * @{
-  */
+ * @{
+ */
 #define IS_DAC_TRIGGER(TRIGGER) (((TRIGGER) == DAC_TRIGGER_NONE)    || \
                                  ((TRIGGER) == DAC_TRIGGER_T2_TRGO) || \
                                  ((TRIGGER) == DAC_TRIGGER_T8_TRGO) || \
@@ -129,29 +128,32 @@ extern "C" {
                                                       ((VALUE) == DAC_TRIANGLEAMPLITUDE_2047) || \
                                                       ((VALUE) == DAC_TRIANGLEAMPLITUDE_4095))
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Exported functions --------------------------------------------------------*/
 /* Extended features functions ***********************************************/
 
 /** @addtogroup DACEx_Exported_Functions
-  * @{
-  */
+ * @{
+ */
 
 /** @addtogroup DACEx_Exported_Functions_Group2
-  * @{
-  */
+ * @{
+ */
 /* IO operation functions *****************************************************/
 
-HAL_StatusTypeDef HAL_DACEx_TriangleWaveGenerate(DAC_HandleTypeDef *hdac, uint32_t Channel, uint32_t Amplitude);
-HAL_StatusTypeDef HAL_DACEx_NoiseWaveGenerate(DAC_HandleTypeDef *hdac, uint32_t Channel, uint32_t Amplitude);
+HAL_StatusTypeDef HAL_DACEx_TriangleWaveGenerate(DAC_HandleTypeDef *hdac,
+		uint32_t Channel, uint32_t Amplitude);
+HAL_StatusTypeDef HAL_DACEx_NoiseWaveGenerate(DAC_HandleTypeDef *hdac,
+		uint32_t Channel, uint32_t Amplitude);
 
 #if defined(DAC_CHANNEL2_SUPPORT)
 #endif
 HAL_StatusTypeDef HAL_DACEx_DualStart(DAC_HandleTypeDef *hdac);
 HAL_StatusTypeDef HAL_DACEx_DualStop(DAC_HandleTypeDef *hdac);
-HAL_StatusTypeDef HAL_DACEx_DualSetValue(DAC_HandleTypeDef *hdac, uint32_t Alignment, uint32_t Data1, uint32_t Data2);
+HAL_StatusTypeDef HAL_DACEx_DualSetValue(DAC_HandleTypeDef *hdac,
+		uint32_t Alignment, uint32_t Data1, uint32_t Data2);
 uint32_t HAL_DACEx_DualGetValue(DAC_HandleTypeDef *hdac);
 
 #if defined(DAC_CHANNEL2_SUPPORT)
@@ -161,22 +163,21 @@ void HAL_DACEx_ConvHalfCpltCallbackCh2(DAC_HandleTypeDef *hdac);
 void HAL_DACEx_ErrorCallbackCh2(DAC_HandleTypeDef *hdac);
 void HAL_DACEx_DMAUnderrunCallbackCh2(DAC_HandleTypeDef *hdac);
 
+/**
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
-
-/**
-  * @}
-  */
+ * @}
+ */
 
 /** @addtogroup DACEx_Private_Functions
-  * @{
-  */
+ * @{
+ */
 #if defined(DAC_CHANNEL2_SUPPORT)
 /* DAC_DMAConvCpltCh2 / DAC_DMAErrorCh2 / DAC_DMAHalfConvCpltCh2 */
 /* are called by HAL_DAC_Start_DMA */
@@ -185,18 +186,18 @@ void DAC_DMAErrorCh2(DMA_HandleTypeDef *hdma);
 void DAC_DMAHalfConvCpltCh2(DMA_HandleTypeDef *hdma);
 #endif /* DAC_CHANNEL2_SUPPORT */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 #endif /* DAC */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 #ifdef __cplusplus
 }

@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_ll_fsmc.h
-  * @author  MCD Application Team
-  * @brief   Header file of FSMC HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ ******************************************************************************
+ * @file    stm32f4xx_ll_fsmc.h
+ * @author  MCD Application Team
+ * @brief   Header file of FSMC HAL module.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F4xx_LL_FSMC_H
@@ -29,12 +29,12 @@
 #include "stm32f4xx_hal_def.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
-   
+ * @{
+ */
+
 /** @addtogroup FSMC_LL
-  * @{
-  */
+ * @{
+ */
 
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) || defined(STM32F412Zx) ||\
     defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F413xx) || defined(STM32F423xx)
@@ -1017,13 +1017,13 @@ HAL_StatusTypeDef  FSMC_PCCARD_DeInit(FSMC_PCCARD_TypeDef *Device);
 #endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx || STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F412Cx || STM32F413xx || STM32F423xx */
 
 /**
-  * @}
-  */ 
+ * @}
+ */
 
 /**
-  * @}
-  */
-  
+ * @}
+ */
+
 #ifdef __cplusplus
 }
 #endif

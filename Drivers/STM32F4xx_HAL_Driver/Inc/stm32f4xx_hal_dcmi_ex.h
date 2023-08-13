@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_dcmi_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of DCMI Extension HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ ******************************************************************************
+ * @file    stm32f4xx_hal_dcmi_ex.h
+ * @author  MCD Application Team
+ * @brief   Header file of DCMI Extension HAL module.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F4xx_HAL_DCMI_EX_H
@@ -32,58 +32,55 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal_def.h"
 
-
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @addtogroup DCMIEx
-  * @brief DCMI HAL module driver
-  * @{
-  */  
+ * @brief DCMI HAL module driver
+ * @{
+ */
 
 /* Exported types ------------------------------------------------------------*/
 /** @defgroup DCMIEx_Exported_Types DCMI Extended Exported Types
-  * @{
-  */
+ * @{
+ */
 /** 
-  * @brief   DCMIEx Embedded Synchronisation CODE Init structure definition
-  */ 
-typedef struct
-{
-  uint8_t FrameStartCode; /*!< Specifies the code of the frame start delimiter. */
-  uint8_t LineStartCode;  /*!< Specifies the code of the line start delimiter.  */
-  uint8_t LineEndCode;    /*!< Specifies the code of the line end delimiter.    */
-  uint8_t FrameEndCode;   /*!< Specifies the code of the frame end delimiter.   */
-}DCMI_CodesInitTypeDef;
+ * @brief   DCMIEx Embedded Synchronisation CODE Init structure definition
+ */
+typedef struct {
+	uint8_t FrameStartCode; /*!< Specifies the code of the frame start delimiter. */
+	uint8_t LineStartCode; /*!< Specifies the code of the line start delimiter.  */
+	uint8_t LineEndCode; /*!< Specifies the code of the line end delimiter.    */
+	uint8_t FrameEndCode; /*!< Specifies the code of the frame end delimiter.   */
+} DCMI_CodesInitTypeDef;
 
 /** 
-  * @brief   DCMI Init structure definition
-  */  
-typedef struct
-{
-  uint32_t  SynchroMode;                /*!< Specifies the Synchronization Mode: Hardware or Embedded.
-                                             This parameter can be a value of @ref DCMI_Synchronization_Mode   */
+ * @brief   DCMI Init structure definition
+ */
+typedef struct {
+	uint32_t SynchroMode; /*!< Specifies the Synchronization Mode: Hardware or Embedded.
+	 This parameter can be a value of @ref DCMI_Synchronization_Mode   */
 
-  uint32_t  PCKPolarity;                /*!< Specifies the Pixel clock polarity: Falling or Rising.
-                                             This parameter can be a value of @ref DCMI_PIXCK_Polarity         */
+	uint32_t PCKPolarity; /*!< Specifies the Pixel clock polarity: Falling or Rising.
+	 This parameter can be a value of @ref DCMI_PIXCK_Polarity         */
 
-  uint32_t  VSPolarity;                 /*!< Specifies the Vertical synchronization polarity: High or Low.
-                                             This parameter can be a value of @ref DCMI_VSYNC_Polarity         */
+	uint32_t VSPolarity; /*!< Specifies the Vertical synchronization polarity: High or Low.
+	 This parameter can be a value of @ref DCMI_VSYNC_Polarity         */
 
-  uint32_t  HSPolarity;                 /*!< Specifies the Horizontal synchronization polarity: High or Low.
-                                             This parameter can be a value of @ref DCMI_HSYNC_Polarity         */
+	uint32_t HSPolarity; /*!< Specifies the Horizontal synchronization polarity: High or Low.
+	 This parameter can be a value of @ref DCMI_HSYNC_Polarity         */
 
-  uint32_t  CaptureRate;                /*!< Specifies the frequency of frame capture: All, 1/2 or 1/4.
-                                             This parameter can be a value of @ref DCMI_Capture_Rate           */
+	uint32_t CaptureRate; /*!< Specifies the frequency of frame capture: All, 1/2 or 1/4.
+	 This parameter can be a value of @ref DCMI_Capture_Rate           */
 
-  uint32_t  ExtendedDataMode;           /*!< Specifies the data width: 8-bit, 10-bit, 12-bit or 14-bit.
-                                             This parameter can be a value of @ref DCMI_Extended_Data_Mode     */
+	uint32_t ExtendedDataMode; /*!< Specifies the data width: 8-bit, 10-bit, 12-bit or 14-bit.
+	 This parameter can be a value of @ref DCMI_Extended_Data_Mode     */
 
-  DCMI_CodesInitTypeDef SyncroCode;     /*!< Specifies the code of the frame start delimiter.                  */
+	DCMI_CodesInitTypeDef SyncroCode; /*!< Specifies the code of the frame start delimiter.                  */
 
-  uint32_t JPEGMode;                    /*!< Enable or Disable the JPEG mode
-                                             This parameter can be a value of @ref DCMI_MODE_JPEG              */
+	uint32_t JPEGMode; /*!< Enable or Disable the JPEG mode
+	 This parameter can be a value of @ref DCMI_MODE_JPEG              */
 #if defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx)
   uint32_t ByteSelectMode;              /*!< Specifies the data to be captured by the interface 
                                             This parameter can be a value of @ref DCMIEx_Byte_Select_Mode      */
@@ -98,11 +95,11 @@ typedef struct
                                             This parameter can be a value of @ref DCMIEx_Line_Select_Start     */
 
 #endif /* STM32F446xx || STM32F469xx || STM32F479xx */
-}DCMI_InitTypeDef;
+} DCMI_InitTypeDef;
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Exported constants --------------------------------------------------------*/
 #if defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx)
@@ -186,22 +183,21 @@ typedef struct
                                             ((POLARITY) == DCMI_OELS_EVEN))
 #endif /* STM32F446xx || STM32F469xx || STM32F479xx */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Private functions ---------------------------------------------------------*/
 #endif /* STM32F407xx || STM32F417xx || STM32F427xx || STM32F437xx ||\
           STM32F429xx || STM32F439xx || STM32F446xx || STM32F469xx ||\
           STM32F479xx */
 
+/**
+ * @}
+ */
 
 /**
-  * @}
-  */
-
-/**
-  * @}
-  */ 
+ * @}
+ */
 
 #ifdef __cplusplus
 }

@@ -1,118 +1,117 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_nand.c
-  * @author  MCD Application Team
-  * @brief   NAND HAL module driver.
-  *          This file provides a generic firmware to drive NAND memories mounted 
-  *          as external device.
-  *         
-  @verbatim
-  ==============================================================================
-                         ##### How to use this driver #####
-  ==============================================================================    
-    [..]
-      This driver is a generic layered driver which contains a set of APIs used to 
-      control NAND flash memories. It uses the FMC/FSMC layer functions to interface 
-      with NAND devices. This driver is used as follows:
-    
-      (+) NAND flash memory configuration sequence using the function HAL_NAND_Init() 
-          with control and timing parameters for both common and attribute spaces.
-            
-      (+) Read NAND flash memory maker and device IDs using the function
-          HAL_NAND_Read_ID(). The read information is stored in the NAND_ID_TypeDef 
-          structure declared by the function caller. 
-        
-      (+) Access NAND flash memory by read/write operations using the functions
-          HAL_NAND_Read_Page_8b()/HAL_NAND_Read_SpareArea_8b(), 
-          HAL_NAND_Write_Page_8b()/HAL_NAND_Write_SpareArea_8b(),
-          HAL_NAND_Read_Page_16b()/HAL_NAND_Read_SpareArea_16b(), 
-          HAL_NAND_Write_Page_16b()/HAL_NAND_Write_SpareArea_16b()
-          to read/write page(s)/spare area(s). These functions use specific device 
-          information (Block, page size..) predefined by the user in the HAL_NAND_Info_TypeDef 
-          structure. The read/write address information is contained by the Nand_Address_Typedef
-          structure passed as parameter.
-        
-      (+) Perform NAND flash Reset chip operation using the function HAL_NAND_Reset().
-        
-      (+) Perform NAND flash erase block operation using the function HAL_NAND_Erase_Block().
-          The erase block address information is contained in the Nand_Address_Typedef 
-          structure passed as parameter.
-    
-      (+) Read the NAND flash status operation using the function HAL_NAND_Read_Status().
-        
-      (+) You can also control the NAND device by calling the control APIs HAL_NAND_ECC_Enable()/
-          HAL_NAND_ECC_Disable() to respectively enable/disable the ECC code correction
-          feature or the function HAL_NAND_GetECC() to get the ECC correction code. 
-       
-      (+) You can monitor the NAND device HAL state by calling the function
-          HAL_NAND_GetState()  
+ ******************************************************************************
+ * @file    stm32f4xx_hal_nand.c
+ * @author  MCD Application Team
+ * @brief   NAND HAL module driver.
+ *          This file provides a generic firmware to drive NAND memories mounted 
+ *          as external device.
+ *         
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================    
+ [..]
+ This driver is a generic layered driver which contains a set of APIs used to 
+ control NAND flash memories. It uses the FMC/FSMC layer functions to interface 
+ with NAND devices. This driver is used as follows:
+ 
+ (+) NAND flash memory configuration sequence using the function HAL_NAND_Init() 
+ with control and timing parameters for both common and attribute spaces.
+ 
+ (+) Read NAND flash memory maker and device IDs using the function
+ HAL_NAND_Read_ID(). The read information is stored in the NAND_ID_TypeDef 
+ structure declared by the function caller. 
+ 
+ (+) Access NAND flash memory by read/write operations using the functions
+ HAL_NAND_Read_Page_8b()/HAL_NAND_Read_SpareArea_8b(), 
+ HAL_NAND_Write_Page_8b()/HAL_NAND_Write_SpareArea_8b(),
+ HAL_NAND_Read_Page_16b()/HAL_NAND_Read_SpareArea_16b(), 
+ HAL_NAND_Write_Page_16b()/HAL_NAND_Write_SpareArea_16b()
+ to read/write page(s)/spare area(s). These functions use specific device 
+ information (Block, page size..) predefined by the user in the HAL_NAND_Info_TypeDef 
+ structure. The read/write address information is contained by the Nand_Address_Typedef
+ structure passed as parameter.
+ 
+ (+) Perform NAND flash Reset chip operation using the function HAL_NAND_Reset().
+ 
+ (+) Perform NAND flash erase block operation using the function HAL_NAND_Erase_Block().
+ The erase block address information is contained in the Nand_Address_Typedef 
+ structure passed as parameter.
+ 
+ (+) Read the NAND flash status operation using the function HAL_NAND_Read_Status().
+ 
+ (+) You can also control the NAND device by calling the control APIs HAL_NAND_ECC_Enable()/
+ HAL_NAND_ECC_Disable() to respectively enable/disable the ECC code correction
+ feature or the function HAL_NAND_GetECC() to get the ECC correction code. 
+ 
+ (+) You can monitor the NAND device HAL state by calling the function
+ HAL_NAND_GetState()  
 
-    [..]
-      (@) This driver is a set of generic APIs which handle standard NAND flash operations.
-          If a NAND flash device contains different operations and/or implementations, 
-          it should be implemented separately.
+ [..]
+ (@) This driver is a set of generic APIs which handle standard NAND flash operations.
+ If a NAND flash device contains different operations and/or implementations, 
+ it should be implemented separately.
 
-    *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_NAND_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
+ *** Callback registration ***
+ =============================================
+ [..]
+ The compilation define  USE_HAL_NAND_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
 
-      Use Functions @ref HAL_NAND_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) MspInitCallback    : NAND MspInit.
-        (+) MspDeInitCallback  : NAND MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
+ Use Functions @ref HAL_NAND_RegisterCallback() to register a user callback,
+ it allows to register following callbacks:
+ (+) MspInitCallback    : NAND MspInit.
+ (+) MspDeInitCallback  : NAND MspDeInit.
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
 
-      Use function @ref HAL_NAND_UnRegisterCallback() to reset a callback to the default
-      weak (surcharged) function. It allows to reset following callbacks:
-        (+) MspInitCallback    : NAND MspInit.
-        (+) MspDeInitCallback  : NAND MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
+ Use function @ref HAL_NAND_UnRegisterCallback() to reset a callback to the default
+ weak (surcharged) function. It allows to reset following callbacks:
+ (+) MspInitCallback    : NAND MspInit.
+ (+) MspDeInitCallback  : NAND MspDeInit.
+ This function) takes as parameters the HAL peripheral handle and the Callback ID.
 
-      By default, after the @ref HAL_NAND_Init and if the state is HAL_NAND_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (surcharged) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (surcharged) functions in the @ref HAL_NAND_Init
-      and @ref  HAL_NAND_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the @ref HAL_NAND_Init and @ref HAL_NAND_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
+ By default, after the @ref HAL_NAND_Init and if the state is HAL_NAND_STATE_RESET
+ all callbacks are reset to the corresponding legacy weak (surcharged) functions.
+ Exception done for MspInit and MspDeInit callbacks that are respectively
+ reset to the legacy weak (surcharged) functions in the @ref HAL_NAND_Init
+ and @ref  HAL_NAND_DeInit only when these callbacks are null (not registered beforehand).
+ If not, MspInit or MspDeInit are not null, the @ref HAL_NAND_Init and @ref HAL_NAND_DeInit
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
 
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using @ref HAL_NAND_RegisterCallback before calling @ref HAL_NAND_DeInit
-      or @ref HAL_NAND_Init function.
+ Callbacks can be registered/unregistered in READY state only.
+ Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
+ in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
+ during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using @ref HAL_NAND_RegisterCallback before calling @ref HAL_NAND_DeInit
+ or @ref HAL_NAND_Init function.
 
-      When The compilation define USE_HAL_NAND_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (surcharged) callbacks are used.
+ When The compilation define USE_HAL_NAND_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registering feature is not available
+ and weak (surcharged) callbacks are used.
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
-
+ * @{
+ */
 
 #ifdef HAL_NAND_MODULE_ENABLED
 
@@ -2039,7 +2038,7 @@ HAL_NAND_StateTypeDef HAL_NAND_GetState(NAND_HandleTypeDef *hnand)
 #endif /* HAL_NAND_MODULE_ENABLED  */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

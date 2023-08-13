@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_pccard.h
-  * @author  MCD Application Team
-  * @brief   Header file of PCCARD HAL module.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ ******************************************************************************
+ * @file    stm32f4xx_hal_pccard.h
+ * @author  MCD Application Team
+ * @brief   Header file of PCCARD HAL module.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F4xx_HAL_PCCARD_H
@@ -31,60 +31,58 @@
 #endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx */
 
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)
-  #include "stm32f4xx_ll_fmc.h"
+#include "stm32f4xx_ll_fmc.h"
 #endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx */
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) ||\
     defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)
 
 /** @addtogroup PCCARD
-  * @{
-  */ 
+ * @{
+ */
 
 /* Exported typedef ----------------------------------------------------------*/
 /** @defgroup PCCARD_Exported_Types PCCARD Exported Types
-  * @{
-  */
+ * @{
+ */
 
 /** 
-  * @brief  HAL PCCARD State structures definition  
-  */ 
-typedef enum
-{
-  HAL_PCCARD_STATE_RESET     = 0x00U,    /*!< PCCARD peripheral not yet initialized or disabled */
-  HAL_PCCARD_STATE_READY     = 0x01U,    /*!< PCCARD peripheral ready                           */
-  HAL_PCCARD_STATE_BUSY      = 0x02U,    /*!< PCCARD peripheral busy                            */
-  HAL_PCCARD_STATE_ERROR     = 0x04U     /*!< PCCARD peripheral error                           */
-}HAL_PCCARD_StateTypeDef;
+ * @brief  HAL PCCARD State structures definition  
+ */
+typedef enum {
+	HAL_PCCARD_STATE_RESET = 0x00U, /*!< PCCARD peripheral not yet initialized or disabled */
+	HAL_PCCARD_STATE_READY = 0x01U, /*!< PCCARD peripheral ready                           */
+	HAL_PCCARD_STATE_BUSY = 0x02U, /*!< PCCARD peripheral busy                            */
+	HAL_PCCARD_STATE_ERROR = 0x04U /*!< PCCARD peripheral error                           */
+} HAL_PCCARD_StateTypeDef;
 
-typedef enum
-{
-  HAL_PCCARD_STATUS_SUCCESS = 0U,
-  HAL_PCCARD_STATUS_ONGOING,
-  HAL_PCCARD_STATUS_ERROR,
-  HAL_PCCARD_STATUS_TIMEOUT
-}HAL_PCCARD_StatusTypeDef;
+typedef enum {
+	HAL_PCCARD_STATUS_SUCCESS = 0U,
+	HAL_PCCARD_STATUS_ONGOING,
+	HAL_PCCARD_STATUS_ERROR,
+	HAL_PCCARD_STATUS_TIMEOUT
+} HAL_PCCARD_StatusTypeDef;
 
 /**
-  * @brief  FMC_PCCARD handle Structure definition
-  */
+ * @brief  FMC_PCCARD handle Structure definition
+ */
 #if (USE_HAL_PCCARD_REGISTER_CALLBACKS == 1)  
 typedef struct __PCCARD_HandleTypeDef
 #else
 typedef struct
 #endif /* USE_HAL_PCCARD_REGISTER_CALLBACKS  */
 {
-  FMC_PCCARD_TypeDef           *Instance;              /*!< Register base address for PCCARD device          */
-  
-  FMC_PCCARD_InitTypeDef       Init;                   /*!< PCCARD device control configuration parameters   */
+	FMC_PCCARD_TypeDef *Instance; /*!< Register base address for PCCARD device          */
 
-  __IO HAL_PCCARD_StateTypeDef State;                  /*!< PCCARD device access state                       */
+	FMC_PCCARD_InitTypeDef Init; /*!< PCCARD device control configuration parameters   */
 
-  HAL_LockTypeDef              Lock;                   /*!< PCCARD Lock                                      */
+	__IO HAL_PCCARD_StateTypeDef State; /*!< PCCARD device access state                       */
+
+	HAL_LockTypeDef Lock; /*!< PCCARD Lock                                      */
 
 #if (USE_HAL_PCCARD_REGISTER_CALLBACKS == 1)
   void  (* MspInitCallback)        ( struct __PCCARD_HandleTypeDef * hpccard);    /*!< PCCARD Msp Init callback              */
@@ -110,18 +108,18 @@ typedef enum
 typedef void (*pPCCARD_CallbackTypeDef)(PCCARD_HandleTypeDef *hpccard);
 #endif
 /**
-  * @}
-  */
+ * @}
+ */
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /** @defgroup PCCARD_Exported_Macros PCCARD Exported Macros
-  * @{
-  */
+ * @{
+ */
 /** @brief Reset PCCARD handle state
-  * @param  __HANDLE__ specifies the PCCARD handle.
-  * @retval None
-  */
+ * @param  __HANDLE__ specifies the PCCARD handle.
+ * @retval None
+ */
 #if (USE_HAL_PCCARD_REGISTER_CALLBACKS == 1)
 #define __HAL_PCCARD_RESET_HANDLE_STATE(__HANDLE__)       do {                                               \
                                                                (__HANDLE__)->State = HAL_PCCARD_STATE_RESET; \
@@ -132,37 +130,44 @@ typedef void (*pPCCARD_CallbackTypeDef)(PCCARD_HandleTypeDef *hpccard);
 #define __HAL_PCCARD_RESET_HANDLE_STATE(__HANDLE__) ((__HANDLE__)->State = HAL_PCCARD_STATE_RESET)
 #endif
 /**
-  * @}
-  */ 
+ * @}
+ */
 
 /* Exported functions --------------------------------------------------------*/
 /** @addtogroup PCCARD_Exported_Functions 
-  * @{
-  */
+ * @{
+ */
 
 /** @addtogroup PCCARD_Exported_Functions_Group1 
-  * @{
-  */
+ * @{
+ */
 /* Initialization/de-initialization functions  **********************************/
-HAL_StatusTypeDef  HAL_PCCARD_Init(PCCARD_HandleTypeDef *hpccard, FMC_NAND_PCC_TimingTypeDef *ComSpaceTiming, FMC_NAND_PCC_TimingTypeDef *AttSpaceTiming, FMC_NAND_PCC_TimingTypeDef *IOSpaceTiming);
-HAL_StatusTypeDef  HAL_PCCARD_DeInit(PCCARD_HandleTypeDef *hpccard);
+HAL_StatusTypeDef HAL_PCCARD_Init(PCCARD_HandleTypeDef *hpccard,
+		FMC_NAND_PCC_TimingTypeDef *ComSpaceTiming,
+		FMC_NAND_PCC_TimingTypeDef *AttSpaceTiming,
+		FMC_NAND_PCC_TimingTypeDef *IOSpaceTiming);
+HAL_StatusTypeDef HAL_PCCARD_DeInit(PCCARD_HandleTypeDef *hpccard);
 void HAL_PCCARD_MspInit(PCCARD_HandleTypeDef *hpccard);
 void HAL_PCCARD_MspDeInit(PCCARD_HandleTypeDef *hpccard);
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** @addtogroup PCCARD_Exported_Functions_Group2
-  * @{
-  */
+ * @{
+ */
 /* IO operation functions  *****************************************************/
-HAL_StatusTypeDef  HAL_PCCARD_Read_ID(PCCARD_HandleTypeDef *hpccard, uint8_t CompactFlash_ID[], uint8_t *pStatus);
-HAL_StatusTypeDef  HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t *pBuffer, uint16_t SectorAddress,  uint8_t *pStatus);
-HAL_StatusTypeDef  HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t *pBuffer, uint16_t SectorAddress, uint8_t *pStatus);
-HAL_StatusTypeDef  HAL_PCCARD_Erase_Sector(PCCARD_HandleTypeDef *hpccard, uint16_t SectorAddress, uint8_t *pStatus);
-HAL_StatusTypeDef  HAL_PCCARD_Reset(PCCARD_HandleTypeDef *hpccard);
-void               HAL_PCCARD_IRQHandler(PCCARD_HandleTypeDef *hpccard);
-void               HAL_PCCARD_ITCallback(PCCARD_HandleTypeDef *hpccard);
+HAL_StatusTypeDef HAL_PCCARD_Read_ID(PCCARD_HandleTypeDef *hpccard,
+		uint8_t CompactFlash_ID[], uint8_t *pStatus);
+HAL_StatusTypeDef HAL_PCCARD_Write_Sector(PCCARD_HandleTypeDef *hpccard,
+		uint16_t *pBuffer, uint16_t SectorAddress, uint8_t *pStatus);
+HAL_StatusTypeDef HAL_PCCARD_Read_Sector(PCCARD_HandleTypeDef *hpccard,
+		uint16_t *pBuffer, uint16_t SectorAddress, uint8_t *pStatus);
+HAL_StatusTypeDef HAL_PCCARD_Erase_Sector(PCCARD_HandleTypeDef *hpccard,
+		uint16_t SectorAddress, uint8_t *pStatus);
+HAL_StatusTypeDef HAL_PCCARD_Reset(PCCARD_HandleTypeDef *hpccard);
+void HAL_PCCARD_IRQHandler(PCCARD_HandleTypeDef *hpccard);
+void HAL_PCCARD_ITCallback(PCCARD_HandleTypeDef *hpccard);
 
 #if (USE_HAL_PCCARD_REGISTER_CALLBACKS == 1)
 /* PCCARD callback registering/unregistering */
@@ -170,29 +175,29 @@ HAL_StatusTypeDef  HAL_PCCARD_RegisterCallback(PCCARD_HandleTypeDef *hpccard, HA
 HAL_StatusTypeDef  HAL_PCCARD_UnRegisterCallback(PCCARD_HandleTypeDef *hpccard, HAL_PCCARD_CallbackIDTypeDef CallbackId);
 #endif
 /**
-  * @}
-  */
+ * @}
+ */
 
 /** @addtogroup PCCARD_Exported_Functions_Group3
-  * @{
-  */
+ * @{
+ */
 /* PCCARD State functions *******************************************************/
-HAL_PCCARD_StateTypeDef  HAL_PCCARD_GetState(PCCARD_HandleTypeDef *hpccard);
+HAL_PCCARD_StateTypeDef HAL_PCCARD_GetState(PCCARD_HandleTypeDef *hpccard);
 HAL_PCCARD_StatusTypeDef HAL_PCCARD_GetStatus(PCCARD_HandleTypeDef *hpccard);
 HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard);
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /** @defgroup PCCARD_Private_Constants PCCARD Private Constants
-  * @{
-  */
+ * @{
+ */
 #define PCCARD_DEVICE_ADDRESS             0x90000000U
 #define PCCARD_ATTRIBUTE_SPACE_ADDRESS    0x98000000U              /* Attribute space size to @0x9BFF FFFF */
 #define PCCARD_COMMON_SPACE_ADDRESS       PCCARD_DEVICE_ADDRESS    /* Common space size to @0x93FF FFFF    */
@@ -226,8 +231,8 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard);
 #define PCCARD_SECTOR_SIZE             255U               /* In half words */ 
 
 /**
-  * @}
-  */
+ * @}
+ */
 /* Compact Flash redefinition */
 #define HAL_CF_Init                 HAL_PCCARD_Init
 #define HAL_CF_DeInit               HAL_PCCARD_DeInit
@@ -267,17 +272,16 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard);
 
 /* Private macros ------------------------------------------------------------*/
 /**
-  * @}
-  */
+ * @}
+ */
 
 #endif /* STM32F405xx || STM32F415xx || STM32F407xx || STM32F417xx ||\
           STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx */
 
-
 /**
-  * @}
-  */
-  
+ * @}
+ */
+
 #ifdef __cplusplus
 }
 #endif

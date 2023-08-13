@@ -34,97 +34,106 @@
 static void SystemClock_Config(void);
 static void Error_Handler(void);
 
+/**
+ * These functions prints to the UART when the button is pressed/released. For
+ * this project is used as debug method.
+ */
 static void ButtonPressedCallback(void);
 static void ButtonReleasedCallback(void);
 
 int main(void) {
 
-  HAL_Init(); // Initialize HAL
+	HAL_Init(); // Initialize HAL
 
-  SystemClock_Config();
+	SystemClock_Config();
 
-  BSP_LED_Init(LED2);
+	/**
+	 * We will blink the BLUE led to detect if the program hangs. This is useful
+	 * for debugging.
+	 */
+	BSP_LED_Init(LED2);
 
-  // Init uart, if fail go to Error Handler.
-  if (!uartInit()) {
-    Error_Handler();
-  }
+	// Init uart, if fail go to Error Handler.
+	if (!uartInit()) {
+		Error_Handler();
+	}
 
-  LCD1602_Init();
+	/**
+	 * Initialize the I2C interface and the LCD1602 display.
+	 */
+	LCD1602_Init();
 
-  // Configure button pin (GPIOA Pin 0) as input with interrupt
-  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
+	// Configure button pin (GPIOA Pin 0) as input.
+	BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
-  // LEDs delays
-  delay_t FSM_delay;
-  delay_t button_pressed_delay;
+	// LEDs delays
+	delay_t FSM_delay;
+	delay_t button_pressed_delay;
 
-  // Init delays
-  delayInit(&FSM_delay, 0);
-  delayInit(&button_pressed_delay, 0);
+	// Init delays
+	delayInit(&FSM_delay, 0);
+	delayInit(&button_pressed_delay, 0);
 
-  debounceFSM_init();
+	debounceFSM_init();
 
-  uint32_t current_frequency = 100;
+	uint32_t current_frequency = 100;
 
-  /**
-   * Set pressed and released callback. These functions will be called when
-   * those events happen.
-   */
-  setPressedCallback(ButtonPressedCallback);
-  setReleasedCallback(ButtonReleasedCallback);
+	/**
+	 * Set pressed and released callback. These functions will be called when
+	 * those events happen.
+	 */
+	setPressedCallback(ButtonPressedCallback);
+	setReleasedCallback(ButtonReleasedCallback);
 
-  // TODO(Nico):
-  __enable_irq();
+	// Initialize on slide algorithm
+	LCD1602_FSM_NextAlgorithm();
 
-  // Initialize on slide algorithm
-  LCD1602_FSM_NextAlgorithm();
+	/**
+	 * We are reading from UART with interrups. So we need this line to be able to
+	 * catch interrupts.
+	 */
+	__enable_irq();
 
-  /* Infinite loop */
-  while (1) {
-    if (delayRead(&FSM_delay)) {
-      delayWrite(&FSM_delay, DEBOUNCE_TIME_MS);
-      debounceFSM_update();
-    }
+	/* Infinite loop */
+	while (1) {
+		if (delayRead(&FSM_delay)) {
+			delayWrite(&FSM_delay, DEBOUNCE_TIME_MS);
+			debounceFSM_update();
+		}
 
-    if (delayRead(&button_pressed_delay)) {
-      // Togle frequency if key pressed.
-      if (readKey()) {
-        if (current_frequency == 100) {
-          current_frequency = 500;
-        } else {
-          current_frequency = 100;
-        }
-        LCD1602_FSM_NextAlgorithm();
-      }
+		if (delayRead(&button_pressed_delay)) {
+			// Togle frequency if key pressed.
+			if (readKey()) {
+				if (current_frequency == 100) {
+					current_frequency = 500;
+				} else {
+					current_frequency = 100;
+				}
+				LCD1602_FSM_NextAlgorithm();
+			}
 
-      BSP_LED_Toggle(LED2);
-      delayWrite(&button_pressed_delay, current_frequency);
+			BSP_LED_Toggle(LED2);
+			delayWrite(&button_pressed_delay, current_frequency);
+		}
 
-      //			LCD1602_AddToBuffer(buffer);
-    }
+		const char *uart_readed_string = readString();
+		if (uart_readed_string != NULL) {
+			LCD1602_AddToBuffer(uart_readed_string);
+		}
 
-    char *uart_readed_string = readString();
-    if (uart_readed_string != NULL) {
-      LCD1602_AddToBuffer(uart_readed_string);
-    }
-
-    LCD1602_FSM_UpdateDisplay();
-
-    //		uartReceiveStringSize(buffer, 8);
-    //		buffer[8] = '\0';
-  }
+		LCD1602_FSM_UpdateDisplay();
+	}
 }
 
 /**
  * The callback should print to the UART the event of pressed and released.
  */
 static void ButtonPressedCallback(void) {
-  uartSendString((uint8_t *)"Button pressed\r\n");
+	uartSendString((uint8_t*) "Button pressed\r\n");
 }
 
 static void ButtonReleasedCallback(void) {
-  uartSendString((uint8_t *)"Button released\r\n");
+	uartSendString((uint8_t*) "Button released\r\n");
 }
 
 /**
@@ -149,48 +158,48 @@ static void ButtonReleasedCallback(void) {
  * @retval None
  */
 static void SystemClock_Config(void) {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
+	RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	RCC_OscInitTypeDef RCC_OscInitStruct;
 
-  /* Enable Power Control clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
+	/* Enable Power Control clock */
+	__HAL_RCC_PWR_CLK_ENABLE();
 
-  /* The voltage scaling allows optimizing the power consumption when the device
-   is clocked below the maximum system frequency, to update the voltage scaling
-   value regarding system frequency refer to product datasheet.  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+	/* The voltage scaling allows optimizing the power consumption when the device
+	 is clocked below the maximum system frequency, to update the voltage scaling
+	 value regarding system frequency refer to product datasheet.  */
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 360;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-    /* Initialization Error */
-    Error_Handler();
-  }
+	/* Enable HSE Oscillator and activate PLL with HSE as source */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLM = 8;
+	RCC_OscInitStruct.PLL.PLLN = 360;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+	RCC_OscInitStruct.PLL.PLLQ = 7;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		/* Initialization Error */
+		Error_Handler();
+	}
 
-  if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
-    /* Initialization Error */
-    Error_Handler();
-  }
+	if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
+		/* Initialization Error */
+		Error_Handler();
+	}
 
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
-   clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
-                                 RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-    /* Initialization Error */
-    Error_Handler();
-  }
+	/* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2
+	 clocks dividers */
+	RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK |
+	RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+		/* Initialization Error */
+		Error_Handler();
+	}
 }
 /**
  * @brief  This function is executed in case of error occurrence.
@@ -198,10 +207,10 @@ static void SystemClock_Config(void) {
  * @retval None
  */
 static void Error_Handler(void) {
-  /* Turn LED2 on */
-  BSP_LED_On(LED2);
-  while (1) {
-  }
+	/* Turn LED2 on */
+	BSP_LED_On(LED2);
+	while (1) {
+	}
 }
 
 #ifdef USE_FULL_ASSERT

@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_i2c_ex.h
-  * @author  MCD Application Team
-  * @brief   Header file of I2C HAL Extension module.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f4xx_hal_i2c_ex.h
+ * @author  MCD Application Team
+ * @brief   Header file of I2C HAL Extension module.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32F4xx_HAL_I2C_EX_H
@@ -112,6 +112,5 @@ HAL_StatusTypeDef HAL_I2CEx_ConfigDigitalFilter(I2C_HandleTypeDef *hi2c, uint32_
 #endif
 
 #endif /* __STM32F4xx_HAL_I2C_EX_H */
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

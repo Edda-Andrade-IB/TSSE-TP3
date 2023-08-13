@@ -2,7 +2,7 @@
  * API_lcd1602_i2c.c
  *
  *  Created on: Aug 9, 2023
- *      Author: nico
+n *      Author: nico
  */
 
 #include "API_lcd1602_i2c.h"
@@ -21,6 +21,8 @@ typedef enum {
   NUM_DISPLAY_ALGORITHMS,
 } display_algorithm;
 
+#define DEFAULT_MODE NO_ANIMATION
+
 typedef bool bool_t;
 
 static I2C_HandleTypeDef hi2c1;
@@ -28,20 +30,57 @@ static display_algorithm current_mode = 0;
 static char DISPLAY_BUFFER[DISPLAY_SIZE];
 static char TEXT_BUFFER[BUFFER_SIZE];
 
+/**
+ * Initialize the I2C using the HAL provided funtions.
+ */
 static void MX_I2C1_Init(void);
 
+/**
+ * Set the cursor position to write.
+ *
+ * Valid numbers:
+ * row = 0 or 1
+ * col = from 0 to 15
+ */
 static void LCD1602_CursorPosition(uint8_t row, uint8_t col);
+
+/**
+ * Send a command. Useful for configuring the peripheric.
+ */
 static void LCD1602_SendCommand(uint8_t command);
+
+/**
+ * Send data through I2C, useful for sending chars.
+ */
 static void LCD1602_SendData(uint8_t data);
 
+/**
+ * Algorithm to print the data on the screen without animation.
+ */
 static void LCD1602_NoAnimationPrint(void);
+
+/**
+ * Algorithm to print the data on the screen with a slide animation.
+ */
 static void LCD1602_SlidePrint(void);
 
+/**
+ * Modify the string shifting all the characters `numElements` to the left.
+ *
+ * For example, Given the string "Hello World!" shifting two spaces will result
+ * on "llo World!"
+ */
 static void ShiftStringLeft(char *string, int numElements);
 
-// Non empty or only spaces string
+/**
+ * This function returns true if any char is present on the screen, false
+ * otherwise.
+ */
 static bool_t StringHasChars(const char *string);
 
+/**
+ * Fill the string (if possible) whith `ch` until reach `up_to` length.
+ */
 static void FillString(char *string, char ch, uint32_t up_to);
 
 void LCD1602_Init(void) {
@@ -68,7 +107,7 @@ void LCD1602_AddToBuffer(const char *pString) {
     strcpy(TEXT_BUFFER, pString);
     break;
   case SLIDE:
-    if(StringHasChars(TEXT_BUFFER)){
+    if (StringHasChars(TEXT_BUFFER)) {
       FillString(TEXT_BUFFER, ' ', strlen(TEXT_BUFFER) + DISPLAY_SIZE / 3);
     } else {
       memset(TEXT_BUFFER, ' ', DISPLAY_SIZE);
@@ -77,7 +116,9 @@ void LCD1602_AddToBuffer(const char *pString) {
     break;
   case NUM_DISPLAY_ALGORITHMS:
   default:
-    // TODO(Nico): Handle this
+    // If we fail getting the current mode, default it to DEFAULT_MODE
+    current_mode = DEFAULT_MODE;
+    LCD1602_AddToBuffer(pString);
     break;
   }
 }
@@ -98,7 +139,9 @@ void LCD1602_FSM_UpdateDisplay(void) {
     break;
   case NUM_DISPLAY_ALGORITHMS:
   default:
-    // TODO(Nico): Handle this
+    // Try not failing, move to default MODE
+    current_mode = DEFAULT_MODE;
+
     break;
   }
 }
@@ -119,7 +162,9 @@ void LCD1602_FSM_NextAlgorithm(void) {
     break;
   case NUM_DISPLAY_ALGORITHMS:
   default:
-    // TODO(Nico): Handle this
+    // Do not fail if invalid mode. Change to default one instead
+    current_mode = DEFAULT_MODE;
+    LCD1602_FSM_NextAlgorithm();
     break;
   }
 
@@ -223,24 +268,16 @@ static void MX_I2C1_Init(void) {
   hi2c1.Init.OwnAddress2 = 0;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK) {
-    // TODO: Handle error
-    // Error_Handler();
-  }
+  assert(HAL_I2C_Init(&hi2c1) == HAL_OK);
 
   /** Configure Analogue filter
    */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK) {
-    // TODO: Handle error
-    // Error_Handler();
-  }
+  assert(HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) ==
+         HAL_OK);
 
   /** Configure Digital filter
    */
-  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK) {
-    // TODO: Handle error
-    // Error_Handler();
-  }
+  assert(HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK);
 }
 
 static void ShiftStringLeft(char *string, int numElements) {

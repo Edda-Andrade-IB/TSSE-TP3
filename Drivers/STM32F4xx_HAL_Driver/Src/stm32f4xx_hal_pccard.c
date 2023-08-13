@@ -1,109 +1,109 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_pccard.c
-  * @author  MCD Application Team
-  * @brief   PCCARD HAL module driver.
-  *          This file provides a generic firmware to drive PCCARD memories mounted 
-  *          as external device.
-  *         
-  @verbatim
+ ******************************************************************************
+ * @file    stm32f4xx_hal_pccard.c
+ * @author  MCD Application Team
+ * @brief   PCCARD HAL module driver.
+ *          This file provides a generic firmware to drive PCCARD memories mounted 
+ *          as external device.
+ *         
+ @verbatim
  ===============================================================================
-                        ##### How to use this driver #####
+ ##### How to use this driver #####
  ===============================================================================  
-   [..]
-     This driver is a generic layered driver which contains a set of APIs used to 
-     control PCCARD/compact flash memories. It uses the FMC/FSMC layer functions 
-     to interface with PCCARD devices. This driver is used for:
-    
-    (+) PCCARD/Compact Flash memory configuration sequence using the function 
-        HAL_PCCARD_Init()/HAL_CF_Init() with control and timing parameters for
-        both common and attribute spaces.
-            
-    (+) Read PCCARD/Compact Flash memory maker and device IDs using the function
-        HAL_PCCARD_Read_ID()/HAL_CF_Read_ID(). The read information is stored in
-        the CompactFlash_ID structure declared by the function caller. 
-        
-    (+) Access PCCARD/Compact Flash memory by read/write operations using the functions
-        HAL_PCCARD_Read_Sector()/ HAL_PCCARD_Write_Sector() - 
-        HAL_CF_Read_Sector()/HAL_CF_Write_Sector(), to read/write sector. 
-        
-    (+) Perform PCCARD/Compact Flash Reset chip operation using the function
-        HAL_PCCARD_Reset()/HAL_CF_Reset.
-        
-    (+) Perform PCCARD/Compact Flash erase sector operation using the function 
-        HAL_PCCARD_Erase_Sector()/HAL_CF_Erase_Sector.
-    
-    (+) Read the PCCARD/Compact Flash status operation using the function
-        HAL_PCCARD_ReadStatus()/HAL_CF_ReadStatus().
-     
-    (+) You can monitor the PCCARD/Compact Flash  device HAL state by calling
-        the function HAL_PCCARD_GetState()/HAL_CF_GetState()
-        
-   [..]
-     (@) This driver is a set of generic APIs which handle standard PCCARD/compact flash 
-         operations. If a PCCARD/Compact Flash device contains different operations 
-         and/or implementations, it should be implemented separately.
-   
-      *** Callback registration ***
-    =============================================
-    [..]
-      The compilation define  USE_HAL_PCCARD_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
+ [..]
+ This driver is a generic layered driver which contains a set of APIs used to 
+ control PCCARD/compact flash memories. It uses the FMC/FSMC layer functions 
+ to interface with PCCARD devices. This driver is used for:
+ 
+ (+) PCCARD/Compact Flash memory configuration sequence using the function 
+ HAL_PCCARD_Init()/HAL_CF_Init() with control and timing parameters for
+ both common and attribute spaces.
+ 
+ (+) Read PCCARD/Compact Flash memory maker and device IDs using the function
+ HAL_PCCARD_Read_ID()/HAL_CF_Read_ID(). The read information is stored in
+ the CompactFlash_ID structure declared by the function caller. 
+ 
+ (+) Access PCCARD/Compact Flash memory by read/write operations using the functions
+ HAL_PCCARD_Read_Sector()/ HAL_PCCARD_Write_Sector() - 
+ HAL_CF_Read_Sector()/HAL_CF_Write_Sector(), to read/write sector. 
+ 
+ (+) Perform PCCARD/Compact Flash Reset chip operation using the function
+ HAL_PCCARD_Reset()/HAL_CF_Reset.
+ 
+ (+) Perform PCCARD/Compact Flash erase sector operation using the function 
+ HAL_PCCARD_Erase_Sector()/HAL_CF_Erase_Sector.
+ 
+ (+) Read the PCCARD/Compact Flash status operation using the function
+ HAL_PCCARD_ReadStatus()/HAL_CF_ReadStatus().
+ 
+ (+) You can monitor the PCCARD/Compact Flash  device HAL state by calling
+ the function HAL_PCCARD_GetState()/HAL_CF_GetState()
+ 
+ [..]
+ (@) This driver is a set of generic APIs which handle standard PCCARD/compact flash 
+ operations. If a PCCARD/Compact Flash device contains different operations 
+ and/or implementations, it should be implemented separately.
+ 
+ *** Callback registration ***
+ =============================================
+ [..]
+ The compilation define  USE_HAL_PCCARD_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
 
-      Use Functions @ref HAL_PCCARD_RegisterCallback() to register a user callback,
-      it allows to register following callbacks:
-        (+) MspInitCallback    : PCCARD MspInit.
-        (+) MspDeInitCallback  : PCCARD MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
+ Use Functions @ref HAL_PCCARD_RegisterCallback() to register a user callback,
+ it allows to register following callbacks:
+ (+) MspInitCallback    : PCCARD MspInit.
+ (+) MspDeInitCallback  : PCCARD MspDeInit.
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
 
-      Use function @ref HAL_PCCARD_UnRegisterCallback() to reset a callback to the default
-      weak (surcharged) function. It allows to reset following callbacks:
-        (+) MspInitCallback    : PCCARD MspInit.
-        (+) MspDeInitCallback  : PCCARD MspDeInit.
-      This function) takes as parameters the HAL peripheral handle and the Callback ID.
+ Use function @ref HAL_PCCARD_UnRegisterCallback() to reset a callback to the default
+ weak (surcharged) function. It allows to reset following callbacks:
+ (+) MspInitCallback    : PCCARD MspInit.
+ (+) MspDeInitCallback  : PCCARD MspDeInit.
+ This function) takes as parameters the HAL peripheral handle and the Callback ID.
 
-      By default, after the @ref HAL_PCCARD_Init and if the state is HAL_PCCARD_STATE_RESET
-      all callbacks are reset to the corresponding legacy weak (surcharged) functions.
-      Exception done for MspInit and MspDeInit callbacks that are respectively
-      reset to the legacy weak (surcharged) functions in the @ref HAL_PCCARD_Init
-      and @ref  HAL_PCCARD_DeInit only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the @ref HAL_PCCARD_Init and @ref HAL_PCCARD_DeInit
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
+ By default, after the @ref HAL_PCCARD_Init and if the state is HAL_PCCARD_STATE_RESET
+ all callbacks are reset to the corresponding legacy weak (surcharged) functions.
+ Exception done for MspInit and MspDeInit callbacks that are respectively
+ reset to the legacy weak (surcharged) functions in the @ref HAL_PCCARD_Init
+ and @ref  HAL_PCCARD_DeInit only when these callbacks are null (not registered beforehand).
+ If not, MspInit or MspDeInit are not null, the @ref HAL_PCCARD_Init and @ref HAL_PCCARD_DeInit
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
 
-      Callbacks can be registered/unregistered in READY state only.
-      Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
-      in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
-      during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using @ref HAL_PCCARD_RegisterCallback before calling @ref HAL_PCCARD_DeInit
-      or @ref HAL_PCCARD_Init function.
+ Callbacks can be registered/unregistered in READY state only.
+ Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
+ in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
+ during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using @ref HAL_PCCARD_RegisterCallback before calling @ref HAL_PCCARD_DeInit
+ or @ref HAL_PCCARD_Init function.
 
-      When The compilation define USE_HAL_PCCARD_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registering feature is not available
-      and weak (surcharged) callbacks are used.
+ When The compilation define USE_HAL_PCCARD_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registering feature is not available
+ and weak (surcharged) callbacks are used.
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */ 
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_PCCARD_MODULE_ENABLED
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) ||\
@@ -932,11 +932,11 @@ HAL_PCCARD_StatusTypeDef HAL_PCCARD_ReadStatus(PCCARD_HandleTypeDef *hpccard)
 #endif /* HAL_PCCARD_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

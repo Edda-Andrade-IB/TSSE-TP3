@@ -1,126 +1,126 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_can.c
-  * @author  MCD Application Team
-  * @brief   This file provides firmware functions to manage the following 
-  *          functionalities of the Controller Area Network (CAN) peripheral:
-  *           + Initialization and de-initialization functions 
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Error functions
-  *
-  @verbatim
-  ==============================================================================
-                                 ##### User NOTE #####
-  ==============================================================================
-    [..]
-      (#) This HAL CAN driver is deprecated, it contains some CAN Tx/Rx FIFO management limitations.
-          Another HAL CAN driver version has been designed with new API's, to fix these limitations.
+ ******************************************************************************
+ * @file    stm32f4xx_hal_can.c
+ * @author  MCD Application Team
+ * @brief   This file provides firmware functions to manage the following 
+ *          functionalities of the Controller Area Network (CAN) peripheral:
+ *           + Initialization and de-initialization functions 
+ *           + IO operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State and Error functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### User NOTE #####
+ ==============================================================================
+ [..]
+ (#) This HAL CAN driver is deprecated, it contains some CAN Tx/Rx FIFO management limitations.
+ Another HAL CAN driver version has been designed with new API's, to fix these limitations.
 
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]            
-      (#) Enable the CAN controller interface clock using 
-          __HAL_RCC_CAN1_CLK_ENABLE() for CAN1, __HAL_RCC_CAN2_CLK_ENABLE() for CAN2
-         and __HAL_RCC_CAN3_CLK_ENABLE() for CAN3
-      -@- In case you are using CAN2 only, you have to enable the CAN1 clock.
-       
-      (#) CAN pins configuration
-        (++) Enable the clock for the CAN GPIOs using the following function:
-             __GPIOx_CLK_ENABLE()   
-        (++) Connect and configure the involved CAN pins to AF9 using the 
-              following function HAL_GPIO_Init() 
-              
-      (#) Initialize and configure the CAN using CAN_Init() function.   
-                 
-      (#) Transmit the desired CAN frame using HAL_CAN_Transmit() function.
-
-      (#) Or transmit the desired CAN frame using HAL_CAN_Transmit_IT() function.
-           
-      (#) Receive a CAN frame using HAL_CAN_Receive() function.
-
-      (#) Or receive a CAN frame using HAL_CAN_Receive_IT() function.
-
-     *** Polling mode IO operation ***
-     =================================
-     [..]    
-       (+) Start the CAN peripheral transmission and wait the end of this operation 
-           using HAL_CAN_Transmit(), at this stage user can specify the value of timeout
-           according to his end application
-       (+) Start the CAN peripheral reception and wait the end of this operation 
-           using HAL_CAN_Receive(), at this stage user can specify the value of timeout
-           according to his end application 
-       
-     *** Interrupt mode IO operation ***    
-     ===================================
-     [..]    
-       (+) Start the CAN peripheral transmission using HAL_CAN_Transmit_IT()
-       (+) Start the CAN peripheral reception using HAL_CAN_Receive_IT()         
-       (+) Use HAL_CAN_IRQHandler() called under the used CAN Interrupt subroutine
-       (+) At CAN end of transmission HAL_CAN_TxCpltCallback() function is executed and user can 
-            add his own code by customization of function pointer HAL_CAN_TxCpltCallback 
-       (+) In case of CAN Error, HAL_CAN_ErrorCallback() function is executed and user can 
-            add his own code by customization of function pointer HAL_CAN_ErrorCallback
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]            
+ (#) Enable the CAN controller interface clock using 
+ __HAL_RCC_CAN1_CLK_ENABLE() for CAN1, __HAL_RCC_CAN2_CLK_ENABLE() for CAN2
+ and __HAL_RCC_CAN3_CLK_ENABLE() for CAN3
+ -@- In case you are using CAN2 only, you have to enable the CAN1 clock.
  
-     *** CAN HAL driver macros list ***
-     ============================================= 
-     [..]
-       Below the list of most used macros in CAN HAL driver.
-       
-      (+) __HAL_CAN_ENABLE_IT: Enable the specified CAN interrupts
-      (+) __HAL_CAN_DISABLE_IT: Disable the specified CAN interrupts
-      (+) __HAL_CAN_GET_IT_SOURCE: Check if the specified CAN interrupt source is enabled or disabled
-      (+) __HAL_CAN_CLEAR_FLAG: Clear the CAN's pending flags
-      (+) __HAL_CAN_GET_FLAG: Get the selected CAN's flag status
+ (#) CAN pins configuration
+ (++) Enable the clock for the CAN GPIOs using the following function:
+ __GPIOx_CLK_ENABLE()   
+ (++) Connect and configure the involved CAN pins to AF9 using the 
+ following function HAL_GPIO_Init() 
+ 
+ (#) Initialize and configure the CAN using CAN_Init() function.   
+ 
+ (#) Transmit the desired CAN frame using HAL_CAN_Transmit() function.
 
-     [..]
-      (@) You can refer to the CAN Legacy HAL driver header file for more useful macros
+ (#) Or transmit the desired CAN frame using HAL_CAN_Transmit_IT() function.
+ 
+ (#) Receive a CAN frame using HAL_CAN_Receive() function.
 
-  @endverbatim
-           
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+ (#) Or receive a CAN frame using HAL_CAN_Receive_IT() function.
+
+ *** Polling mode IO operation ***
+ =================================
+ [..]    
+ (+) Start the CAN peripheral transmission and wait the end of this operation 
+ using HAL_CAN_Transmit(), at this stage user can specify the value of timeout
+ according to his end application
+ (+) Start the CAN peripheral reception and wait the end of this operation 
+ using HAL_CAN_Receive(), at this stage user can specify the value of timeout
+ according to his end application 
+ 
+ *** Interrupt mode IO operation ***    
+ ===================================
+ [..]    
+ (+) Start the CAN peripheral transmission using HAL_CAN_Transmit_IT()
+ (+) Start the CAN peripheral reception using HAL_CAN_Receive_IT()         
+ (+) Use HAL_CAN_IRQHandler() called under the used CAN Interrupt subroutine
+ (+) At CAN end of transmission HAL_CAN_TxCpltCallback() function is executed and user can 
+ add his own code by customization of function pointer HAL_CAN_TxCpltCallback 
+ (+) In case of CAN Error, HAL_CAN_ErrorCallback() function is executed and user can 
+ add his own code by customization of function pointer HAL_CAN_ErrorCallback
+ 
+ *** CAN HAL driver macros list ***
+ ============================================= 
+ [..]
+ Below the list of most used macros in CAN HAL driver.
+ 
+ (+) __HAL_CAN_ENABLE_IT: Enable the specified CAN interrupts
+ (+) __HAL_CAN_DISABLE_IT: Disable the specified CAN interrupts
+ (+) __HAL_CAN_GET_IT_SOURCE: Check if the specified CAN interrupt source is enabled or disabled
+ (+) __HAL_CAN_CLEAR_FLAG: Clear the CAN's pending flags
+ (+) __HAL_CAN_GET_FLAG: Get the selected CAN's flag status
+
+ [..]
+ (@) You can refer to the CAN Legacy HAL driver header file for more useful macros
+
+ @endverbatim
+ 
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of STMicroelectronics nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup CAN CAN
-  * @brief CAN driver modules
-  * @{
-  */ 
-  
+ * @brief CAN driver modules
+ * @{
+ */
+
 #ifdef HAL_CAN_LEGACY_MODULE_ENABLED  
 
 #if defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx) ||\
@@ -1687,11 +1687,11 @@ static HAL_StatusTypeDef CAN_Receive_IT(CAN_HandleTypeDef* hcan, uint8_t FIFONum
 
 #endif /* HAL_CAN_LEGACY_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

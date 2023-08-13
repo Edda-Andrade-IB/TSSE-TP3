@@ -1,105 +1,105 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_iwdg.c
-  * @author  MCD Application Team
-  * @brief   IWDG HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Independent Watchdog (IWDG) peripheral:
-  *           + Initialization and Start functions
-  *           + IO operation functions
-  *
-  @verbatim
-  ==============================================================================
-                    ##### IWDG Generic features #####
-  ==============================================================================
-  [..]
-    (+) The IWDG can be started by either software or hardware (configurable
-        through option byte).
+ ******************************************************************************
+ * @file    stm32f4xx_hal_iwdg.c
+ * @author  MCD Application Team
+ * @brief   IWDG HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the Independent Watchdog (IWDG) peripheral:
+ *           + Initialization and Start functions
+ *           + IO operation functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### IWDG Generic features #####
+ ==============================================================================
+ [..]
+ (+) The IWDG can be started by either software or hardware (configurable
+ through option byte).
 
-    (+) The IWDG is clocked by the Low-Speed Internal clock (LSI) and thus stays
-        active even if the main clock fails.
+ (+) The IWDG is clocked by the Low-Speed Internal clock (LSI) and thus stays
+ active even if the main clock fails.
 
-    (+) Once the IWDG is started, the LSI is forced ON and both cannot be
-        disabled. The counter starts counting down from the reset value (0xFFF).
-        When it reaches the end of count value (0x000) a reset signal is
-        generated (IWDG reset).
+ (+) Once the IWDG is started, the LSI is forced ON and both cannot be
+ disabled. The counter starts counting down from the reset value (0xFFF).
+ When it reaches the end of count value (0x000) a reset signal is
+ generated (IWDG reset).
 
-    (+) Whenever the key value 0x0000 AAAA is written in the IWDG_KR register,
-        the IWDG_RLR value is reloaded into the counter and the watchdog reset
-        is prevented.
+ (+) Whenever the key value 0x0000 AAAA is written in the IWDG_KR register,
+ the IWDG_RLR value is reloaded into the counter and the watchdog reset
+ is prevented.
 
-    (+) The IWDG is implemented in the VDD voltage domain that is still functional
-        in STOP and STANDBY mode (IWDG reset can wake up the CPU from STANDBY).
-        IWDGRST flag in RCC_CSR register can be used to inform when an IWDG
-        reset occurs.
+ (+) The IWDG is implemented in the VDD voltage domain that is still functional
+ in STOP and STANDBY mode (IWDG reset can wake up the CPU from STANDBY).
+ IWDGRST flag in RCC_CSR register can be used to inform when an IWDG
+ reset occurs.
 
-    (+) Debug mode: When the microcontroller enters debug mode (core halted),
-        the IWDG counter either continues to work normally or stops, depending
-        on DBG_IWDG_STOP configuration bit in DBG module, accessible through
-        __HAL_DBGMCU_FREEZE_IWDG() and __HAL_DBGMCU_UNFREEZE_IWDG() macros.
+ (+) Debug mode: When the microcontroller enters debug mode (core halted),
+ the IWDG counter either continues to work normally or stops, depending
+ on DBG_IWDG_STOP configuration bit in DBG module, accessible through
+ __HAL_DBGMCU_FREEZE_IWDG() and __HAL_DBGMCU_UNFREEZE_IWDG() macros.
 
-    [..] Min-max timeout value @32KHz (LSI): ~125us / ~32.7s
-         The IWDG timeout may vary due to LSI clock frequency dispersion.
-         STM32F4xx devices provide the capability to measure the LSI clock
-         frequency (LSI clock is internally connected to TIM5 CH4 input capture).
-         The measured value can be used to have an IWDG timeout with an
-         acceptable accuracy.
+ [..] Min-max timeout value @32KHz (LSI): ~125us / ~32.7s
+ The IWDG timeout may vary due to LSI clock frequency dispersion.
+ STM32F4xx devices provide the capability to measure the LSI clock
+ frequency (LSI clock is internally connected to TIM5 CH4 input capture).
+ The measured value can be used to have an IWDG timeout with an
+ acceptable accuracy.
 
-    [..] Default timeout value (necessary for IWDG_SR status register update):
-         Constant LSI_VALUE is defined based on the nominal LSI clock frequency.
-         This frequency being subject to variations as mentioned above, the
-         default timeout value (defined through constant HAL_IWDG_DEFAULT_TIMEOUT
-         below) may become too short or too long.
-         In such cases, this default timeout value can be tuned by redefining
-         the constant LSI_VALUE at user-application level (based, for instance,
-         on the measured LSI clock frequency as explained above).
+ [..] Default timeout value (necessary for IWDG_SR status register update):
+ Constant LSI_VALUE is defined based on the nominal LSI clock frequency.
+ This frequency being subject to variations as mentioned above, the
+ default timeout value (defined through constant HAL_IWDG_DEFAULT_TIMEOUT
+ below) may become too short or too long.
+ In such cases, this default timeout value can be tuned by redefining
+ the constant LSI_VALUE at user-application level (based, for instance,
+ on the measured LSI clock frequency as explained above).
 
-                     ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    (#) Use IWDG using HAL_IWDG_Init() function to :
-      (++) Enable instance by writing Start keyword in IWDG_KEY register. LSI
-           clock is forced ON and IWDG counter starts counting down.
-      (++) Enable write access to configuration registers:
-          IWDG_PR and IWDG_RLR.
-      (++) Configure the IWDG prescaler and counter reload value. This reload
-           value will be loaded in the IWDG counter each time the watchdog is
-           reloaded, then the IWDG will start counting down from this value.
-      (++) Wait for status flags to be reset.
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ (#) Use IWDG using HAL_IWDG_Init() function to :
+ (++) Enable instance by writing Start keyword in IWDG_KEY register. LSI
+ clock is forced ON and IWDG counter starts counting down.
+ (++) Enable write access to configuration registers:
+ IWDG_PR and IWDG_RLR.
+ (++) Configure the IWDG prescaler and counter reload value. This reload
+ value will be loaded in the IWDG counter each time the watchdog is
+ reloaded, then the IWDG will start counting down from this value.
+ (++) Wait for status flags to be reset.
 
-    (#) Then the application program must refresh the IWDG counter at regular
-        intervals during normal operation to prevent an MCU reset, using
-        HAL_IWDG_Refresh() function.
+ (#) Then the application program must refresh the IWDG counter at regular
+ intervals during normal operation to prevent an MCU reset, using
+ HAL_IWDG_Refresh() function.
 
-     *** IWDG HAL driver macros list ***
-     ====================================
-     [..]
-       Below the list of most used macros in IWDG HAL driver:
-      (+) __HAL_IWDG_START: Enable the IWDG peripheral
-      (+) __HAL_IWDG_RELOAD_COUNTER: Reloads IWDG counter with value defined in
-          the reload register
+ *** IWDG HAL driver macros list ***
+ ====================================
+ [..]
+ Below the list of most used macros in IWDG HAL driver:
+ (+) __HAL_IWDG_START: Enable the IWDG peripheral
+ (+) __HAL_IWDG_RELOAD_COUNTER: Reloads IWDG counter with value defined in
+ the reload register
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_IWDG_MODULE_ENABLED
 /** @addtogroup IWDG
@@ -255,11 +255,11 @@ HAL_StatusTypeDef HAL_IWDG_Refresh(IWDG_HandleTypeDef *hiwdg)
 
 #endif /* HAL_IWDG_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

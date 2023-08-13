@@ -1,164 +1,164 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_dsi.c
-  * @author  MCD Application Team
-  * @brief   DSI HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the DSI peripheral:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Errors functions
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    The DSI HAL driver can be used as follows:
+ ******************************************************************************
+ * @file    stm32f4xx_hal_dsi.c
+ * @author  MCD Application Team
+ * @brief   DSI HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the DSI peripheral:
+ *           + Initialization and de-initialization functions
+ *           + IO operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State and Errors functions
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ The DSI HAL driver can be used as follows:
 
-    (#) Declare a DSI_HandleTypeDef handle structure, for example: DSI_HandleTypeDef  hdsi;
+ (#) Declare a DSI_HandleTypeDef handle structure, for example: DSI_HandleTypeDef  hdsi;
 
-    (#) Initialize the DSI low level resources by implementing the HAL_DSI_MspInit() API:
-        (##) Enable the DSI interface clock
-        (##) NVIC configuration if you need to use interrupt process
-            (+++) Configure the DSI interrupt priority
-            (+++) Enable the NVIC DSI IRQ Channel
+ (#) Initialize the DSI low level resources by implementing the HAL_DSI_MspInit() API:
+ (##) Enable the DSI interface clock
+ (##) NVIC configuration if you need to use interrupt process
+ (+++) Configure the DSI interrupt priority
+ (+++) Enable the NVIC DSI IRQ Channel
 
-    (#) Initialize the DSI Host peripheral, the required PLL parameters, number of lances and
-        TX Escape clock divider by calling the HAL_DSI_Init() API which calls HAL_DSI_MspInit().
+ (#) Initialize the DSI Host peripheral, the required PLL parameters, number of lances and
+ TX Escape clock divider by calling the HAL_DSI_Init() API which calls HAL_DSI_MspInit().
 
-    *** Configuration ***
-    =========================
-    [..]
-    (#) Use HAL_DSI_ConfigAdaptedCommandMode() function to configure the DSI host in adapted
-        command mode.
+ *** Configuration ***
+ =========================
+ [..]
+ (#) Use HAL_DSI_ConfigAdaptedCommandMode() function to configure the DSI host in adapted
+ command mode.
 
-    (#) When operating in video mode , use HAL_DSI_ConfigVideoMode() to configure the DSI host.
+ (#) When operating in video mode , use HAL_DSI_ConfigVideoMode() to configure the DSI host.
 
-    (#) Function HAL_DSI_ConfigCommand() is used to configure the DSI commands behavior in low power mode.
+ (#) Function HAL_DSI_ConfigCommand() is used to configure the DSI commands behavior in low power mode.
 
-    (#) To configure the DSI PHY timings parameters, use function HAL_DSI_ConfigPhyTimer().
+ (#) To configure the DSI PHY timings parameters, use function HAL_DSI_ConfigPhyTimer().
 
-    (#) The DSI Host can be started/stopped using respectively functions HAL_DSI_Start() and HAL_DSI_Stop().
-        Functions HAL_DSI_ShortWrite(), HAL_DSI_LongWrite() and HAL_DSI_Read() allows respectively
-        to write DSI short packets, long packets and to read DSI packets.
+ (#) The DSI Host can be started/stopped using respectively functions HAL_DSI_Start() and HAL_DSI_Stop().
+ Functions HAL_DSI_ShortWrite(), HAL_DSI_LongWrite() and HAL_DSI_Read() allows respectively
+ to write DSI short packets, long packets and to read DSI packets.
 
-    (#) The DSI Host Offers two Low power modes :
-        (++) Low Power Mode on data lanes only: Only DSI data lanes are shut down.
-            It is possible to enter/exit from this mode using respectively functions HAL_DSI_EnterULPMData()
-            and HAL_DSI_ExitULPMData()
+ (#) The DSI Host Offers two Low power modes :
+ (++) Low Power Mode on data lanes only: Only DSI data lanes are shut down.
+ It is possible to enter/exit from this mode using respectively functions HAL_DSI_EnterULPMData()
+ and HAL_DSI_ExitULPMData()
 
-        (++) Low Power Mode on data and clock lanes : All DSI lanes are shut down including data and clock lanes.
-            It is possible to enter/exit from this mode using respectively functions HAL_DSI_EnterULPM()
-            and HAL_DSI_ExitULPM()
+ (++) Low Power Mode on data and clock lanes : All DSI lanes are shut down including data and clock lanes.
+ It is possible to enter/exit from this mode using respectively functions HAL_DSI_EnterULPM()
+ and HAL_DSI_ExitULPM()
 
-    (#) To control DSI state you can use the following function: HAL_DSI_GetState()
+ (#) To control DSI state you can use the following function: HAL_DSI_GetState()
 
-    *** Error management ***
-    ========================
-    [..]
-    (#) User can select the DSI errors to be reported/monitored using function HAL_DSI_ConfigErrorMonitor()
-        When an error occurs, the callback HAL_DSI_ErrorCallback() is asserted and then user can retrieve
-        the error code by calling function HAL_DSI_GetError()
+ *** Error management ***
+ ========================
+ [..]
+ (#) User can select the DSI errors to be reported/monitored using function HAL_DSI_ConfigErrorMonitor()
+ When an error occurs, the callback HAL_DSI_ErrorCallback() is asserted and then user can retrieve
+ the error code by calling function HAL_DSI_GetError()
 
-    *** DSI HAL driver macros list ***
-    =============================================
-    [..]
-       Below the list of most used macros in DSI HAL driver.
+ *** DSI HAL driver macros list ***
+ =============================================
+ [..]
+ Below the list of most used macros in DSI HAL driver.
 
-      (+) __HAL_DSI_ENABLE: Enable the DSI Host.
-      (+) __HAL_DSI_DISABLE: Disable the DSI Host.
-      (+) __HAL_DSI_WRAPPER_ENABLE: Enables the DSI wrapper.
-      (+) __HAL_DSI_WRAPPER_DISABLE: Disable the DSI wrapper.
-      (+) __HAL_DSI_PLL_ENABLE: Enables the DSI PLL.
-      (+) __HAL_DSI_PLL_DISABLE: Disables the DSI PLL.
-      (+) __HAL_DSI_REG_ENABLE: Enables the DSI regulator.
-      (+) __HAL_DSI_REG_DISABLE: Disables the DSI regulator.
-      (+) __HAL_DSI_GET_FLAG: Get the DSI pending flags.
-      (+) __HAL_DSI_CLEAR_FLAG: Clears the DSI pending flags.
-      (+) __HAL_DSI_ENABLE_IT: Enables the specified DSI interrupts.
-      (+) __HAL_DSI_DISABLE_IT: Disables the specified DSI interrupts.
-      (+) __HAL_DSI_GET_IT_SOURCE: Checks whether the specified DSI interrupt source is enabled or not.
+ (+) __HAL_DSI_ENABLE: Enable the DSI Host.
+ (+) __HAL_DSI_DISABLE: Disable the DSI Host.
+ (+) __HAL_DSI_WRAPPER_ENABLE: Enables the DSI wrapper.
+ (+) __HAL_DSI_WRAPPER_DISABLE: Disable the DSI wrapper.
+ (+) __HAL_DSI_PLL_ENABLE: Enables the DSI PLL.
+ (+) __HAL_DSI_PLL_DISABLE: Disables the DSI PLL.
+ (+) __HAL_DSI_REG_ENABLE: Enables the DSI regulator.
+ (+) __HAL_DSI_REG_DISABLE: Disables the DSI regulator.
+ (+) __HAL_DSI_GET_FLAG: Get the DSI pending flags.
+ (+) __HAL_DSI_CLEAR_FLAG: Clears the DSI pending flags.
+ (+) __HAL_DSI_ENABLE_IT: Enables the specified DSI interrupts.
+ (+) __HAL_DSI_DISABLE_IT: Disables the specified DSI interrupts.
+ (+) __HAL_DSI_GET_IT_SOURCE: Checks whether the specified DSI interrupt source is enabled or not.
 
-    [..]
-      (@) You can refer to the DSI HAL driver header file for more useful macros
+ [..]
+ (@) You can refer to the DSI HAL driver header file for more useful macros
 
-    *** Callback registration ***
-    =============================================
-    [..]
-    The compilation define  USE_HAL_DSI_REGISTER_CALLBACKS when set to 1
-    allows the user to configure dynamically the driver callbacks.
-    Use Function HAL_DSI_RegisterCallback() to register a callback.
+ *** Callback registration ***
+ =============================================
+ [..]
+ The compilation define  USE_HAL_DSI_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
+ Use Function HAL_DSI_RegisterCallback() to register a callback.
 
-    [..]
-    Function HAL_DSI_RegisterCallback() allows to register following callbacks:
-      (+) TearingEffectCallback : DSI Tearing Effect Callback.
-      (+) EndOfRefreshCallback  : DSI End Of Refresh Callback.
-      (+) ErrorCallback         : DSI Error Callback
-      (+) MspInitCallback       : DSI MspInit.
-      (+) MspDeInitCallback     : DSI MspDeInit.
-    [..]
-    This function takes as parameters the HAL peripheral handle, the callback ID
-    and a pointer to the user callback function.
+ [..]
+ Function HAL_DSI_RegisterCallback() allows to register following callbacks:
+ (+) TearingEffectCallback : DSI Tearing Effect Callback.
+ (+) EndOfRefreshCallback  : DSI End Of Refresh Callback.
+ (+) ErrorCallback         : DSI Error Callback
+ (+) MspInitCallback       : DSI MspInit.
+ (+) MspDeInitCallback     : DSI MspDeInit.
+ [..]
+ This function takes as parameters the HAL peripheral handle, the callback ID
+ and a pointer to the user callback function.
 
-    [..]
-    Use function HAL_DSI_UnRegisterCallback() to reset a callback to the default
-    weak function.
-    HAL_DSI_UnRegisterCallback takes as parameters the HAL peripheral handle,
-    and the callback ID.
-    [..]
-    This function allows to reset following callbacks:
-      (+) TearingEffectCallback : DSI Tearing Effect Callback.
-      (+) EndOfRefreshCallback  : DSI End Of Refresh Callback.
-      (+) ErrorCallback         : DSI Error Callback
-      (+) MspInitCallback       : DSI MspInit.
-      (+) MspDeInitCallback     : DSI MspDeInit.
+ [..]
+ Use function HAL_DSI_UnRegisterCallback() to reset a callback to the default
+ weak function.
+ HAL_DSI_UnRegisterCallback takes as parameters the HAL peripheral handle,
+ and the callback ID.
+ [..]
+ This function allows to reset following callbacks:
+ (+) TearingEffectCallback : DSI Tearing Effect Callback.
+ (+) EndOfRefreshCallback  : DSI End Of Refresh Callback.
+ (+) ErrorCallback         : DSI Error Callback
+ (+) MspInitCallback       : DSI MspInit.
+ (+) MspDeInitCallback     : DSI MspDeInit.
 
-    [..]
-    By default, after the HAL_DSI_Init and when the state is HAL_DSI_STATE_RESET
-    all callbacks are set to the corresponding weak functions:
-    examples HAL_DSI_TearingEffectCallback(), HAL_DSI_EndOfRefreshCallback().
-    Exception done for MspInit and MspDeInit functions that are respectively
-    reset to the legacy weak (surcharged) functions in the HAL_DSI_Init()
-    and HAL_DSI_DeInit() only when these callbacks are null (not registered beforehand).
-    If not, MspInit or MspDeInit are not null, the HAL_DSI_Init() and HAL_DSI_DeInit()
-    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
+ [..]
+ By default, after the HAL_DSI_Init and when the state is HAL_DSI_STATE_RESET
+ all callbacks are set to the corresponding weak functions:
+ examples HAL_DSI_TearingEffectCallback(), HAL_DSI_EndOfRefreshCallback().
+ Exception done for MspInit and MspDeInit functions that are respectively
+ reset to the legacy weak (surcharged) functions in the HAL_DSI_Init()
+ and HAL_DSI_DeInit() only when these callbacks are null (not registered beforehand).
+ If not, MspInit or MspDeInit are not null, the HAL_DSI_Init() and HAL_DSI_DeInit()
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
 
-    [..]
-    Callbacks can be registered/unregistered in HAL_DSI_STATE_READY state only.
-    Exception done MspInit/MspDeInit that can be registered/unregistered
-    in HAL_DSI_STATE_READY or HAL_DSI_STATE_RESET state,
-    thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-    In that case first register the MspInit/MspDeInit user callbacks
-    using HAL_DSI_RegisterCallback() before calling HAL_DSI_DeInit()
-    or HAL_DSI_Init() function.
+ [..]
+ Callbacks can be registered/unregistered in HAL_DSI_STATE_READY state only.
+ Exception done MspInit/MspDeInit that can be registered/unregistered
+ in HAL_DSI_STATE_READY or HAL_DSI_STATE_RESET state,
+ thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using HAL_DSI_RegisterCallback() before calling HAL_DSI_DeInit()
+ or HAL_DSI_Init() function.
 
-    [..]
-    When The compilation define USE_HAL_DSI_REGISTER_CALLBACKS is set to 0 or
-    not defined, the callback registration feature is not available and all callbacks
-    are set to the corresponding weak functions.
+ [..]
+ When The compilation define USE_HAL_DSI_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registration feature is not available and all callbacks
+ are set to the corresponding weak functions.
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_DSI_MODULE_ENABLED
 
@@ -2725,7 +2725,7 @@ uint32_t HAL_DSI_GetError(DSI_HandleTypeDef *hdsi)
 #endif /* HAL_DSI_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

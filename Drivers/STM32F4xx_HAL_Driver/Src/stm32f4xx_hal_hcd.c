@@ -1,64 +1,64 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_hcd.c
-  * @author  MCD Application Team
-  * @brief   HCD HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    (#)Declare a HCD_HandleTypeDef handle structure, for example:
-       HCD_HandleTypeDef  hhcd;
+ ******************************************************************************
+ * @file    stm32f4xx_hal_hcd.c
+ * @author  MCD Application Team
+ * @brief   HCD HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the USB Peripheral Controller:
+ *           + Initialization and de-initialization functions
+ *           + IO operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ (#)Declare a HCD_HandleTypeDef handle structure, for example:
+ HCD_HandleTypeDef  hhcd;
 
-    (#)Fill parameters of Init structure in HCD handle
+ (#)Fill parameters of Init structure in HCD handle
 
-    (#)Call HAL_HCD_Init() API to initialize the HCD peripheral (Core, Host core, ...)
+ (#)Call HAL_HCD_Init() API to initialize the HCD peripheral (Core, Host core, ...)
 
-    (#)Initialize the HCD low level resources through the HAL_HCD_MspInit() API:
-        (##) Enable the HCD/USB Low Level interface clock using the following macros
-             (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-             (+++) __HAL_RCC_USB_OTG_HS_CLK_ENABLE(); (For High Speed Mode)
-             (+++) __HAL_RCC_USB_OTG_HS_ULPI_CLK_ENABLE(); (For High Speed Mode)
+ (#)Initialize the HCD low level resources through the HAL_HCD_MspInit() API:
+ (##) Enable the HCD/USB Low Level interface clock using the following macros
+ (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
+ (+++) __HAL_RCC_USB_OTG_HS_CLK_ENABLE(); (For High Speed Mode)
+ (+++) __HAL_RCC_USB_OTG_HS_ULPI_CLK_ENABLE(); (For High Speed Mode)
 
-        (##) Initialize the related GPIO clocks
-        (##) Configure HCD pin-out
-        (##) Configure HCD NVIC interrupt
+ (##) Initialize the related GPIO clocks
+ (##) Configure HCD pin-out
+ (##) Configure HCD NVIC interrupt
 
-    (#)Associate the Upper USB Host stack to the HAL HCD Driver:
-        (##) hhcd.pData = phost;
+ (#)Associate the Upper USB Host stack to the HAL HCD Driver:
+ (##) hhcd.pData = phost;
 
-    (#)Enable HCD transmission and reception:
-        (##) HAL_HCD_Start();
+ (#)Enable HCD transmission and reception:
+ (##) HAL_HCD_Start();
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_HCD_MODULE_ENABLED
 #if defined (USB_OTG_FS) || defined (USB_OTG_HS)
@@ -1737,11 +1737,11 @@ static void HCD_Port_IRQHandler(HCD_HandleTypeDef *hhcd)
 #endif /* HAL_HCD_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

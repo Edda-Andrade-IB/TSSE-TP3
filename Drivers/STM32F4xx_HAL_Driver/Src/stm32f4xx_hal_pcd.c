@@ -1,70 +1,70 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_pcd.c
-  * @author  MCD Application Team
-  * @brief   PCD HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      The PCD HAL driver can be used as follows:
+ ******************************************************************************
+ * @file    stm32f4xx_hal_pcd.c
+ * @author  MCD Application Team
+ * @brief   PCD HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the USB Peripheral Controller:
+ *           + Initialization and de-initialization functions
+ *           + IO operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ The PCD HAL driver can be used as follows:
 
-     (#) Declare a PCD_HandleTypeDef handle structure, for example:
-         PCD_HandleTypeDef  hpcd;
+ (#) Declare a PCD_HandleTypeDef handle structure, for example:
+ PCD_HandleTypeDef  hpcd;
 
-     (#) Fill parameters of Init structure in HCD handle
+ (#) Fill parameters of Init structure in HCD handle
 
-     (#) Call HAL_PCD_Init() API to initialize the PCD peripheral (Core, Device core, ...)
+ (#) Call HAL_PCD_Init() API to initialize the PCD peripheral (Core, Device core, ...)
 
-     (#) Initialize the PCD low level resources through the HAL_PCD_MspInit() API:
-         (##) Enable the PCD/USB Low Level interface clock using
-              (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-              (+++) __HAL_RCC_USB_OTG_HS_CLK_ENABLE(); (For High Speed Mode)
+ (#) Initialize the PCD low level resources through the HAL_PCD_MspInit() API:
+ (##) Enable the PCD/USB Low Level interface clock using
+ (+++) __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
+ (+++) __HAL_RCC_USB_OTG_HS_CLK_ENABLE(); (For High Speed Mode)
 
-         (##) Initialize the related GPIO clocks
-         (##) Configure PCD pin-out
-         (##) Configure PCD NVIC interrupt
+ (##) Initialize the related GPIO clocks
+ (##) Configure PCD pin-out
+ (##) Configure PCD NVIC interrupt
 
-     (#)Associate the Upper USB device stack to the HAL PCD Driver:
-         (##) hpcd.pData = pdev;
+ (#)Associate the Upper USB device stack to the HAL PCD Driver:
+ (##) hpcd.pData = pdev;
 
-     (#)Enable PCD transmission and reception:
-         (##) HAL_PCD_Start();
+ (#)Enable PCD transmission and reception:
+ (##) HAL_PCD_Start();
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup PCD PCD
-  * @brief PCD HAL module driver
-  * @{
-  */
+ * @brief PCD HAL module driver
+ * @{
+ */
 
 #ifdef HAL_PCD_MODULE_ENABLED
 
@@ -2248,11 +2248,11 @@ static HAL_StatusTypeDef PCD_EP_OutSetupPacket_int(PCD_HandleTypeDef *hpcd, uint
 #endif /* HAL_PCD_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

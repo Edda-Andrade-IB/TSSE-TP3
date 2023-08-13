@@ -1,214 +1,214 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_irda.c
-  * @author  MCD Application Team
-  * @brief   IRDA HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the IrDA SIR ENDEC block (IrDA):
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State and Errors functions
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    The IRDA HAL driver can be used as follows:
+ ******************************************************************************
+ * @file    stm32f4xx_hal_irda.c
+ * @author  MCD Application Team
+ * @brief   IRDA HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the IrDA SIR ENDEC block (IrDA):
+ *           + Initialization and de-initialization functions
+ *           + IO operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State and Errors functions
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ The IRDA HAL driver can be used as follows:
 
-    (#) Declare a IRDA_HandleTypeDef handle structure (eg. IRDA_HandleTypeDef hirda).
-    (#) Initialize the IRDA low level resources by implementing the HAL_IRDA_MspInit() API:
-        (##) Enable the USARTx interface clock.
-        (##) IRDA pins configuration:
-            (+++) Enable the clock for the IRDA GPIOs.
-            (+++) Configure IRDA pins as alternate function pull-up.
-        (##) NVIC configuration if you need to use interrupt process (HAL_IRDA_Transmit_IT()
-             and HAL_IRDA_Receive_IT() APIs):
-            (+++) Configure the USARTx interrupt priority.
-            (+++) Enable the NVIC USART IRQ handle.
-        (##) DMA Configuration if you need to use DMA process (HAL_IRDA_Transmit_DMA()
-             and HAL_IRDA_Receive_DMA() APIs):
-            (+++) Declare a DMA handle structure for the Tx/Rx stream.
-            (+++) Enable the DMAx interface clock.
-            (+++) Configure the declared DMA handle structure with the required Tx/Rx parameters.
-            (+++) Configure the DMA Tx/Rx stream.
-            (+++) Associate the initialized DMA handle to the IRDA DMA Tx/Rx handle.
-            (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on the DMA Tx/Rx stream.
-            (+++) Configure the IRDAx interrupt priority and enable the NVIC USART IRQ handle
-                  (used for last byte sending completion detection in DMA non circular mode)
+ (#) Declare a IRDA_HandleTypeDef handle structure (eg. IRDA_HandleTypeDef hirda).
+ (#) Initialize the IRDA low level resources by implementing the HAL_IRDA_MspInit() API:
+ (##) Enable the USARTx interface clock.
+ (##) IRDA pins configuration:
+ (+++) Enable the clock for the IRDA GPIOs.
+ (+++) Configure IRDA pins as alternate function pull-up.
+ (##) NVIC configuration if you need to use interrupt process (HAL_IRDA_Transmit_IT()
+ and HAL_IRDA_Receive_IT() APIs):
+ (+++) Configure the USARTx interrupt priority.
+ (+++) Enable the NVIC USART IRQ handle.
+ (##) DMA Configuration if you need to use DMA process (HAL_IRDA_Transmit_DMA()
+ and HAL_IRDA_Receive_DMA() APIs):
+ (+++) Declare a DMA handle structure for the Tx/Rx stream.
+ (+++) Enable the DMAx interface clock.
+ (+++) Configure the declared DMA handle structure with the required Tx/Rx parameters.
+ (+++) Configure the DMA Tx/Rx stream.
+ (+++) Associate the initialized DMA handle to the IRDA DMA Tx/Rx handle.
+ (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on the DMA Tx/Rx stream.
+ (+++) Configure the IRDAx interrupt priority and enable the NVIC USART IRQ handle
+ (used for last byte sending completion detection in DMA non circular mode)
 
-    (#) Program the Baud Rate, Word Length, Parity, IrDA Mode, Prescaler
-        and Mode(Receiver/Transmitter) in the hirda Init structure.
+ (#) Program the Baud Rate, Word Length, Parity, IrDA Mode, Prescaler
+ and Mode(Receiver/Transmitter) in the hirda Init structure.
 
-    (#) Initialize the IRDA registers by calling the HAL_IRDA_Init() API:
-        (++) This API configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
-             by calling the customized HAL_IRDA_MspInit() API.
+ (#) Initialize the IRDA registers by calling the HAL_IRDA_Init() API:
+ (++) This API configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
+ by calling the customized HAL_IRDA_MspInit() API.
 
-         -@@- The specific IRDA interrupts (Transmission complete interrupt,
-             RXNE interrupt and Error Interrupts) will be managed using the macros
-             __HAL_IRDA_ENABLE_IT() and __HAL_IRDA_DISABLE_IT() inside the transmit and receive process.
+ -@@- The specific IRDA interrupts (Transmission complete interrupt,
+ RXNE interrupt and Error Interrupts) will be managed using the macros
+ __HAL_IRDA_ENABLE_IT() and __HAL_IRDA_DISABLE_IT() inside the transmit and receive process.
 
-    (#) Three operation modes are available within this driver :
+ (#) Three operation modes are available within this driver :
 
-    *** Polling mode IO operation ***
-    =================================
-    [..]
-      (+) Send an amount of data in blocking mode using HAL_IRDA_Transmit()
-      (+) Receive an amount of data in blocking mode using HAL_IRDA_Receive()
+ *** Polling mode IO operation ***
+ =================================
+ [..]
+ (+) Send an amount of data in blocking mode using HAL_IRDA_Transmit()
+ (+) Receive an amount of data in blocking mode using HAL_IRDA_Receive()
 
-    *** Interrupt mode IO operation ***
-    ===================================
-    [..]
-      (+) Send an amount of data in non blocking mode using HAL_IRDA_Transmit_IT()
-      (+) At transmission end of transfer HAL_IRDA_TxCpltCallback is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_TxCpltCallback
-      (+) Receive an amount of data in non blocking mode using HAL_IRDA_Receive_IT()
-      (+) At reception end of transfer HAL_IRDA_RxCpltCallback is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_RxCpltCallback
-      (+) In case of transfer Error, HAL_IRDA_ErrorCallback() function is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_ErrorCallback
+ *** Interrupt mode IO operation ***
+ ===================================
+ [..]
+ (+) Send an amount of data in non blocking mode using HAL_IRDA_Transmit_IT()
+ (+) At transmission end of transfer HAL_IRDA_TxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_TxCpltCallback
+ (+) Receive an amount of data in non blocking mode using HAL_IRDA_Receive_IT()
+ (+) At reception end of transfer HAL_IRDA_RxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_RxCpltCallback
+ (+) In case of transfer Error, HAL_IRDA_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_ErrorCallback
 
-    *** DMA mode IO operation ***
-    =============================
-    [..]
-      (+) Send an amount of data in non blocking mode (DMA) using HAL_IRDA_Transmit_DMA()
-      (+) At transmission end of half transfer HAL_IRDA_TxHalfCpltCallback is executed and user can
-            add his own code by customization of function pointer HAL_IRDA_TxHalfCpltCallback
-      (+) At transmission end of transfer HAL_IRDA_TxCpltCallback is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_TxCpltCallback
-      (+) Receive an amount of data in non blocking mode (DMA) using HAL_IRDA_Receive_DMA()
-      (+) At reception end of half transfer HAL_IRDA_RxHalfCpltCallback is executed and user can
-            add his own code by customization of function pointer HAL_IRDA_RxHalfCpltCallback
-      (+) At reception end of transfer HAL_IRDA_RxCpltCallback is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_RxCpltCallback
-      (+) In case of transfer Error, HAL_IRDA_ErrorCallback() function is executed and user can
-           add his own code by customization of function pointer HAL_IRDA_ErrorCallback
-      (+) Pause the DMA Transfer using HAL_IRDA_DMAPause()
-      (+) Resume the DMA Transfer using HAL_IRDA_DMAResume()
-      (+) Stop the DMA Transfer using HAL_IRDA_DMAStop()
+ *** DMA mode IO operation ***
+ =============================
+ [..]
+ (+) Send an amount of data in non blocking mode (DMA) using HAL_IRDA_Transmit_DMA()
+ (+) At transmission end of half transfer HAL_IRDA_TxHalfCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_TxHalfCpltCallback
+ (+) At transmission end of transfer HAL_IRDA_TxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_TxCpltCallback
+ (+) Receive an amount of data in non blocking mode (DMA) using HAL_IRDA_Receive_DMA()
+ (+) At reception end of half transfer HAL_IRDA_RxHalfCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_RxHalfCpltCallback
+ (+) At reception end of transfer HAL_IRDA_RxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_RxCpltCallback
+ (+) In case of transfer Error, HAL_IRDA_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_IRDA_ErrorCallback
+ (+) Pause the DMA Transfer using HAL_IRDA_DMAPause()
+ (+) Resume the DMA Transfer using HAL_IRDA_DMAResume()
+ (+) Stop the DMA Transfer using HAL_IRDA_DMAStop()
 
-    *** IRDA HAL driver macros list ***
-    ===================================
-    [..]
-      Below the list of most used macros in IRDA HAL driver.
+ *** IRDA HAL driver macros list ***
+ ===================================
+ [..]
+ Below the list of most used macros in IRDA HAL driver.
 
-       (+) __HAL_IRDA_ENABLE: Enable the IRDA peripheral
-       (+) __HAL_IRDA_DISABLE: Disable the IRDA peripheral
-       (+) __HAL_IRDA_GET_FLAG : Check whether the specified IRDA flag is set or not
-       (+) __HAL_IRDA_CLEAR_FLAG : Clear the specified IRDA pending flag
-       (+) __HAL_IRDA_ENABLE_IT: Enable the specified IRDA interrupt
-       (+) __HAL_IRDA_DISABLE_IT: Disable the specified IRDA interrupt
-       (+) __HAL_IRDA_GET_IT_SOURCE: Check whether the specified IRDA interrupt has occurred or not
+ (+) __HAL_IRDA_ENABLE: Enable the IRDA peripheral
+ (+) __HAL_IRDA_DISABLE: Disable the IRDA peripheral
+ (+) __HAL_IRDA_GET_FLAG : Check whether the specified IRDA flag is set or not
+ (+) __HAL_IRDA_CLEAR_FLAG : Clear the specified IRDA pending flag
+ (+) __HAL_IRDA_ENABLE_IT: Enable the specified IRDA interrupt
+ (+) __HAL_IRDA_DISABLE_IT: Disable the specified IRDA interrupt
+ (+) __HAL_IRDA_GET_IT_SOURCE: Check whether the specified IRDA interrupt has occurred or not
 
-    [..]
-     (@) You can refer to the IRDA HAL driver header file for more useful macros
+ [..]
+ (@) You can refer to the IRDA HAL driver header file for more useful macros
 
-    ##### Callback registration #####
-    ==================================
+ ##### Callback registration #####
+ ==================================
 
-    [..]
-      The compilation define USE_HAL_IRDA_REGISTER_CALLBACKS when set to 1
-      allows the user to configure dynamically the driver callbacks.
+ [..]
+ The compilation define USE_HAL_IRDA_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
 
-    [..]
-      Use Function HAL_IRDA_RegisterCallback() to register a user callback.
-      Function HAL_IRDA_RegisterCallback() allows to register following callbacks:
-       (+) TxHalfCpltCallback        : Tx Half Complete Callback.
-       (+) TxCpltCallback            : Tx Complete Callback.
-       (+) RxHalfCpltCallback        : Rx Half Complete Callback.
-       (+) RxCpltCallback            : Rx Complete Callback.
-       (+) ErrorCallback             : Error Callback.
-       (+) AbortCpltCallback         : Abort Complete Callback.
-       (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
-       (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
-       (+) MspInitCallback           : IRDA MspInit.
-       (+) MspDeInitCallback         : IRDA MspDeInit.
-      This function takes as parameters the HAL peripheral handle, the Callback ID
-      and a pointer to the user callback function.
+ [..]
+ Use Function HAL_IRDA_RegisterCallback() to register a user callback.
+ Function HAL_IRDA_RegisterCallback() allows to register following callbacks:
+ (+) TxHalfCpltCallback        : Tx Half Complete Callback.
+ (+) TxCpltCallback            : Tx Complete Callback.
+ (+) RxHalfCpltCallback        : Rx Half Complete Callback.
+ (+) RxCpltCallback            : Rx Complete Callback.
+ (+) ErrorCallback             : Error Callback.
+ (+) AbortCpltCallback         : Abort Complete Callback.
+ (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
+ (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
+ (+) MspInitCallback           : IRDA MspInit.
+ (+) MspDeInitCallback         : IRDA MspDeInit.
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
 
-    [..]
-      Use function HAL_IRDA_UnRegisterCallback() to reset a callback to the default
-      weak (surcharged) function.
-      HAL_IRDA_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-      and the Callback ID.
-      This function allows to reset following callbacks:
-       (+) TxHalfCpltCallback        : Tx Half Complete Callback.
-       (+) TxCpltCallback            : Tx Complete Callback.
-       (+) RxHalfCpltCallback        : Rx Half Complete Callback.
-       (+) RxCpltCallback            : Rx Complete Callback.
-       (+) ErrorCallback             : Error Callback.
-       (+) AbortCpltCallback         : Abort Complete Callback.
-       (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
-       (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
-       (+) MspInitCallback           : IRDA MspInit.
-       (+) MspDeInitCallback         : IRDA MspDeInit.
+ [..]
+ Use function HAL_IRDA_UnRegisterCallback() to reset a callback to the default
+ weak (surcharged) function.
+ HAL_IRDA_UnRegisterCallback() takes as parameters the HAL peripheral handle,
+ and the Callback ID.
+ This function allows to reset following callbacks:
+ (+) TxHalfCpltCallback        : Tx Half Complete Callback.
+ (+) TxCpltCallback            : Tx Complete Callback.
+ (+) RxHalfCpltCallback        : Rx Half Complete Callback.
+ (+) RxCpltCallback            : Rx Complete Callback.
+ (+) ErrorCallback             : Error Callback.
+ (+) AbortCpltCallback         : Abort Complete Callback.
+ (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
+ (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
+ (+) MspInitCallback           : IRDA MspInit.
+ (+) MspDeInitCallback         : IRDA MspDeInit.
 
-    [..]
-      By default, after the HAL_IRDA_Init() and when the state is HAL_IRDA_STATE_RESET
-      all callbacks are set to the corresponding weak (surcharged) functions:
-      examples HAL_IRDA_TxCpltCallback(), HAL_IRDA_RxHalfCpltCallback().
-      Exception done for MspInit and MspDeInit functions that are respectively
-      reset to the legacy weak (surcharged) functions in the HAL_IRDA_Init()
-      and HAL_IRDA_DeInit() only when these callbacks are null (not registered beforehand).
-      If not, MspInit or MspDeInit are not null, the HAL_IRDA_Init() and HAL_IRDA_DeInit()
-      keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
+ [..]
+ By default, after the HAL_IRDA_Init() and when the state is HAL_IRDA_STATE_RESET
+ all callbacks are set to the corresponding weak (surcharged) functions:
+ examples HAL_IRDA_TxCpltCallback(), HAL_IRDA_RxHalfCpltCallback().
+ Exception done for MspInit and MspDeInit functions that are respectively
+ reset to the legacy weak (surcharged) functions in the HAL_IRDA_Init()
+ and HAL_IRDA_DeInit() only when these callbacks are null (not registered beforehand).
+ If not, MspInit or MspDeInit are not null, the HAL_IRDA_Init() and HAL_IRDA_DeInit()
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
 
-    [..]
-      Callbacks can be registered/unregistered in HAL_IRDA_STATE_READY state only.
-      Exception done MspInit/MspDeInit that can be registered/unregistered
-      in HAL_IRDA_STATE_READY or HAL_IRDA_STATE_RESET state, thus registered (user)
-      MspInit/DeInit callbacks can be used during the Init/DeInit.
-      In that case first register the MspInit/MspDeInit user callbacks
-      using HAL_IRDA_RegisterCallback() before calling HAL_IRDA_DeInit()
-      or HAL_IRDA_Init() function.
+ [..]
+ Callbacks can be registered/unregistered in HAL_IRDA_STATE_READY state only.
+ Exception done MspInit/MspDeInit that can be registered/unregistered
+ in HAL_IRDA_STATE_READY or HAL_IRDA_STATE_RESET state, thus registered (user)
+ MspInit/DeInit callbacks can be used during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using HAL_IRDA_RegisterCallback() before calling HAL_IRDA_DeInit()
+ or HAL_IRDA_Init() function.
 
-    [..]
-      When The compilation define USE_HAL_IRDA_REGISTER_CALLBACKS is set to 0 or
-      not defined, the callback registration feature is not available
-      and weak (surcharged) callbacks are used.
+ [..]
+ When The compilation define USE_HAL_IRDA_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registration feature is not available
+ and weak (surcharged) callbacks are used.
 
-  @endverbatim
-     [..]
-       (@) Additional remark: If the parity is enabled, then the MSB bit of the data written
-           in the data register is transmitted but is changed by the parity bit.
-           Depending on the frame length defined by the M bit (8-bits or 9-bits),
-           the possible IRDA frame formats are as listed in the following table:
-    +-------------------------------------------------------------+
-    |   M bit |  PCE bit  |            IRDA frame                 |
-    |---------------------|---------------------------------------|
-    |    0    |    0      |    | SB | 8 bit data | 1 STB |        |
-    |---------|-----------|---------------------------------------|
-    |    0    |    1      |    | SB | 7 bit data | PB | 1 STB |   |
-    |---------|-----------|---------------------------------------|
-    |    1    |    0      |    | SB | 9 bit data | 1 STB |        |
-    |---------|-----------|---------------------------------------|
-    |    1    |    1      |    | SB | 8 bit data | PB | 1 STB |   |
-    +-------------------------------------------------------------+
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ [..]
+ (@) Additional remark: If the parity is enabled, then the MSB bit of the data written
+ in the data register is transmitted but is changed by the parity bit.
+ Depending on the frame length defined by the M bit (8-bits or 9-bits),
+ the possible IRDA frame formats are as listed in the following table:
+ +-------------------------------------------------------------+
+ |   M bit |  PCE bit  |            IRDA frame                 |
+ |---------------------|---------------------------------------|
+ |    0    |    0      |    | SB | 8 bit data | 1 STB |        |
+ |---------|-----------|---------------------------------------|
+ |    0    |    1      |    | SB | 7 bit data | PB | 1 STB |   |
+ |---------|-----------|---------------------------------------|
+ |    1    |    0      |    | SB | 9 bit data | 1 STB |        |
+ |---------|-----------|---------------------------------------|
+ |    1    |    1      |    | SB | 8 bit data | PB | 1 STB |   |
+ +-------------------------------------------------------------+
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup IRDA IRDA
-  * @brief HAL IRDA module driver
-  * @{
-  */
+ * @brief HAL IRDA module driver
+ * @{
+ */
 
 #ifdef HAL_IRDA_MODULE_ENABLED
 
@@ -2662,11 +2662,11 @@ static void IRDA_SetConfig(IRDA_HandleTypeDef *hirda)
 
 #endif /* HAL_IRDA_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

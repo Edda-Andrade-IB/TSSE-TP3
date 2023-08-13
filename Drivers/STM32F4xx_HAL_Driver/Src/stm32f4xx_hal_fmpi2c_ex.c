@@ -1,59 +1,59 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_fmpi2c_ex.c
-  * @author  MCD Application Team
-  * @brief   FMPI2C Extended HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of FMPI2C Extended peripheral:
-  *           + Filter Mode Functions
-  *           + FastModePlus Functions
-  *
-  @verbatim
-  ==============================================================================
-               ##### FMPI2C peripheral Extended features  #####
-  ==============================================================================
+ ******************************************************************************
+ * @file    stm32f4xx_hal_fmpi2c_ex.c
+ * @author  MCD Application Team
+ * @brief   FMPI2C Extended HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of FMPI2C Extended peripheral:
+ *           + Filter Mode Functions
+ *           + FastModePlus Functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### FMPI2C peripheral Extended features  #####
+ ==============================================================================
 
-  [..] Comparing to other previous devices, the FMPI2C interface for STM32F4xx
-       devices contains the following additional features
+ [..] Comparing to other previous devices, the FMPI2C interface for STM32F4xx
+ devices contains the following additional features
 
-       (+) Possibility to disable or enable Analog Noise Filter
-       (+) Use of a configured Digital Noise Filter
-       (+) Disable or enable Fast Mode Plus
+ (+) Possibility to disable or enable Analog Noise Filter
+ (+) Use of a configured Digital Noise Filter
+ (+) Disable or enable Fast Mode Plus
 
-                     ##### How to use this driver #####
-  ==============================================================================
-  [..] This driver provides functions to:
-    (#) Configure FMPI2C Analog noise filter using the function HAL_FMPI2CEx_ConfigAnalogFilter()
-    (#) Configure FMPI2C Digital noise filter using the function HAL_FMPI2CEx_ConfigDigitalFilter()
-    (#) Configure the enable or disable of fast mode plus driving capability using the functions :
-          (++) HAL_FMPI2CEx_EnableFastModePlus()
-          (++) HAL_FMPI2CEx_DisableFastModePlus()
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ##### How to use this driver #####
+ ==============================================================================
+ [..] This driver provides functions to:
+ (#) Configure FMPI2C Analog noise filter using the function HAL_FMPI2CEx_ConfigAnalogFilter()
+ (#) Configure FMPI2C Digital noise filter using the function HAL_FMPI2CEx_ConfigDigitalFilter()
+ (#) Configure the enable or disable of fast mode plus driving capability using the functions :
+ (++) HAL_FMPI2CEx_EnableFastModePlus()
+ (++) HAL_FMPI2CEx_DisableFastModePlus()
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup FMPI2CEx FMPI2CEx
-  * @brief FMPI2C Extended HAL module driver
-  * @{
-  */
+ * @brief FMPI2C Extended HAL module driver
+ * @{
+ */
 
 #ifdef HAL_FMPI2C_MODULE_ENABLED
 #if defined(FMPI2C_CR1_PE)
@@ -251,11 +251,11 @@ void HAL_FMPI2CEx_DisableFastModePlus(uint32_t ConfigFastModePlus)
 #endif /* FMPI2C_CR1_PE */
 #endif /* HAL_FMPI2C_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

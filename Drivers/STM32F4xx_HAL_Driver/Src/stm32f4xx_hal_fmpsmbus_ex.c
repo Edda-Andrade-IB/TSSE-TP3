@@ -1,53 +1,53 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_fmpsmbus_ex.c
-  * @author  MCD Application Team
-  * @brief   FMPSMBUS Extended HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of FMPSMBUS Extended peripheral:
-  *           + Extended features functions
-  *
-  @verbatim
-  ==============================================================================
-               ##### FMPSMBUS peripheral Extended features  #####
-  ==============================================================================
+ ******************************************************************************
+ * @file    stm32f4xx_hal_fmpsmbus_ex.c
+ * @author  MCD Application Team
+ * @brief   FMPSMBUS Extended HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of FMPSMBUS Extended peripheral:
+ *           + Extended features functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### FMPSMBUS peripheral Extended features  #####
+ ==============================================================================
 
-  [..] Comparing to other previous devices, the FMPSMBUS interface for STM32F4xx
-       devices contains the following additional features
+ [..] Comparing to other previous devices, the FMPSMBUS interface for STM32F4xx
+ devices contains the following additional features
 
-       (+) Disable or enable Fast Mode Plus
+ (+) Disable or enable Fast Mode Plus
 
-                     ##### How to use this driver #####
-  ==============================================================================
-    (#) Configure the enable or disable of fast mode plus driving capability using the functions :
-          (++) HAL_FMPSMBUSEx_EnableFastModePlus()
-          (++) HAL_FMPSMBUSEx_DisableFastModePlus()
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ##### How to use this driver #####
+ ==============================================================================
+ (#) Configure the enable or disable of fast mode plus driving capability using the functions :
+ (++) HAL_FMPSMBUSEx_EnableFastModePlus()
+ (++) HAL_FMPSMBUSEx_DisableFastModePlus()
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup FMPSMBUSEx FMPSMBUSEx
-  * @brief FMPSMBUS Extended HAL module driver
-  * @{
-  */
+ * @brief FMPSMBUS Extended HAL module driver
+ * @{
+ */
 
 #ifdef HAL_FMPSMBUS_MODULE_ENABLED
 #if defined(FMPI2C_CR1_PE)
@@ -138,11 +138,11 @@ void HAL_FMPSMBUSEx_DisableFastModePlus(uint32_t ConfigFastModePlus)
 #endif /* FMPI2C_CR1_PE */
 #endif /* HAL_FMPSMBUS_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

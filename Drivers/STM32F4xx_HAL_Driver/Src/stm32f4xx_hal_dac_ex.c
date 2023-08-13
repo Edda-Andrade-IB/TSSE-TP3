@@ -1,54 +1,53 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_dac_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended DAC HAL module driver.
-  *          This file provides firmware functions to manage the extended
-  *          functionalities of the DAC peripheral.
-  *
-  *
-  @verbatim
-  ==============================================================================
-                      ##### How to use this driver #####
-  ==============================================================================
-    [..]
+ ******************************************************************************
+ * @file    stm32f4xx_hal_dac_ex.c
+ * @author  MCD Application Team
+ * @brief   Extended DAC HAL module driver.
+ *          This file provides firmware functions to manage the extended
+ *          functionalities of the DAC peripheral.
+ *
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
 
-     *** Dual mode IO operation ***
-     ==============================
-     [..]
-      (+) When Dual mode is enabled (i.e. DAC Channel1 and Channel2 are used simultaneously) :
-          Use HAL_DACEx_DualGetValue() to get digital data to be converted and use
-          HAL_DACEx_DualSetValue() to set digital value to converted simultaneously in
-          Channel 1 and Channel 2.
+ *** Dual mode IO operation ***
+ ==============================
+ [..]
+ (+) When Dual mode is enabled (i.e. DAC Channel1 and Channel2 are used simultaneously) :
+ Use HAL_DACEx_DualGetValue() to get digital data to be converted and use
+ HAL_DACEx_DualSetValue() to set digital value to converted simultaneously in
+ Channel 1 and Channel 2.
 
-     *** Signal generation operation ***
-     ===================================
-     [..]
-      (+) Use HAL_DACEx_TriangleWaveGenerate() to generate Triangle signal.
-      (+) Use HAL_DACEx_NoiseWaveGenerate() to generate Noise signal.
+ *** Signal generation operation ***
+ ===================================
+ [..]
+ (+) Use HAL_DACEx_TriangleWaveGenerate() to generate Triangle signal.
+ (+) Use HAL_DACEx_NoiseWaveGenerate() to generate Noise signal.
 
  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
-
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_DAC_MODULE_ENABLED
 
@@ -490,7 +489,7 @@ void DAC_DMAErrorCh2(DMA_HandleTypeDef *hdma)
 #endif /* HAL_DAC_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

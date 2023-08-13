@@ -1,48 +1,48 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_ll_usb.c
-  * @author  MCD Application Team
-  * @brief   USB Low Layer HAL module driver.
-  *
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Initialization/de-initialization functions
-  *           + I/O operation functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  @verbatim
-  ==============================================================================
-                    ##### How to use this driver #####
-  ==============================================================================
-    [..]
-      (#) Fill parameters of Init structure in USB_OTG_CfgTypeDef structure.
+ ******************************************************************************
+ * @file    stm32f4xx_ll_usb.c
+ * @author  MCD Application Team
+ * @brief   USB Low Layer HAL module driver.
+ *
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the USB Peripheral Controller:
+ *           + Initialization/de-initialization functions
+ *           + I/O operation functions
+ *           + Peripheral Control functions
+ *           + Peripheral State functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ (#) Fill parameters of Init structure in USB_OTG_CfgTypeDef structure.
 
-      (#) Call USB_CoreInit() API to initialize the USB Core peripheral.
+ (#) Call USB_CoreInit() API to initialize the USB Core peripheral.
 
-      (#) The upper HAL HCD/PCD driver will call the right routines for its internal processes.
+ (#) The upper HAL HCD/PCD driver will call the right routines for its internal processes.
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_LL_USB_DRIVER
-  * @{
-  */
+ * @{
+ */
 
 #if defined (HAL_PCD_MODULE_ENABLED) || defined (HAL_HCD_MODULE_ENABLED)
 #if defined (USB_OTG_FS) || defined (USB_OTG_HS)
@@ -2100,7 +2100,7 @@ HAL_StatusTypeDef USB_DeActivateRemoteWakeup(USB_OTG_GlobalTypeDef *USBx)
 #endif /* defined (HAL_PCD_MODULE_ENABLED) || defined (HAL_HCD_MODULE_ENABLED) */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

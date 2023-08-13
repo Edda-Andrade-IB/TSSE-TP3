@@ -1,37 +1,37 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_pcd_ex.c
-  * @author  MCD Application Team
-  * @brief   PCD Extended HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the USB Peripheral Controller:
-  *           + Extended features functions
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file    stm32f4xx_hal_pcd_ex.c
+ * @author  MCD Application Team
+ * @brief   PCD Extended HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the USB Peripheral Controller:
+ *           + Extended features functions
+ *
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup PCDEx PCDEx
-  * @brief PCD Extended HAL module driver
-  * @{
-  */
+ * @brief PCD Extended HAL module driver
+ * @{
+ */
 
 #ifdef HAL_PCD_MODULE_ENABLED
 
@@ -338,11 +338,11 @@ __weak void HAL_PCDEx_BCD_Callback(PCD_HandleTypeDef *hpcd, PCD_BCD_MsgTypeDef m
 #endif /* HAL_PCD_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

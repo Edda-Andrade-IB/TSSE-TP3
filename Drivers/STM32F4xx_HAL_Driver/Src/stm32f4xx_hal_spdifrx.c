@@ -1,172 +1,172 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_spdifrx.c
-  * @author  MCD Application Team
-  * @brief   This file provides firmware functions to manage the following
-  *          functionalities of the SPDIFRX audio interface:
-  *           + Initialization and Configuration
-  *           + Data transfers functions
-  *           + DMA transfers management
-  *           + Interrupts and flags management
-  @verbatim
+ ******************************************************************************
+ * @file    stm32f4xx_hal_spdifrx.c
+ * @author  MCD Application Team
+ * @brief   This file provides firmware functions to manage the following
+ *          functionalities of the SPDIFRX audio interface:
+ *           + Initialization and Configuration
+ *           + Data transfers functions
+ *           + DMA transfers management
+ *           + Interrupts and flags management
+ @verbatim
  ===============================================================================
-                  ##### How to use this driver #####
+ ##### How to use this driver #####
  ===============================================================================
  [..]
-    The SPDIFRX HAL driver can be used as follow:
+ The SPDIFRX HAL driver can be used as follow:
 
-    (#) Declare SPDIFRX_HandleTypeDef handle structure.
-    (#) Initialize the SPDIFRX low level resources by implement the HAL_SPDIFRX_MspInit() API:
-        (##) Enable the SPDIFRX interface clock.
-        (##) SPDIFRX pins configuration:
-            (+++) Enable the clock for the SPDIFRX GPIOs.
-            (+++) Configure these SPDIFRX pins as alternate function pull-up.
-        (##) NVIC configuration if you need to use interrupt process (HAL_SPDIFRX_ReceiveControlFlow_IT() and HAL_SPDIFRX_ReceiveDataFlow_IT() API's).
-            (+++) Configure the SPDIFRX interrupt priority.
-            (+++) Enable the NVIC SPDIFRX IRQ handle.
-        (##) DMA Configuration if you need to use DMA process (HAL_SPDIFRX_ReceiveDataFlow_DMA() and HAL_SPDIFRX_ReceiveControlFlow_DMA() API's).
-            (+++) Declare a DMA handle structure for the reception of the Data Flow channel.
-            (+++) Declare a DMA handle structure for the reception of the Control Flow channel.
-            (+++) Enable the DMAx interface clock.
-            (+++) Configure the declared DMA handle structure CtrlRx/DataRx with the required parameters.
-            (+++) Configure the DMA Channel.
-            (+++) Associate the initialized DMA handle to the SPDIFRX DMA CtrlRx/DataRx handle.
-            (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on the
-                DMA CtrlRx/DataRx channel.
+ (#) Declare SPDIFRX_HandleTypeDef handle structure.
+ (#) Initialize the SPDIFRX low level resources by implement the HAL_SPDIFRX_MspInit() API:
+ (##) Enable the SPDIFRX interface clock.
+ (##) SPDIFRX pins configuration:
+ (+++) Enable the clock for the SPDIFRX GPIOs.
+ (+++) Configure these SPDIFRX pins as alternate function pull-up.
+ (##) NVIC configuration if you need to use interrupt process (HAL_SPDIFRX_ReceiveControlFlow_IT() and HAL_SPDIFRX_ReceiveDataFlow_IT() API's).
+ (+++) Configure the SPDIFRX interrupt priority.
+ (+++) Enable the NVIC SPDIFRX IRQ handle.
+ (##) DMA Configuration if you need to use DMA process (HAL_SPDIFRX_ReceiveDataFlow_DMA() and HAL_SPDIFRX_ReceiveControlFlow_DMA() API's).
+ (+++) Declare a DMA handle structure for the reception of the Data Flow channel.
+ (+++) Declare a DMA handle structure for the reception of the Control Flow channel.
+ (+++) Enable the DMAx interface clock.
+ (+++) Configure the declared DMA handle structure CtrlRx/DataRx with the required parameters.
+ (+++) Configure the DMA Channel.
+ (+++) Associate the initialized DMA handle to the SPDIFRX DMA CtrlRx/DataRx handle.
+ (+++) Configure the priority and enable the NVIC for the transfer complete interrupt on the
+ DMA CtrlRx/DataRx channel.
 
-   (#) Program the input selection, re-tries number, wait for activity, channel status selection, data format, stereo mode and masking of user bits
-       using HAL_SPDIFRX_Init() function.
+ (#) Program the input selection, re-tries number, wait for activity, channel status selection, data format, stereo mode and masking of user bits
+ using HAL_SPDIFRX_Init() function.
 
-   -@- The specific SPDIFRX interrupts (RXNE/CSRNE and Error Interrupts) will be managed using the macros
-       __SPDIFRX_ENABLE_IT() and __SPDIFRX_DISABLE_IT() inside the receive process.
-   -@- Make sure that ck_spdif clock is configured.
+ -@- The specific SPDIFRX interrupts (RXNE/CSRNE and Error Interrupts) will be managed using the macros
+ __SPDIFRX_ENABLE_IT() and __SPDIFRX_DISABLE_IT() inside the receive process.
+ -@- Make sure that ck_spdif clock is configured.
 
-   (#) Three operation modes are available within this driver :
+ (#) Three operation modes are available within this driver :
 
-   *** Polling mode for reception operation (for debug purpose) ***
-   ================================================================
-   [..]
-     (+) Receive data flow in blocking mode using HAL_SPDIFRX_ReceiveDataFlow()
-     (+) Receive control flow of data in blocking mode using HAL_SPDIFRX_ReceiveControlFlow()
+ *** Polling mode for reception operation (for debug purpose) ***
+ ================================================================
+ [..]
+ (+) Receive data flow in blocking mode using HAL_SPDIFRX_ReceiveDataFlow()
+ (+) Receive control flow of data in blocking mode using HAL_SPDIFRX_ReceiveControlFlow()
 
-   *** Interrupt mode for reception operation ***
-   =========================================
-   [..]
-     (+) Receive an amount of data (Data Flow) in non blocking mode using HAL_SPDIFRX_ReceiveDataFlow_IT()
-     (+) Receive an amount of data (Control Flow) in non blocking mode using HAL_SPDIFRX_ReceiveControlFlow_IT()
-     (+) At reception end of half transfer HAL_SPDIFRX_RxHalfCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_RxHalfCpltCallback
-     (+) At reception end of transfer HAL_SPDIFRX_RxCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_RxCpltCallback
-     (+) In case of transfer Error, HAL_SPDIFRX_ErrorCallback() function is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_ErrorCallback
+ *** Interrupt mode for reception operation ***
+ =========================================
+ [..]
+ (+) Receive an amount of data (Data Flow) in non blocking mode using HAL_SPDIFRX_ReceiveDataFlow_IT()
+ (+) Receive an amount of data (Control Flow) in non blocking mode using HAL_SPDIFRX_ReceiveControlFlow_IT()
+ (+) At reception end of half transfer HAL_SPDIFRX_RxHalfCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_RxHalfCpltCallback
+ (+) At reception end of transfer HAL_SPDIFRX_RxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_RxCpltCallback
+ (+) In case of transfer Error, HAL_SPDIFRX_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_ErrorCallback
 
-   *** DMA mode for reception operation ***
-   ========================================
-   [..]
-     (+) Receive an amount of data (Data Flow) in non blocking mode (DMA) using HAL_SPDIFRX_ReceiveDataFlow_DMA()
-     (+) Receive an amount of data (Control Flow) in non blocking mode (DMA) using HAL_SPDIFRX_ReceiveControlFlow_DMA()
-     (+) At reception end of half transfer HAL_SPDIFRX_RxHalfCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_RxHalfCpltCallback
-     (+) At reception end of transfer HAL_SPDIFRX_RxCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_RxCpltCallback
-     (+) In case of transfer Error, HAL_SPDIFRX_ErrorCallback() function is executed and user can
-         add his own code by customization of function pointer HAL_SPDIFRX_ErrorCallback
-     (+) Stop the DMA Transfer using HAL_SPDIFRX_DMAStop()
+ *** DMA mode for reception operation ***
+ ========================================
+ [..]
+ (+) Receive an amount of data (Data Flow) in non blocking mode (DMA) using HAL_SPDIFRX_ReceiveDataFlow_DMA()
+ (+) Receive an amount of data (Control Flow) in non blocking mode (DMA) using HAL_SPDIFRX_ReceiveControlFlow_DMA()
+ (+) At reception end of half transfer HAL_SPDIFRX_RxHalfCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_RxHalfCpltCallback
+ (+) At reception end of transfer HAL_SPDIFRX_RxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_RxCpltCallback
+ (+) In case of transfer Error, HAL_SPDIFRX_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_SPDIFRX_ErrorCallback
+ (+) Stop the DMA Transfer using HAL_SPDIFRX_DMAStop()
 
-   *** SPDIFRX HAL driver macros list ***
-   =============================================
-   [..]
-     Below the list of most used macros in SPDIFRX HAL driver.
-      (+) __HAL_SPDIFRX_IDLE: Disable the specified SPDIFRX peripheral (IDEL State)
-      (+) __HAL_SPDIFRX_SYNC: Enable the synchronization state of the specified SPDIFRX peripheral (SYNC State)
-      (+) __HAL_SPDIFRX_RCV: Enable the receive state of the specified SPDIFRX peripheral (RCV State)
-      (+) __HAL_SPDIFRX_ENABLE_IT : Enable the specified SPDIFRX interrupts
-      (+) __HAL_SPDIFRX_DISABLE_IT : Disable the specified SPDIFRX interrupts
-      (+) __HAL_SPDIFRX_GET_FLAG: Check whether the specified SPDIFRX flag is set or not.
+ *** SPDIFRX HAL driver macros list ***
+ =============================================
+ [..]
+ Below the list of most used macros in SPDIFRX HAL driver.
+ (+) __HAL_SPDIFRX_IDLE: Disable the specified SPDIFRX peripheral (IDEL State)
+ (+) __HAL_SPDIFRX_SYNC: Enable the synchronization state of the specified SPDIFRX peripheral (SYNC State)
+ (+) __HAL_SPDIFRX_RCV: Enable the receive state of the specified SPDIFRX peripheral (RCV State)
+ (+) __HAL_SPDIFRX_ENABLE_IT : Enable the specified SPDIFRX interrupts
+ (+) __HAL_SPDIFRX_DISABLE_IT : Disable the specified SPDIFRX interrupts
+ (+) __HAL_SPDIFRX_GET_FLAG: Check whether the specified SPDIFRX flag is set or not.
 
-   [..]
-      (@) You can refer to the SPDIFRX HAL driver header file for more useful macros
+ [..]
+ (@) You can refer to the SPDIFRX HAL driver header file for more useful macros
 
-  *** Callback registration ***
-  =============================================
+ *** Callback registration ***
+ =============================================
 
-  The compilation define  USE_HAL_SPDIFRX_REGISTER_CALLBACKS when set to 1
-  allows the user to configure dynamically the driver callbacks.
-  Use HAL_SPDIFRX_RegisterCallback() function to register an interrupt callback.
+ The compilation define  USE_HAL_SPDIFRX_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
+ Use HAL_SPDIFRX_RegisterCallback() function to register an interrupt callback.
 
-  The HAL_SPDIFRX_RegisterCallback() function allows to register the following callbacks:
-    (+) RxHalfCpltCallback  : SPDIFRX Data flow half completed callback.
-    (+) RxCpltCallback      : SPDIFRX Data flow completed callback.
-    (+) CxHalfCpltCallback  : SPDIFRX Control flow half completed callback.
-    (+) CxCpltCallback      : SPDIFRX Control flow completed callback.
-    (+) ErrorCallback       : SPDIFRX error callback.
-    (+) MspInitCallback     : SPDIFRX MspInit.
-    (+) MspDeInitCallback   : SPDIFRX MspDeInit.
-  This function takes as parameters the HAL peripheral handle, the Callback ID
-  and a pointer to the user callback function.
+ The HAL_SPDIFRX_RegisterCallback() function allows to register the following callbacks:
+ (+) RxHalfCpltCallback  : SPDIFRX Data flow half completed callback.
+ (+) RxCpltCallback      : SPDIFRX Data flow completed callback.
+ (+) CxHalfCpltCallback  : SPDIFRX Control flow half completed callback.
+ (+) CxCpltCallback      : SPDIFRX Control flow completed callback.
+ (+) ErrorCallback       : SPDIFRX error callback.
+ (+) MspInitCallback     : SPDIFRX MspInit.
+ (+) MspDeInitCallback   : SPDIFRX MspDeInit.
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
 
-  Use HAL_SPDIFRX_UnRegisterCallback() function to reset a callback to the default
-  weak function.
-  The HAL_SPDIFRX_UnRegisterCallback() function takes as parameters the HAL peripheral handle,
-  and the Callback ID.
-  This function allows to reset the following callbacks:
-    (+) RxHalfCpltCallback  : SPDIFRX Data flow half completed callback.
-    (+) RxCpltCallback      : SPDIFRX Data flow completed callback.
-    (+) CxHalfCpltCallback  : SPDIFRX Control flow half completed callback.
-    (+) CxCpltCallback      : SPDIFRX Control flow completed callback.
-    (+) ErrorCallback       : SPDIFRX error callback.
-    (+) MspInitCallback     : SPDIFRX MspInit.
-    (+) MspDeInitCallback   : SPDIFRX MspDeInit.
+ Use HAL_SPDIFRX_UnRegisterCallback() function to reset a callback to the default
+ weak function.
+ The HAL_SPDIFRX_UnRegisterCallback() function takes as parameters the HAL peripheral handle,
+ and the Callback ID.
+ This function allows to reset the following callbacks:
+ (+) RxHalfCpltCallback  : SPDIFRX Data flow half completed callback.
+ (+) RxCpltCallback      : SPDIFRX Data flow completed callback.
+ (+) CxHalfCpltCallback  : SPDIFRX Control flow half completed callback.
+ (+) CxCpltCallback      : SPDIFRX Control flow completed callback.
+ (+) ErrorCallback       : SPDIFRX error callback.
+ (+) MspInitCallback     : SPDIFRX MspInit.
+ (+) MspDeInitCallback   : SPDIFRX MspDeInit.
 
-  By default, after the HAL_SPDIFRX_Init() and when the state is HAL_SPDIFRX_STATE_RESET
-  all callbacks are set to the corresponding weak functions :
-  HAL_SPDIFRX_RxHalfCpltCallback() , HAL_SPDIFRX_RxCpltCallback(), HAL_SPDIFRX_CxHalfCpltCallback(),
-  HAL_SPDIFRX_CxCpltCallback() and HAL_SPDIFRX_ErrorCallback()
-  Exception done for MspInit and MspDeInit functions that are
-  reset to the legacy weak function in the HAL_SPDIFRX_Init()/ HAL_SPDIFRX_DeInit() only when
-  these callbacks pointers are NULL (not registered beforehand).
-  If not, MspInit or MspDeInit callbacks pointers are not null, the HAL_SPDIFRX_Init() / HAL_SPDIFRX_DeInit()
-  keep and use the user MspInit/MspDeInit functions (registered beforehand)
+ By default, after the HAL_SPDIFRX_Init() and when the state is HAL_SPDIFRX_STATE_RESET
+ all callbacks are set to the corresponding weak functions :
+ HAL_SPDIFRX_RxHalfCpltCallback() , HAL_SPDIFRX_RxCpltCallback(), HAL_SPDIFRX_CxHalfCpltCallback(),
+ HAL_SPDIFRX_CxCpltCallback() and HAL_SPDIFRX_ErrorCallback()
+ Exception done for MspInit and MspDeInit functions that are
+ reset to the legacy weak function in the HAL_SPDIFRX_Init()/ HAL_SPDIFRX_DeInit() only when
+ these callbacks pointers are NULL (not registered beforehand).
+ If not, MspInit or MspDeInit callbacks pointers are not null, the HAL_SPDIFRX_Init() / HAL_SPDIFRX_DeInit()
+ keep and use the user MspInit/MspDeInit functions (registered beforehand)
 
-  Callbacks can be registered/unregistered in HAL_SPDIFRX_STATE_READY state only.
-  Exception done MspInit/MspDeInit callbacks that can be registered/unregistered
-  in HAL_SPDIFRX_STATE_READY or HAL_SPDIFRX_STATE_RESET state,
-  thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-  In that case first register the MspInit/MspDeInit user callbacks
-  using HAL_SPDIFRX_RegisterCallback() before calling HAL_SPDIFRX_DeInit()
-  or HAL_SPDIFRX_Init() function.
+ Callbacks can be registered/unregistered in HAL_SPDIFRX_STATE_READY state only.
+ Exception done MspInit/MspDeInit callbacks that can be registered/unregistered
+ in HAL_SPDIFRX_STATE_READY or HAL_SPDIFRX_STATE_RESET state,
+ thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using HAL_SPDIFRX_RegisterCallback() before calling HAL_SPDIFRX_DeInit()
+ or HAL_SPDIFRX_Init() function.
 
-  When The compilation define USE_HAL_SPDIFRX_REGISTER_CALLBACKS is set to 0 or
-  not defined, the callback registration feature is not available and all callbacks
-  are set to the corresponding weak functions.
+ When The compilation define USE_HAL_SPDIFRX_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registration feature is not available and all callbacks
+ are set to the corresponding weak functions.
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup SPDIFRX SPDIFRX
-  * @brief SPDIFRX HAL module driver
-  * @{
-  */
+ * @brief SPDIFRX HAL module driver
+ * @{
+ */
 
 #ifdef HAL_SPDIFRX_MODULE_ENABLED
 #if defined (SPDIFRX)
@@ -1613,11 +1613,11 @@ static HAL_StatusTypeDef SPDIFRX_WaitOnFlagUntilTimeout(SPDIFRX_HandleTypeDef *h
 #endif /* SPDIFRX */
 #endif /* HAL_SPDIFRX_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

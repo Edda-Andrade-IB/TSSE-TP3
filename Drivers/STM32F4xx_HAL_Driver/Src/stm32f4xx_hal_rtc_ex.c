@@ -1,94 +1,94 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_rtc_ex.c
-  * @author  MCD Application Team
-  * @brief   RTC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Real Time Clock (RTC) Extension peripheral:
-  *           + RTC Time Stamp functions
-  *           + RTC Tamper functions
-  *           + RTC Wake-up functions
-  *           + Extension Control functions
-  *           + Extension RTC features functions
-  *
-  @verbatim
-  ==============================================================================
-                  ##### How to use this driver #####
-  ==============================================================================
-  [..]
-    (+) Enable the RTC domain access.
-    (+) Configure the RTC Prescaler (Asynchronous and Synchronous) and RTC hour
-        format using the HAL_RTC_Init() function.
+ ******************************************************************************
+ * @file    stm32f4xx_hal_rtc_ex.c
+ * @author  MCD Application Team
+ * @brief   RTC HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the Real Time Clock (RTC) Extension peripheral:
+ *           + RTC Time Stamp functions
+ *           + RTC Tamper functions
+ *           + RTC Wake-up functions
+ *           + Extension Control functions
+ *           + Extension RTC features functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ (+) Enable the RTC domain access.
+ (+) Configure the RTC Prescaler (Asynchronous and Synchronous) and RTC hour
+ format using the HAL_RTC_Init() function.
 
-  *** RTC Wake-up configuration ***
-  ================================
-  [..]
-    (+) To configure the RTC Wake-up Clock source and Counter use the HAL_RTCEx_SetWakeUpTimer()
-        function. You can also configure the RTC Wake-up timer in interrupt mode
-        using the HAL_RTCEx_SetWakeUpTimer_IT() function.
-    (+) To read the RTC Wake-up Counter register, use the HAL_RTCEx_GetWakeUpTimer()
-        function.
+ *** RTC Wake-up configuration ***
+ ================================
+ [..]
+ (+) To configure the RTC Wake-up Clock source and Counter use the HAL_RTCEx_SetWakeUpTimer()
+ function. You can also configure the RTC Wake-up timer in interrupt mode
+ using the HAL_RTCEx_SetWakeUpTimer_IT() function.
+ (+) To read the RTC Wake-up Counter register, use the HAL_RTCEx_GetWakeUpTimer()
+ function.
 
-  *** TimeStamp configuration ***
-  ===============================
-  [..]
-    (+) Configure the RTC_AFx trigger and enable the RTC TimeStamp using the
-        HAL_RTCEx_SetTimeStamp() function. You can also configure the RTC TimeStamp with
-        interrupt mode using the HAL_RTCEx_SetTimeStamp_IT() function.
-    (+) To read the RTC TimeStamp Time and Date register, use the HAL_RTCEx_GetTimeStamp()
-        function.
-    (+) The TIMESTAMP alternate function can be mapped either to RTC_AF1 (PC13)
-        or RTC_AF2 (PI8 or PA0 only for STM32F446xx devices) depending on the value of TSINSEL bit in
-        RTC_TAFCR register. The corresponding pin is also selected by HAL_RTCEx_SetTimeStamp()
-        or HAL_RTCEx_SetTimeStamp_IT() function.
+ *** TimeStamp configuration ***
+ ===============================
+ [..]
+ (+) Configure the RTC_AFx trigger and enable the RTC TimeStamp using the
+ HAL_RTCEx_SetTimeStamp() function. You can also configure the RTC TimeStamp with
+ interrupt mode using the HAL_RTCEx_SetTimeStamp_IT() function.
+ (+) To read the RTC TimeStamp Time and Date register, use the HAL_RTCEx_GetTimeStamp()
+ function.
+ (+) The TIMESTAMP alternate function can be mapped either to RTC_AF1 (PC13)
+ or RTC_AF2 (PI8 or PA0 only for STM32F446xx devices) depending on the value of TSINSEL bit in
+ RTC_TAFCR register. The corresponding pin is also selected by HAL_RTCEx_SetTimeStamp()
+ or HAL_RTCEx_SetTimeStamp_IT() function.
 
-  *** Tamper configuration ***
-  ============================
-  [..]
-    (+) Enable the RTC Tamper and configure the Tamper filter count, trigger Edge
-        or Level according to the Tamper filter (if equal to 0 Edge else Level)
-        value, sampling frequency, precharge or discharge and Pull-UP using the
-        HAL_RTCEx_SetTamper() function. You can configure RTC Tamper in interrupt
-        mode using HAL_RTCEx_SetTamper_IT() function.
-    (+) The TAMPER1 alternate function can be mapped either to RTC_AF1 (PC13)
-        or RTC_AF2 (PI8 or PA0 only for STM32F446xx devices) depending on the value of TAMP1INSEL bit in
-        RTC_TAFCR register. The corresponding pin is also selected by HAL_RTCEx_SetTamper()
-        or HAL_RTCEx_SetTamper_IT() function.
+ *** Tamper configuration ***
+ ============================
+ [..]
+ (+) Enable the RTC Tamper and configure the Tamper filter count, trigger Edge
+ or Level according to the Tamper filter (if equal to 0 Edge else Level)
+ value, sampling frequency, precharge or discharge and Pull-UP using the
+ HAL_RTCEx_SetTamper() function. You can configure RTC Tamper in interrupt
+ mode using HAL_RTCEx_SetTamper_IT() function.
+ (+) The TAMPER1 alternate function can be mapped either to RTC_AF1 (PC13)
+ or RTC_AF2 (PI8 or PA0 only for STM32F446xx devices) depending on the value of TAMP1INSEL bit in
+ RTC_TAFCR register. The corresponding pin is also selected by HAL_RTCEx_SetTamper()
+ or HAL_RTCEx_SetTamper_IT() function.
 
-  *** Backup Data Registers configuration ***
-  ===========================================
-  [..]
-    (+) To write to the RTC Backup Data registers, use the HAL_RTCEx_BKUPWrite()
-        function.
-    (+) To read the RTC Backup Data registers, use the HAL_RTCEx_BKUPRead()
-        function.
+ *** Backup Data Registers configuration ***
+ ===========================================
+ [..]
+ (+) To write to the RTC Backup Data registers, use the HAL_RTCEx_BKUPWrite()
+ function.
+ (+) To read the RTC Backup Data registers, use the HAL_RTCEx_BKUPRead()
+ function.
 
-   @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup RTCEx RTCEx
-  * @brief RTC HAL module driver
-  * @{
-  */
+ * @brief RTC HAL module driver
+ * @{
+ */
 
 #ifdef HAL_RTC_MODULE_ENABLED
 
@@ -1774,11 +1774,11 @@ HAL_StatusTypeDef HAL_RTCEx_PollForAlarmBEvent(RTC_HandleTypeDef *hrtc, uint32_t
 
 #endif /* HAL_RTC_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

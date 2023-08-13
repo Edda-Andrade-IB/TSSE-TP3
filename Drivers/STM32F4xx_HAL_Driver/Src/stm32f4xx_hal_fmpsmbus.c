@@ -1,180 +1,180 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_fmpsmbus.c
-  * @author  MCD Application Team
-  * @brief   FMPSMBUS HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the System Management Bus (SMBus) peripheral,
-  *          based on I2C principles of operation :
-  *           + Initialization and de-initialization functions
-  *           + IO operation functions
-  *           + Peripheral State and Errors functions
-  *
-  @verbatim
-  ==============================================================================
-                        ##### How to use this driver #####
-  ==============================================================================
-    [..]
-    The FMPSMBUS HAL driver can be used as follows:
+ ******************************************************************************
+ * @file    stm32f4xx_hal_fmpsmbus.c
+ * @author  MCD Application Team
+ * @brief   FMPSMBUS HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the System Management Bus (SMBus) peripheral,
+ *          based on I2C principles of operation :
+ *           + Initialization and de-initialization functions
+ *           + IO operation functions
+ *           + Peripheral State and Errors functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### How to use this driver #####
+ ==============================================================================
+ [..]
+ The FMPSMBUS HAL driver can be used as follows:
 
-    (#) Declare a FMPSMBUS_HandleTypeDef handle structure, for example:
-        FMPSMBUS_HandleTypeDef  hfmpsmbus;
+ (#) Declare a FMPSMBUS_HandleTypeDef handle structure, for example:
+ FMPSMBUS_HandleTypeDef  hfmpsmbus;
 
-    (#)Initialize the FMPSMBUS low level resources by implementing the HAL_FMPSMBUS_MspInit() API:
-        (##) Enable the FMPSMBUSx interface clock
-        (##) FMPSMBUS pins configuration
-            (+++) Enable the clock for the FMPSMBUS GPIOs
-            (+++) Configure FMPSMBUS pins as alternate function open-drain
-        (##) NVIC configuration if you need to use interrupt process
-            (+++) Configure the FMPSMBUSx interrupt priority
-            (+++) Enable the NVIC FMPSMBUS IRQ Channel
+ (#)Initialize the FMPSMBUS low level resources by implementing the HAL_FMPSMBUS_MspInit() API:
+ (##) Enable the FMPSMBUSx interface clock
+ (##) FMPSMBUS pins configuration
+ (+++) Enable the clock for the FMPSMBUS GPIOs
+ (+++) Configure FMPSMBUS pins as alternate function open-drain
+ (##) NVIC configuration if you need to use interrupt process
+ (+++) Configure the FMPSMBUSx interrupt priority
+ (+++) Enable the NVIC FMPSMBUS IRQ Channel
 
-    (#) Configure the Communication Clock Timing, Bus Timeout, Own Address1, Master Addressing mode,
-        Dual Addressing mode, Own Address2, Own Address2 Mask, General call, Nostretch mode,
-        Peripheral mode and Packet Error Check mode in the hfmpsmbus Init structure.
+ (#) Configure the Communication Clock Timing, Bus Timeout, Own Address1, Master Addressing mode,
+ Dual Addressing mode, Own Address2, Own Address2 Mask, General call, Nostretch mode,
+ Peripheral mode and Packet Error Check mode in the hfmpsmbus Init structure.
 
-    (#) Initialize the FMPSMBUS registers by calling the HAL_FMPSMBUS_Init() API:
-        (++) These API's configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
-             by calling the customized HAL_FMPSMBUS_MspInit(&hfmpsmbus) API.
+ (#) Initialize the FMPSMBUS registers by calling the HAL_FMPSMBUS_Init() API:
+ (++) These API's configures also the low level Hardware GPIO, CLOCK, CORTEX...etc)
+ by calling the customized HAL_FMPSMBUS_MspInit(&hfmpsmbus) API.
 
-    (#) To check if target device is ready for communication, use the function HAL_FMPSMBUS_IsDeviceReady()
+ (#) To check if target device is ready for communication, use the function HAL_FMPSMBUS_IsDeviceReady()
 
-    (#) For FMPSMBUS IO operations, only one mode of operations is available within this driver
+ (#) For FMPSMBUS IO operations, only one mode of operations is available within this driver
 
-    *** Interrupt mode IO operation ***
-    ===================================
-    [..]
-      (+) Transmit in master/host FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Master_Transmit_IT()
-      (++) At transmission end of transfer HAL_FMPSMBUS_MasterTxCpltCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_MasterTxCpltCallback()
-      (+) Receive in master/host FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Master_Receive_IT()
-      (++) At reception end of transfer HAL_FMPSMBUS_MasterRxCpltCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_MasterRxCpltCallback()
-      (+) Abort a master/host FMPSMBUS process communication with Interrupt using HAL_FMPSMBUS_Master_Abort_IT()
-      (++) The associated previous transfer callback is called at the end of abort process
-      (++) mean HAL_FMPSMBUS_MasterTxCpltCallback() in case of previous state was master transmit
-      (++) mean HAL_FMPSMBUS_MasterRxCpltCallback() in case of previous state was master receive
-      (+) Enable/disable the Address listen mode in slave/device or host/slave FMPSMBUS mode
-           using HAL_FMPSMBUS_EnableListen_IT() HAL_FMPSMBUS_DisableListen_IT()
-      (++) When address slave/device FMPSMBUS match, HAL_FMPSMBUS_AddrCallback() is executed and user can
-           add his own code to check the Address Match Code and the transmission direction request by master/host (Write/Read).
-      (++) At Listen mode end HAL_FMPSMBUS_ListenCpltCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_ListenCpltCallback()
-      (+) Transmit in slave/device FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Slave_Transmit_IT()
-      (++) At transmission end of transfer HAL_FMPSMBUS_SlaveTxCpltCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_SlaveTxCpltCallback()
-      (+) Receive in slave/device FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Slave_Receive_IT()
-      (++) At reception end of transfer HAL_FMPSMBUS_SlaveRxCpltCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_SlaveRxCpltCallback()
-      (+) Enable/Disable the FMPSMBUS alert mode using HAL_FMPSMBUS_EnableAlert_IT() HAL_FMPSMBUS_DisableAlert_IT()
-      (++) When FMPSMBUS Alert is generated HAL_FMPSMBUS_ErrorCallback() is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_ErrorCallback()
-           to check the Alert Error Code using function HAL_FMPSMBUS_GetError()
-      (+) Get HAL state machine or error values using HAL_FMPSMBUS_GetState() or HAL_FMPSMBUS_GetError()
-      (+) In case of transfer Error, HAL_FMPSMBUS_ErrorCallback() function is executed and user can
-           add his own code by customization of function pointer HAL_FMPSMBUS_ErrorCallback()
-           to check the Error Code using function HAL_FMPSMBUS_GetError()
+ *** Interrupt mode IO operation ***
+ ===================================
+ [..]
+ (+) Transmit in master/host FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Master_Transmit_IT()
+ (++) At transmission end of transfer HAL_FMPSMBUS_MasterTxCpltCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_MasterTxCpltCallback()
+ (+) Receive in master/host FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Master_Receive_IT()
+ (++) At reception end of transfer HAL_FMPSMBUS_MasterRxCpltCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_MasterRxCpltCallback()
+ (+) Abort a master/host FMPSMBUS process communication with Interrupt using HAL_FMPSMBUS_Master_Abort_IT()
+ (++) The associated previous transfer callback is called at the end of abort process
+ (++) mean HAL_FMPSMBUS_MasterTxCpltCallback() in case of previous state was master transmit
+ (++) mean HAL_FMPSMBUS_MasterRxCpltCallback() in case of previous state was master receive
+ (+) Enable/disable the Address listen mode in slave/device or host/slave FMPSMBUS mode
+ using HAL_FMPSMBUS_EnableListen_IT() HAL_FMPSMBUS_DisableListen_IT()
+ (++) When address slave/device FMPSMBUS match, HAL_FMPSMBUS_AddrCallback() is executed and user can
+ add his own code to check the Address Match Code and the transmission direction request by master/host (Write/Read).
+ (++) At Listen mode end HAL_FMPSMBUS_ListenCpltCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_ListenCpltCallback()
+ (+) Transmit in slave/device FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Slave_Transmit_IT()
+ (++) At transmission end of transfer HAL_FMPSMBUS_SlaveTxCpltCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_SlaveTxCpltCallback()
+ (+) Receive in slave/device FMPSMBUS mode an amount of data in non-blocking mode using HAL_FMPSMBUS_Slave_Receive_IT()
+ (++) At reception end of transfer HAL_FMPSMBUS_SlaveRxCpltCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_SlaveRxCpltCallback()
+ (+) Enable/Disable the FMPSMBUS alert mode using HAL_FMPSMBUS_EnableAlert_IT() HAL_FMPSMBUS_DisableAlert_IT()
+ (++) When FMPSMBUS Alert is generated HAL_FMPSMBUS_ErrorCallback() is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_ErrorCallback()
+ to check the Alert Error Code using function HAL_FMPSMBUS_GetError()
+ (+) Get HAL state machine or error values using HAL_FMPSMBUS_GetState() or HAL_FMPSMBUS_GetError()
+ (+) In case of transfer Error, HAL_FMPSMBUS_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_FMPSMBUS_ErrorCallback()
+ to check the Error Code using function HAL_FMPSMBUS_GetError()
 
-     *** FMPSMBUS HAL driver macros list ***
-     ==================================
-     [..]
-       Below the list of most used macros in FMPSMBUS HAL driver.
+ *** FMPSMBUS HAL driver macros list ***
+ ==================================
+ [..]
+ Below the list of most used macros in FMPSMBUS HAL driver.
 
-      (+) __HAL_FMPSMBUS_ENABLE:      Enable the FMPSMBUS peripheral
-      (+) __HAL_FMPSMBUS_DISABLE:     Disable the FMPSMBUS peripheral
-      (+) __HAL_FMPSMBUS_GET_FLAG:    Check whether the specified FMPSMBUS flag is set or not
-      (+) __HAL_FMPSMBUS_CLEAR_FLAG:  Clear the specified FMPSMBUS pending flag
-      (+) __HAL_FMPSMBUS_ENABLE_IT:   Enable the specified FMPSMBUS interrupt
-      (+) __HAL_FMPSMBUS_DISABLE_IT:  Disable the specified FMPSMBUS interrupt
+ (+) __HAL_FMPSMBUS_ENABLE:      Enable the FMPSMBUS peripheral
+ (+) __HAL_FMPSMBUS_DISABLE:     Disable the FMPSMBUS peripheral
+ (+) __HAL_FMPSMBUS_GET_FLAG:    Check whether the specified FMPSMBUS flag is set or not
+ (+) __HAL_FMPSMBUS_CLEAR_FLAG:  Clear the specified FMPSMBUS pending flag
+ (+) __HAL_FMPSMBUS_ENABLE_IT:   Enable the specified FMPSMBUS interrupt
+ (+) __HAL_FMPSMBUS_DISABLE_IT:  Disable the specified FMPSMBUS interrupt
 
-     *** Callback registration ***
-     =============================================
-    [..]
-     The compilation flag USE_HAL_FMPSMBUS_REGISTER_CALLBACKS when set to 1
-     allows the user to configure dynamically the driver callbacks.
-     Use Functions HAL_FMPSMBUS_RegisterCallback() or HAL_FMPSMBUS_RegisterAddrCallback()
-     to register an interrupt callback.
-    [..]
-     Function HAL_FMPSMBUS_RegisterCallback() allows to register following callbacks:
-       (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
-       (+) MasterRxCpltCallback : callback for Master reception end of transfer.
-       (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
-       (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
-       (+) ListenCpltCallback   : callback for end of listen mode.
-       (+) ErrorCallback        : callback for error detection.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-     This function takes as parameters the HAL peripheral handle, the Callback ID
-     and a pointer to the user callback function.
-    [..]
-     For specific callback AddrCallback use dedicated register callbacks : HAL_FMPSMBUS_RegisterAddrCallback.
-    [..]
-     Use function HAL_FMPSMBUS_UnRegisterCallback to reset a callback to the default
-     weak function.
-     HAL_FMPSMBUS_UnRegisterCallback takes as parameters the HAL peripheral handle,
-     and the Callback ID.
-     This function allows to reset following callbacks:
-       (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
-       (+) MasterRxCpltCallback : callback for Master reception end of transfer.
-       (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
-       (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
-       (+) ListenCpltCallback   : callback for end of listen mode.
-       (+) ErrorCallback        : callback for error detection.
-       (+) MspInitCallback      : callback for Msp Init.
-       (+) MspDeInitCallback    : callback for Msp DeInit.
-    [..]
-     For callback AddrCallback use dedicated register callbacks : HAL_FMPSMBUS_UnRegisterAddrCallback.
-    [..]
-     By default, after the HAL_FMPSMBUS_Init() and when the state is HAL_FMPI2C_STATE_RESET
-     all callbacks are set to the corresponding weak functions:
-     examples HAL_FMPSMBUS_MasterTxCpltCallback(), HAL_FMPSMBUS_MasterRxCpltCallback().
-     Exception done for MspInit and MspDeInit functions that are
-     reset to the legacy weak functions in the HAL_FMPSMBUS_Init()/ HAL_FMPSMBUS_DeInit() only when
-     these callbacks are null (not registered beforehand).
-     If MspInit or MspDeInit are not null, the HAL_FMPSMBUS_Init()/ HAL_FMPSMBUS_DeInit()
-     keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
-    [..]
-     Callbacks can be registered/unregistered in HAL_FMPI2C_STATE_READY state only.
-     Exception done MspInit/MspDeInit functions that can be registered/unregistered
-     in HAL_FMPI2C_STATE_READY or HAL_FMPI2C_STATE_RESET state,
-     thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-     Then, the user first registers the MspInit/MspDeInit user callbacks
-     using HAL_FMPSMBUS_RegisterCallback() before calling HAL_FMPSMBUS_DeInit()
-     or HAL_FMPSMBUS_Init() function.
-    [..]
-     When the compilation flag USE_HAL_FMPSMBUS_REGISTER_CALLBACKS is set to 0 or
-     not defined, the callback registration feature is not available and all callbacks
-     are set to the corresponding weak functions.
+ *** Callback registration ***
+ =============================================
+ [..]
+ The compilation flag USE_HAL_FMPSMBUS_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
+ Use Functions HAL_FMPSMBUS_RegisterCallback() or HAL_FMPSMBUS_RegisterAddrCallback()
+ to register an interrupt callback.
+ [..]
+ Function HAL_FMPSMBUS_RegisterCallback() allows to register following callbacks:
+ (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
+ (+) MasterRxCpltCallback : callback for Master reception end of transfer.
+ (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
+ (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
+ (+) ListenCpltCallback   : callback for end of listen mode.
+ (+) ErrorCallback        : callback for error detection.
+ (+) MspInitCallback      : callback for Msp Init.
+ (+) MspDeInitCallback    : callback for Msp DeInit.
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
+ [..]
+ For specific callback AddrCallback use dedicated register callbacks : HAL_FMPSMBUS_RegisterAddrCallback.
+ [..]
+ Use function HAL_FMPSMBUS_UnRegisterCallback to reset a callback to the default
+ weak function.
+ HAL_FMPSMBUS_UnRegisterCallback takes as parameters the HAL peripheral handle,
+ and the Callback ID.
+ This function allows to reset following callbacks:
+ (+) MasterTxCpltCallback : callback for Master transmission end of transfer.
+ (+) MasterRxCpltCallback : callback for Master reception end of transfer.
+ (+) SlaveTxCpltCallback  : callback for Slave transmission end of transfer.
+ (+) SlaveRxCpltCallback  : callback for Slave reception end of transfer.
+ (+) ListenCpltCallback   : callback for end of listen mode.
+ (+) ErrorCallback        : callback for error detection.
+ (+) MspInitCallback      : callback for Msp Init.
+ (+) MspDeInitCallback    : callback for Msp DeInit.
+ [..]
+ For callback AddrCallback use dedicated register callbacks : HAL_FMPSMBUS_UnRegisterAddrCallback.
+ [..]
+ By default, after the HAL_FMPSMBUS_Init() and when the state is HAL_FMPI2C_STATE_RESET
+ all callbacks are set to the corresponding weak functions:
+ examples HAL_FMPSMBUS_MasterTxCpltCallback(), HAL_FMPSMBUS_MasterRxCpltCallback().
+ Exception done for MspInit and MspDeInit functions that are
+ reset to the legacy weak functions in the HAL_FMPSMBUS_Init()/ HAL_FMPSMBUS_DeInit() only when
+ these callbacks are null (not registered beforehand).
+ If MspInit or MspDeInit are not null, the HAL_FMPSMBUS_Init()/ HAL_FMPSMBUS_DeInit()
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand) whatever the state.
+ [..]
+ Callbacks can be registered/unregistered in HAL_FMPI2C_STATE_READY state only.
+ Exception done MspInit/MspDeInit functions that can be registered/unregistered
+ in HAL_FMPI2C_STATE_READY or HAL_FMPI2C_STATE_RESET state,
+ thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
+ Then, the user first registers the MspInit/MspDeInit user callbacks
+ using HAL_FMPSMBUS_RegisterCallback() before calling HAL_FMPSMBUS_DeInit()
+ or HAL_FMPSMBUS_Init() function.
+ [..]
+ When the compilation flag USE_HAL_FMPSMBUS_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registration feature is not available and all callbacks
+ are set to the corresponding weak functions.
 
-     [..]
-       (@) You can refer to the FMPSMBUS HAL driver header file for more useful macros
+ [..]
+ (@) You can refer to the FMPSMBUS HAL driver header file for more useful macros
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup FMPSMBUS FMPSMBUS
-  * @brief FMPSMBUS HAL module driver
-  * @{
-  */
+ * @brief FMPSMBUS HAL module driver
+ * @{
+ */
 
 #ifdef HAL_FMPSMBUS_MODULE_ENABLED
 
@@ -2736,11 +2736,11 @@ static void FMPSMBUS_ConvertOtherXferOptions(FMPSMBUS_HandleTypeDef *hfmpsmbus)
 #endif /* FMPI2C_CR1_PE */
 #endif /* HAL_FMPSMBUS_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

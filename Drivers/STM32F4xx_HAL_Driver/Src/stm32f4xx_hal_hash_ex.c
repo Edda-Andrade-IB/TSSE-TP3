@@ -1,96 +1,93 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_hash_ex.c
-  * @author  MCD Application Team
-  * @brief   Extended HASH HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the HASH peripheral for SHA-224 and SHA-256
-  *          algorithms:
-  *           + HASH or HMAC processing in polling mode
-  *           + HASH or HMAC processing in interrupt mode
-  *           + HASH or HMAC processing in DMA mode
-  *         Additionally, this file provides functions to manage HMAC
-  *         multi-buffer DMA-based processing for MD-5, SHA-1, SHA-224
-  *         and SHA-256.
-  *
-  *
-  @verbatim
+ ******************************************************************************
+ * @file    stm32f4xx_hal_hash_ex.c
+ * @author  MCD Application Team
+ * @brief   Extended HASH HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the HASH peripheral for SHA-224 and SHA-256
+ *          algorithms:
+ *           + HASH or HMAC processing in polling mode
+ *           + HASH or HMAC processing in interrupt mode
+ *           + HASH or HMAC processing in DMA mode
+ *         Additionally, this file provides functions to manage HMAC
+ *         multi-buffer DMA-based processing for MD-5, SHA-1, SHA-224
+ *         and SHA-256.
+ *
+ *
+ @verbatim
  ===============================================================================
-                     ##### HASH peripheral extended features  #####
+ ##### HASH peripheral extended features  #####
  ===============================================================================
-    [..]
-    The SHA-224 and SHA-256 HASH and HMAC processing can be carried out exactly
-    the same way as for SHA-1 or MD-5 algorithms.
-    (#) Three modes are available.
-        (##) Polling mode: processing APIs are blocking functions
-             i.e. they process the data and wait till the digest computation is finished,
-             e.g. HAL_HASHEx_xxx_Start()
-        (##) Interrupt mode: processing APIs are not blocking functions
-                i.e. they process the data under interrupt,
-                e.g. HAL_HASHEx_xxx_Start_IT()
-        (##) DMA mode: processing APIs are not blocking functions and the CPU is
-             not used for data transfer i.e. the data transfer is ensured by DMA,
-                e.g. HAL_HASHEx_xxx_Start_DMA(). Note that in DMA mode, a call to
-                HAL_HASHEx_xxx_Finish() is then required to retrieve the digest.
+ [..]
+ The SHA-224 and SHA-256 HASH and HMAC processing can be carried out exactly
+ the same way as for SHA-1 or MD-5 algorithms.
+ (#) Three modes are available.
+ (##) Polling mode: processing APIs are blocking functions
+ i.e. they process the data and wait till the digest computation is finished,
+ e.g. HAL_HASHEx_xxx_Start()
+ (##) Interrupt mode: processing APIs are not blocking functions
+ i.e. they process the data under interrupt,
+ e.g. HAL_HASHEx_xxx_Start_IT()
+ (##) DMA mode: processing APIs are not blocking functions and the CPU is
+ not used for data transfer i.e. the data transfer is ensured by DMA,
+ e.g. HAL_HASHEx_xxx_Start_DMA(). Note that in DMA mode, a call to
+ HAL_HASHEx_xxx_Finish() is then required to retrieve the digest.
 
-   (#)Multi-buffer processing is possible in polling, interrupt and DMA modes.
-        (##) In polling mode, only multi-buffer HASH processing is possible.
-             API HAL_HASHEx_xxx_Accumulate() must be called for each input buffer, except for the last one.
-             User must resort to HAL_HASHEx_xxx_Accumulate_End() to enter the last one and retrieve as
-             well the computed digest.
+ (#)Multi-buffer processing is possible in polling, interrupt and DMA modes.
+ (##) In polling mode, only multi-buffer HASH processing is possible.
+ API HAL_HASHEx_xxx_Accumulate() must be called for each input buffer, except for the last one.
+ User must resort to HAL_HASHEx_xxx_Accumulate_End() to enter the last one and retrieve as
+ well the computed digest.
 
-        (##) In interrupt mode, API HAL_HASHEx_xxx_Accumulate_IT() must be called for each input buffer,
-             except for the last one.
-             User must resort to HAL_HASHEx_xxx_Accumulate_End_IT() to enter the last one and retrieve as
-             well the computed digest.
+ (##) In interrupt mode, API HAL_HASHEx_xxx_Accumulate_IT() must be called for each input buffer,
+ except for the last one.
+ User must resort to HAL_HASHEx_xxx_Accumulate_End_IT() to enter the last one and retrieve as
+ well the computed digest.
 
-        (##) In DMA mode, multi-buffer HASH and HMAC processing are possible.
+ (##) In DMA mode, multi-buffer HASH and HMAC processing are possible.
 
-              (+++) HASH processing: once initialization is done, MDMAT bit must be set through
-               __HAL_HASH_SET_MDMAT() macro.
-             From that point, each buffer can be fed to the Peripheral through HAL_HASHEx_xxx_Start_DMA() API.
-             Before entering the last buffer, reset the MDMAT bit with __HAL_HASH_RESET_MDMAT()
-             macro then wrap-up the HASH processing in feeding the last input buffer through the
-             same API HAL_HASHEx_xxx_Start_DMA(). The digest can then be retrieved with a call to
-             API HAL_HASHEx_xxx_Finish().
+ (+++) HASH processing: once initialization is done, MDMAT bit must be set through
+ __HAL_HASH_SET_MDMAT() macro.
+ From that point, each buffer can be fed to the Peripheral through HAL_HASHEx_xxx_Start_DMA() API.
+ Before entering the last buffer, reset the MDMAT bit with __HAL_HASH_RESET_MDMAT()
+ macro then wrap-up the HASH processing in feeding the last input buffer through the
+ same API HAL_HASHEx_xxx_Start_DMA(). The digest can then be retrieved with a call to
+ API HAL_HASHEx_xxx_Finish().
 
-             (+++) HMAC processing (MD-5, SHA-1, SHA-224 and SHA-256 must all resort to
-             extended functions): after initialization, the key and the first input buffer are entered
-             in the Peripheral with the API HAL_HMACEx_xxx_Step1_2_DMA(). This carries out HMAC step 1 and
-             starts step 2.
-             The following buffers are next entered with the API  HAL_HMACEx_xxx_Step2_DMA(). At this
-             point, the HMAC processing is still carrying out step 2.
-             Then, step 2 for the last input buffer and step 3 are carried out by a single call
-             to HAL_HMACEx_xxx_Step2_3_DMA().
+ (+++) HMAC processing (MD-5, SHA-1, SHA-224 and SHA-256 must all resort to
+ extended functions): after initialization, the key and the first input buffer are entered
+ in the Peripheral with the API HAL_HMACEx_xxx_Step1_2_DMA(). This carries out HMAC step 1 and
+ starts step 2.
+ The following buffers are next entered with the API  HAL_HMACEx_xxx_Step2_DMA(). At this
+ point, the HMAC processing is still carrying out step 2.
+ Then, step 2 for the last input buffer and step 3 are carried out by a single call
+ to HAL_HMACEx_xxx_Step2_3_DMA().
 
-             The digest can finally be retrieved with a call to API HAL_HASH_xxx_Finish() for
-             MD-5 and SHA-1, to HAL_HASHEx_xxx_Finish() for SHA-224 and SHA-256.
+ The digest can finally be retrieved with a call to API HAL_HASH_xxx_Finish() for
+ MD-5 and SHA-1, to HAL_HASHEx_xxx_Finish() for SHA-224 and SHA-256.
 
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
-
-
-
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 #if defined (HASH)
 
 /** @defgroup HASHEx HASHEx
@@ -1035,9 +1032,7 @@ HAL_StatusTypeDef HAL_HMACEx_SHA256_Step2_3_DMA(HASH_HandleTypeDef *hhash, uint8
   */
 #endif /*  HASH*/
 /**
-  * @}
-  */
-
-
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

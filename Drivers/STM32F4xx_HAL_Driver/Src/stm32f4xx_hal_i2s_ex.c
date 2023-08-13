@@ -1,98 +1,98 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_i2s_ex.c
-  * @author  MCD Application Team
-  * @brief   I2S HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of I2S extension peripheral:
-  *           + Extension features Functions
-  *
-  @verbatim
-  ==============================================================================
-                    ##### I2S Extension features #####
-  ==============================================================================
-  [..]
-     (#) In I2S full duplex mode, each SPI peripheral is able to manage sending and receiving
-         data simultaneously using two data lines. Each SPI peripheral has an extended block
-         called I2Sxext (i.e I2S2ext for SPI2 and I2S3ext for SPI3).
-     (#) The extension block is not a full SPI IP, it is used only as I2S slave to
-         implement full duplex mode. The extension block uses the same clock sources
-         as its master.
+ ******************************************************************************
+ * @file    stm32f4xx_hal_i2s_ex.c
+ * @author  MCD Application Team
+ * @brief   I2S HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of I2S extension peripheral:
+ *           + Extension features Functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### I2S Extension features #####
+ ==============================================================================
+ [..]
+ (#) In I2S full duplex mode, each SPI peripheral is able to manage sending and receiving
+ data simultaneously using two data lines. Each SPI peripheral has an extended block
+ called I2Sxext (i.e I2S2ext for SPI2 and I2S3ext for SPI3).
+ (#) The extension block is not a full SPI IP, it is used only as I2S slave to
+ implement full duplex mode. The extension block uses the same clock sources
+ as its master.
 
-     (#) Both I2Sx and I2Sx_ext can be configured as transmitters or receivers.
+ (#) Both I2Sx and I2Sx_ext can be configured as transmitters or receivers.
 
-     [..]
-       (@) Only I2Sx can deliver SCK and WS to I2Sx_ext in full duplex mode, where
-         I2Sx can be I2S2 or I2S3.
+ [..]
+ (@) Only I2Sx can deliver SCK and WS to I2Sx_ext in full duplex mode, where
+ I2Sx can be I2S2 or I2S3.
 
-                  ##### How to use this driver #####
+ ##### How to use this driver #####
  ===============================================================================
  [..]
-   Three operation modes are available within this driver :
+ Three operation modes are available within this driver :
 
-   *** Polling mode IO operation ***
-   =================================
-   [..]
-     (+) Send and receive in the same time an amount of data in blocking mode using HAL_I2SEx_TransmitReceive()
+ *** Polling mode IO operation ***
+ =================================
+ [..]
+ (+) Send and receive in the same time an amount of data in blocking mode using HAL_I2SEx_TransmitReceive()
 
-   *** Interrupt mode IO operation ***
-   ===================================
-   [..]
-     (+) Send and receive in the same time an amount of data in non blocking mode using HAL_I2SEx_TransmitReceive_IT()
-     (+) At transmission/reception end of transfer HAL_I2SEx_TxRxCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_I2SEx_TxRxCpltCallback
-     (+) In case of transfer Error, HAL_I2S_ErrorCallback() function is executed and user can
-         add his own code by customization of function pointer HAL_I2S_ErrorCallback
+ *** Interrupt mode IO operation ***
+ ===================================
+ [..]
+ (+) Send and receive in the same time an amount of data in non blocking mode using HAL_I2SEx_TransmitReceive_IT()
+ (+) At transmission/reception end of transfer HAL_I2SEx_TxRxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_I2SEx_TxRxCpltCallback
+ (+) In case of transfer Error, HAL_I2S_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_I2S_ErrorCallback
 
-   *** DMA mode IO operation ***
-   ==============================
-   [..]
-     (+) Send and receive an amount of data in non blocking mode (DMA) using HAL_I2SEx_TransmitReceive_DMA()
-     (+) At transmission/reception end of transfer HAL_I2SEx_TxRxCpltCallback is executed and user can
-         add his own code by customization of function pointer HAL_I2S_TxRxCpltCallback
-     (+) In case of transfer Error, HAL_I2S_ErrorCallback() function is executed and user can
-         add his own code by customization of function pointer HAL_I2S_ErrorCallback
-     (+) __HAL_I2SEXT_FLUSH_RX_DR: In Full-Duplex Slave mode, if HAL_I2S_DMAStop is used to stop the
-         communication, an error HAL_I2S_ERROR_BUSY_LINE_RX is raised as the master continue to transmit data.
-         In this case __HAL_I2SEXT_FLUSH_RX_DR macro must be used to flush the remaining data
-         inside I2Sx and I2Sx_ext DR registers and avoid using DeInit/Init process for the next transfer.
-  @endverbatim
+ *** DMA mode IO operation ***
+ ==============================
+ [..]
+ (+) Send and receive an amount of data in non blocking mode (DMA) using HAL_I2SEx_TransmitReceive_DMA()
+ (+) At transmission/reception end of transfer HAL_I2SEx_TxRxCpltCallback is executed and user can
+ add his own code by customization of function pointer HAL_I2S_TxRxCpltCallback
+ (+) In case of transfer Error, HAL_I2S_ErrorCallback() function is executed and user can
+ add his own code by customization of function pointer HAL_I2S_ErrorCallback
+ (+) __HAL_I2SEXT_FLUSH_RX_DR: In Full-Duplex Slave mode, if HAL_I2S_DMAStop is used to stop the
+ communication, an error HAL_I2S_ERROR_BUSY_LINE_RX is raised as the master continue to transmit data.
+ In this case __HAL_I2SEXT_FLUSH_RX_DR macro must be used to flush the remaining data
+ inside I2Sx and I2Sx_ext DR registers and avoid using DeInit/Init process for the next transfer.
+ @endverbatim
 
  Additional Figure: The Extended block uses the same clock sources as its master.
 
-                +-----------------------+
-    I2Sx_SCK    |                       |
+ +-----------------------+
+ I2Sx_SCK    |                       |
  ----------+-->|          I2Sx         |------------------->I2Sx_SD(in/out)
-         +--|-->|                       |
-        |   |   +-----------------------+
-        |   |
+ +--|-->|                       |
+ |   |   +-----------------------+
+ |   |
  I2S_WS |   |
  ------>|   |
-        |   |   +-----------------------+
-        |   +-->|                       |
-        |       |       I2Sx_ext        |------------------->I2Sx_extSD(in/out)
-         +----->|                       |
-                +-----------------------+
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ |   |   +-----------------------+
+ |   +-->|                       |
+ |       |       I2Sx_ext        |------------------->I2Sx_extSD(in/out)
+ +----->|                       |
+ +-----------------------+
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 #ifdef HAL_I2S_MODULE_ENABLED
 
@@ -1132,7 +1132,7 @@ static HAL_StatusTypeDef I2SEx_FullDuplexWaitFlagStateUntilTimeout(I2S_HandleTyp
 #endif /* HAL_I2S_MODULE_ENABLED */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

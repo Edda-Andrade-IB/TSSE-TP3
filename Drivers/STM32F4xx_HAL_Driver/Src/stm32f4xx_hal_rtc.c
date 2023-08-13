@@ -1,194 +1,194 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_rtc.c
-  * @author  MCD Application Team
-  * @brief   RTC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Real Time Clock (RTC) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + RTC Time and Date functions
-  *           + RTC Alarm functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  @verbatim
-  ==============================================================================
-              ##### Backup Domain Operating Condition #####
-  ==============================================================================
-  [..] The real-time clock (RTC), the RTC backup registers, and the backup
-       SRAM (BKP SRAM) can be powered from the VBAT voltage when the main
-       VDD supply is powered off.
-       To retain the content of the RTC backup registers, backup SRAM, and supply
-       the RTC when VDD is turned off, VBAT pin can be connected to an optional
-       standby voltage supplied by a battery or by another source.
+ ******************************************************************************
+ * @file    stm32f4xx_hal_rtc.c
+ * @author  MCD Application Team
+ * @brief   RTC HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the Real Time Clock (RTC) peripheral:
+ *           + Initialization and de-initialization functions
+ *           + RTC Time and Date functions
+ *           + RTC Alarm functions
+ *           + Peripheral Control functions
+ *           + Peripheral State functions
+ *
+ @verbatim
+ ==============================================================================
+ ##### Backup Domain Operating Condition #####
+ ==============================================================================
+ [..] The real-time clock (RTC), the RTC backup registers, and the backup
+ SRAM (BKP SRAM) can be powered from the VBAT voltage when the main
+ VDD supply is powered off.
+ To retain the content of the RTC backup registers, backup SRAM, and supply
+ the RTC when VDD is turned off, VBAT pin can be connected to an optional
+ standby voltage supplied by a battery or by another source.
 
-  [..] To allow the RTC operating even when the main digital supply (VDD) is turned
-       off, the VBAT pin powers the following blocks:
-    (#) The RTC
-    (#) The LSE oscillator
-    (#) The backup SRAM when the low power backup regulator is enabled
-    (#) PC13 to PC15 I/Os, plus PI8 I/O (when available)
+ [..] To allow the RTC operating even when the main digital supply (VDD) is turned
+ off, the VBAT pin powers the following blocks:
+ (#) The RTC
+ (#) The LSE oscillator
+ (#) The backup SRAM when the low power backup regulator is enabled
+ (#) PC13 to PC15 I/Os, plus PI8 I/O (when available)
 
-  [..] When the backup domain is supplied by VDD (analog switch connected to VDD),
-       the following pins are available:
-    (#) PC14 and PC15 can be used as either GPIO or LSE pins
-    (#) PC13 can be used as a GPIO or as the RTC_AF1 pin
-    (#) PI8 can be used as a GPIO or as the RTC_AF2 pin
+ [..] When the backup domain is supplied by VDD (analog switch connected to VDD),
+ the following pins are available:
+ (#) PC14 and PC15 can be used as either GPIO or LSE pins
+ (#) PC13 can be used as a GPIO or as the RTC_AF1 pin
+ (#) PI8 can be used as a GPIO or as the RTC_AF2 pin
 
-  [..] When the backup domain is supplied by VBAT (analog switch connected to VBAT
-       because VDD is not present), the following pins are available:
-    (#) PC14 and PC15 can be used as LSE pins only
-    (#) PC13 can be used as the RTC_AF1 pin
-    (#) PI8 can be used as the RTC_AF2 pin
+ [..] When the backup domain is supplied by VBAT (analog switch connected to VBAT
+ because VDD is not present), the following pins are available:
+ (#) PC14 and PC15 can be used as LSE pins only
+ (#) PC13 can be used as the RTC_AF1 pin
+ (#) PI8 can be used as the RTC_AF2 pin
 
-                   ##### Backup Domain Reset #####
-  ==================================================================
-  [..] The backup domain reset sets all RTC registers and the RCC_BDCR register
-       to their reset values. The BKPSRAM is not affected by this reset. The only
-       way to reset the BKPSRAM is through the Flash interface by requesting
-       a protection level change from 1 to 0.
-  [..] A backup domain reset is generated when one of the following events occurs:
-    (#) Software reset, triggered by setting the BDRST bit in the
-        RCC Backup domain control register (RCC_BDCR).
-    (#) VDD or VBAT power on, if both supplies have previously been powered off.
+ ##### Backup Domain Reset #####
+ ==================================================================
+ [..] The backup domain reset sets all RTC registers and the RCC_BDCR register
+ to their reset values. The BKPSRAM is not affected by this reset. The only
+ way to reset the BKPSRAM is through the Flash interface by requesting
+ a protection level change from 1 to 0.
+ [..] A backup domain reset is generated when one of the following events occurs:
+ (#) Software reset, triggered by setting the BDRST bit in the
+ RCC Backup domain control register (RCC_BDCR).
+ (#) VDD or VBAT power on, if both supplies have previously been powered off.
 
-                   ##### Backup Domain Access #####
-  ==================================================================
-  [..] After reset, the backup domain (RTC registers, RTC backup data
-       registers and backup SRAM) is protected against possible unwanted write
-       accesses.
-  [..] To enable access to the RTC Domain and RTC registers, proceed as follows:
-    (+) Enable the Power Controller (PWR) APB1 interface clock using the
-        __HAL_RCC_PWR_CLK_ENABLE() function.
-    (+) Enable access to RTC domain using the HAL_PWR_EnableBkUpAccess() function.
-    (+) Select the RTC clock source using the __HAL_RCC_RTC_CONFIG() function.
-    (+) Enable RTC Clock using the __HAL_RCC_RTC_ENABLE() function.
+ ##### Backup Domain Access #####
+ ==================================================================
+ [..] After reset, the backup domain (RTC registers, RTC backup data
+ registers and backup SRAM) is protected against possible unwanted write
+ accesses.
+ [..] To enable access to the RTC Domain and RTC registers, proceed as follows:
+ (+) Enable the Power Controller (PWR) APB1 interface clock using the
+ __HAL_RCC_PWR_CLK_ENABLE() function.
+ (+) Enable access to RTC domain using the HAL_PWR_EnableBkUpAccess() function.
+ (+) Select the RTC clock source using the __HAL_RCC_RTC_CONFIG() function.
+ (+) Enable RTC Clock using the __HAL_RCC_RTC_ENABLE() function.
 
 
-                  ##### How to use this driver #####
-  ==================================================================
-  [..]
-    (+) Enable the RTC domain access (see description in the section above).
-    (+) Configure the RTC Prescaler (Asynchronous and Synchronous) and RTC hour
-        format using the HAL_RTC_Init() function.
+ ##### How to use this driver #####
+ ==================================================================
+ [..]
+ (+) Enable the RTC domain access (see description in the section above).
+ (+) Configure the RTC Prescaler (Asynchronous and Synchronous) and RTC hour
+ format using the HAL_RTC_Init() function.
 
-  *** Time and Date configuration ***
-  ===================================
-  [..]
-    (+) To configure the RTC Calendar (Time and Date) use the HAL_RTC_SetTime()
-        and HAL_RTC_SetDate() functions.
-    (+) To read the RTC Calendar, use the HAL_RTC_GetTime() and HAL_RTC_GetDate() functions.
+ *** Time and Date configuration ***
+ ===================================
+ [..]
+ (+) To configure the RTC Calendar (Time and Date) use the HAL_RTC_SetTime()
+ and HAL_RTC_SetDate() functions.
+ (+) To read the RTC Calendar, use the HAL_RTC_GetTime() and HAL_RTC_GetDate() functions.
 
-  *** Alarm configuration ***
-  ===========================
-  [..]
-    (+) To configure the RTC Alarm use the HAL_RTC_SetAlarm() function.
-        You can also configure the RTC Alarm with interrupt mode using the HAL_RTC_SetAlarm_IT() function.
-    (+) To read the RTC Alarm, use the HAL_RTC_GetAlarm() function.
+ *** Alarm configuration ***
+ ===========================
+ [..]
+ (+) To configure the RTC Alarm use the HAL_RTC_SetAlarm() function.
+ You can also configure the RTC Alarm with interrupt mode using the HAL_RTC_SetAlarm_IT() function.
+ (+) To read the RTC Alarm, use the HAL_RTC_GetAlarm() function.
 
-                  ##### RTC and low power modes #####
-  ==================================================================
-  [..] The MCU can be woken up from a low power mode by an RTC alternate
-       function.
-  [..] The RTC alternate functions are the RTC alarms (Alarm A and Alarm B),
-       RTC wake-up, RTC tamper event detection and RTC time stamp event detection.
-       These RTC alternate functions can wake up the system from the Stop and
-       Standby low power modes.
-  [..] The system can also wake up from low power modes without depending
-       on an external interrupt (Auto-wake-up mode), by using the RTC alarm
-       or the RTC wake-up events.
-  [..] The RTC provides a programmable time base for waking up from the
-       Stop or Standby mode at regular intervals.
-       Wake-up from STOP and STANDBY modes is possible only when the RTC clock source
-       is LSE or LSI.
+ ##### RTC and low power modes #####
+ ==================================================================
+ [..] The MCU can be woken up from a low power mode by an RTC alternate
+ function.
+ [..] The RTC alternate functions are the RTC alarms (Alarm A and Alarm B),
+ RTC wake-up, RTC tamper event detection and RTC time stamp event detection.
+ These RTC alternate functions can wake up the system from the Stop and
+ Standby low power modes.
+ [..] The system can also wake up from low power modes without depending
+ on an external interrupt (Auto-wake-up mode), by using the RTC alarm
+ or the RTC wake-up events.
+ [..] The RTC provides a programmable time base for waking up from the
+ Stop or Standby mode at regular intervals.
+ Wake-up from STOP and STANDBY modes is possible only when the RTC clock source
+ is LSE or LSI.
 
-  *** Callback registration ***
-  =============================================
+ *** Callback registration ***
+ =============================================
 
-  [..]
-  The compilation define  USE_HAL_RTC_REGISTER_CALLBACKS when set to 1
-  allows the user to configure dynamically the driver callbacks.
-  Use Function HAL_RTC_RegisterCallback() to register an interrupt callback.
+ [..]
+ The compilation define  USE_HAL_RTC_REGISTER_CALLBACKS when set to 1
+ allows the user to configure dynamically the driver callbacks.
+ Use Function HAL_RTC_RegisterCallback() to register an interrupt callback.
 
-  [..]
-  Function HAL_RTC_RegisterCallback() allows to register following callbacks:
-    (+) AlarmAEventCallback          : RTC Alarm A Event callback.
-    (+) AlarmBEventCallback          : RTC Alarm B Event callback.
-    (+) TimeStampEventCallback       : RTC TimeStamp Event callback.
-    (+) WakeUpTimerEventCallback     : RTC WakeUpTimer Event callback.
-    (+) Tamper1EventCallback         : RTC Tamper 1 Event callback.
-    (+) Tamper2EventCallback         : RTC Tamper 2 Event callback.
-    (+) MspInitCallback              : RTC MspInit callback.
-    (+) MspDeInitCallback            : RTC MspDeInit callback.
-  [..]
-  This function takes as parameters the HAL peripheral handle, the Callback ID
-  and a pointer to the user callback function.
+ [..]
+ Function HAL_RTC_RegisterCallback() allows to register following callbacks:
+ (+) AlarmAEventCallback          : RTC Alarm A Event callback.
+ (+) AlarmBEventCallback          : RTC Alarm B Event callback.
+ (+) TimeStampEventCallback       : RTC TimeStamp Event callback.
+ (+) WakeUpTimerEventCallback     : RTC WakeUpTimer Event callback.
+ (+) Tamper1EventCallback         : RTC Tamper 1 Event callback.
+ (+) Tamper2EventCallback         : RTC Tamper 2 Event callback.
+ (+) MspInitCallback              : RTC MspInit callback.
+ (+) MspDeInitCallback            : RTC MspDeInit callback.
+ [..]
+ This function takes as parameters the HAL peripheral handle, the Callback ID
+ and a pointer to the user callback function.
 
-  [..]
-  Use function HAL_RTC_UnRegisterCallback() to reset a callback to the default
-  weak function.
-  HAL_RTC_UnRegisterCallback() takes as parameters the HAL peripheral handle,
-  and the Callback ID.
-  This function allows to reset following callbacks:
-    (+) AlarmAEventCallback          : RTC Alarm A Event callback.
-    (+) AlarmBEventCallback          : RTC Alarm B Event callback.
-    (+) TimeStampEventCallback       : RTC TimeStamp Event callback.
-    (+) WakeUpTimerEventCallback     : RTC WakeUpTimer Event callback.
-    (+) Tamper1EventCallback         : RTC Tamper 1 Event callback.
-    (+) Tamper2EventCallback         : RTC Tamper 2 Event callback.
-    (+) MspInitCallback              : RTC MspInit callback.
-    (+) MspDeInitCallback            : RTC MspDeInit callback.
+ [..]
+ Use function HAL_RTC_UnRegisterCallback() to reset a callback to the default
+ weak function.
+ HAL_RTC_UnRegisterCallback() takes as parameters the HAL peripheral handle,
+ and the Callback ID.
+ This function allows to reset following callbacks:
+ (+) AlarmAEventCallback          : RTC Alarm A Event callback.
+ (+) AlarmBEventCallback          : RTC Alarm B Event callback.
+ (+) TimeStampEventCallback       : RTC TimeStamp Event callback.
+ (+) WakeUpTimerEventCallback     : RTC WakeUpTimer Event callback.
+ (+) Tamper1EventCallback         : RTC Tamper 1 Event callback.
+ (+) Tamper2EventCallback         : RTC Tamper 2 Event callback.
+ (+) MspInitCallback              : RTC MspInit callback.
+ (+) MspDeInitCallback            : RTC MspDeInit callback.
 
-  [..]
-  By default, after the HAL_RTC_Init() and when the state is HAL_RTC_STATE_RESET,
-  all callbacks are set to the corresponding weak functions :
-  examples AlarmAEventCallback(), WakeUpTimerEventCallback().
-  Exception done for MspInit and MspDeInit callbacks that are reset to the legacy weak function
-  in the HAL_RTC_Init()/HAL_RTC_DeInit() only when these callbacks are null
-  (not registered beforehand).
-  If not, MspInit or MspDeInit are not null, HAL_RTC_Init()/HAL_RTC_DeInit()
-  keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
+ [..]
+ By default, after the HAL_RTC_Init() and when the state is HAL_RTC_STATE_RESET,
+ all callbacks are set to the corresponding weak functions :
+ examples AlarmAEventCallback(), WakeUpTimerEventCallback().
+ Exception done for MspInit and MspDeInit callbacks that are reset to the legacy weak function
+ in the HAL_RTC_Init()/HAL_RTC_DeInit() only when these callbacks are null
+ (not registered beforehand).
+ If not, MspInit or MspDeInit are not null, HAL_RTC_Init()/HAL_RTC_DeInit()
+ keep and use the user MspInit/MspDeInit callbacks (registered beforehand)
 
-  [..]
-  Callbacks can be registered/unregistered in HAL_RTC_STATE_READY state only.
-  Exception done MspInit/MspDeInit that can be registered/unregistered
-  in HAL_RTC_STATE_READY or HAL_RTC_STATE_RESET state,
-  thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
-  In that case first register the MspInit/MspDeInit user callbacks
-  using HAL_RTC_RegisterCallback() before calling HAL_RTC_DeInit()
-  or HAL_RTC_Init() function.
+ [..]
+ Callbacks can be registered/unregistered in HAL_RTC_STATE_READY state only.
+ Exception done MspInit/MspDeInit that can be registered/unregistered
+ in HAL_RTC_STATE_READY or HAL_RTC_STATE_RESET state,
+ thus registered (user) MspInit/DeInit callbacks can be used during the Init/DeInit.
+ In that case first register the MspInit/MspDeInit user callbacks
+ using HAL_RTC_RegisterCallback() before calling HAL_RTC_DeInit()
+ or HAL_RTC_Init() function.
 
-  [..]
-  When The compilation define USE_HAL_RTC_REGISTER_CALLBACKS is set to 0 or
-  not defined, the callback registration feature is not available and all callbacks
-  are set to the corresponding weak functions.
-   @endverbatim
+ [..]
+ When The compilation define USE_HAL_RTC_REGISTER_CALLBACKS is set to 0 or
+ not defined, the callback registration feature is not available and all callbacks
+ are set to the corresponding weak functions.
+ @endverbatim
 
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup RTC RTC
-  * @brief RTC HAL module driver
-  * @{
-  */
+ * @brief RTC HAL module driver
+ * @{
+ */
 
 #ifdef HAL_RTC_MODULE_ENABLED
 
@@ -1893,11 +1893,11 @@ uint8_t RTC_Bcd2ToByte(uint8_t Value)
 
 #endif /* HAL_RTC_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

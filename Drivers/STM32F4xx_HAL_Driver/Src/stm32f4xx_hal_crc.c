@@ -1,58 +1,58 @@
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_crc.c
-  * @author  MCD Application Team
-  * @brief   CRC HAL module driver.
-  *          This file provides firmware functions to manage the following
-  *          functionalities of the Cyclic Redundancy Check (CRC) peripheral:
-  *           + Initialization and de-initialization functions
-  *           + Peripheral Control functions
-  *           + Peripheral State functions
-  *
-  @verbatim
+ ******************************************************************************
+ * @file    stm32f4xx_hal_crc.c
+ * @author  MCD Application Team
+ * @brief   CRC HAL module driver.
+ *          This file provides firmware functions to manage the following
+ *          functionalities of the Cyclic Redundancy Check (CRC) peripheral:
+ *           + Initialization and de-initialization functions
+ *           + Peripheral Control functions
+ *           + Peripheral State functions
+ *
+ @verbatim
  ===============================================================================
-                     ##### How to use this driver #####
+ ##### How to use this driver #####
  ===============================================================================
-    [..]
-         (+) Enable CRC AHB clock using __HAL_RCC_CRC_CLK_ENABLE();
-         (+) Initialize CRC calculator
-             (++) specify generating polynomial (peripheral default or non-default one)
-             (++) specify initialization value (peripheral default or non-default one)
-             (++) specify input data format
-             (++) specify input or output data inversion mode if any
-         (+) Use HAL_CRC_Accumulate() function to compute the CRC value of the
-             input data buffer starting with the previously computed CRC as
-             initialization value
-         (+) Use HAL_CRC_Calculate() function to compute the CRC value of the
-             input data buffer starting with the defined initialization value
-             (default or non-default) to initiate CRC calculation
+ [..]
+ (+) Enable CRC AHB clock using __HAL_RCC_CRC_CLK_ENABLE();
+ (+) Initialize CRC calculator
+ (++) specify generating polynomial (peripheral default or non-default one)
+ (++) specify initialization value (peripheral default or non-default one)
+ (++) specify input data format
+ (++) specify input or output data inversion mode if any
+ (+) Use HAL_CRC_Accumulate() function to compute the CRC value of the
+ input data buffer starting with the previously computed CRC as
+ initialization value
+ (+) Use HAL_CRC_Calculate() function to compute the CRC value of the
+ input data buffer starting with the defined initialization value
+ (default or non-default) to initiate CRC calculation
 
-  @endverbatim
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ @endverbatim
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2016 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
-  * @{
-  */
+ * @{
+ */
 
 /** @defgroup CRC CRC
-  * @brief CRC HAL module driver.
-  * @{
-  */
+ * @brief CRC HAL module driver.
+ * @{
+ */
 
 #ifdef HAL_CRC_MODULE_ENABLED
 
@@ -320,11 +320,11 @@ HAL_CRC_StateTypeDef HAL_CRC_GetState(CRC_HandleTypeDef *hcrc)
 
 #endif /* HAL_CRC_MODULE_ENABLED */
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

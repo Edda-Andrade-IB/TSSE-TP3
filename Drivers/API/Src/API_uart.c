@@ -20,7 +20,7 @@
 #define MODE UART_MODE_TX_RX
 
 #define UART_TIMEOUT_MS 0xFFFFFFFF /* 3 seconds */
-#define BUFFER_SIZE 17
+#define BUFFER_SIZE 256
 
 // TODO(Nico):
 typedef enum {

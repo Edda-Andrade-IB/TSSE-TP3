@@ -14,6 +14,7 @@ n *      Author: nico
 #define DISPLAY_SIZE 17
 #define BUFFER_SIZE 256
 #define SLIDE_TIME_MS 500
+#define DEVICE_ADDRESS 0x27 << 1
 
 typedef enum {
   NO_ANIMATION,
@@ -189,19 +190,19 @@ static void LCD1602_SendCommand(uint8_t command) {
   data[1] = (command & 0xF0) | 0x08;        // High nibble with backlight OFF
   data[2] = ((command & 0x0F) << 4) | 0x0C; // Low nibble with backlight ON
   data[3] = ((command & 0x0F) << 4) | 0x08; // Low nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, 0x27 << 1, data, sizeof(data), I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, data, sizeof(data), I2C_TIMEOUT);
   HAL_Delay(2);
 }
 
 static void LCD1602_SendData(uint8_t data) {
   uint8_t dat = (data & 0xF0) | 0x0D; // High nibble with backlight ON
-  HAL_I2C_Master_Transmit(&hi2c1, 0x27 << 1, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = (data & 0xF0) | 0x09; // High nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, 0x27 << 1, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = ((data & 0x0F) << 4) | 0x0D; // Low nibble with backlight ON
-  HAL_I2C_Master_Transmit(&hi2c1, 0x27 << 1, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = ((data & 0x0F) << 4) | 0x09; // Low nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, 0x27 << 1, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
 }
 
 static void LCD1602_NoAnimationPrint(void) {

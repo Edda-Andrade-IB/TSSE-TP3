@@ -1,0 +1,4 @@
+---
+- test/../src/API_lcd1602_i2c.h
+- "/home/edda/Documentos/CESE/TSSE/TP3/API_lcd1602_i2c/test/support/Unity/src/unity.h"
+- build/test/mocks/mock_stm32_hal_simplyfied.h

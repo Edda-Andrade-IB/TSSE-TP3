@@ -24,26 +24,6 @@ void mock_stm32_hal_simplyfied_Verify(void);
 
 
 
-#define HAL_I2C_Init_IgnoreAndReturn(cmock_retval) HAL_I2C_Init_CMockIgnoreAndReturn(__LINE__, cmock_retval)
-void HAL_I2C_Init_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, HAL_StatusTypeDef cmock_to_return);
-#define HAL_I2C_Init_StopIgnore() HAL_I2C_Init_CMockStopIgnore()
-void HAL_I2C_Init_CMockStopIgnore(void);
-#define HAL_I2C_Init_ExpectAndReturn(hi2c, cmock_retval) HAL_I2C_Init_CMockExpectAndReturn(__LINE__, hi2c, cmock_retval)
-void HAL_I2C_Init_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, I2C_HandleTypeDef* hi2c, HAL_StatusTypeDef cmock_to_return);
-typedef HAL_StatusTypeDef (* CMOCK_HAL_I2C_Init_CALLBACK)(I2C_HandleTypeDef* hi2c, int cmock_num_calls);
-void HAL_I2C_Init_AddCallback(CMOCK_HAL_I2C_Init_CALLBACK Callback);
-void HAL_I2C_Init_Stub(CMOCK_HAL_I2C_Init_CALLBACK Callback);
-#define HAL_I2C_Init_StubWithCallback HAL_I2C_Init_Stub
-#define HAL_I2C_DeInit_IgnoreAndReturn(cmock_retval) HAL_I2C_DeInit_CMockIgnoreAndReturn(__LINE__, cmock_retval)
-void HAL_I2C_DeInit_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, HAL_StatusTypeDef cmock_to_return);
-#define HAL_I2C_DeInit_StopIgnore() HAL_I2C_DeInit_CMockStopIgnore()
-void HAL_I2C_DeInit_CMockStopIgnore(void);
-#define HAL_I2C_DeInit_ExpectAndReturn(hi2c, cmock_retval) HAL_I2C_DeInit_CMockExpectAndReturn(__LINE__, hi2c, cmock_retval)
-void HAL_I2C_DeInit_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, I2C_HandleTypeDef* hi2c, HAL_StatusTypeDef cmock_to_return);
-typedef HAL_StatusTypeDef (* CMOCK_HAL_I2C_DeInit_CALLBACK)(I2C_HandleTypeDef* hi2c, int cmock_num_calls);
-void HAL_I2C_DeInit_AddCallback(CMOCK_HAL_I2C_DeInit_CALLBACK Callback);
-void HAL_I2C_DeInit_Stub(CMOCK_HAL_I2C_DeInit_CALLBACK Callback);
-#define HAL_I2C_DeInit_StubWithCallback HAL_I2C_DeInit_Stub
 #define HAL_I2C_Master_Transmit_IgnoreAndReturn(cmock_retval) HAL_I2C_Master_Transmit_CMockIgnoreAndReturn(__LINE__, cmock_retval)
 void HAL_I2C_Master_Transmit_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, HAL_StatusTypeDef cmock_to_return);
 #define HAL_I2C_Master_Transmit_StopIgnore() HAL_I2C_Master_Transmit_CMockStopIgnore()

@@ -12,7 +12,7 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_LCD1602_Init(void);
+extern void test_MX_I2C1_Init_Success(void);
 
 
 /*=======Mock Management=====*/
@@ -80,7 +80,7 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_API_lcd1602_i2c.c");
-  run_test(test_LCD1602_Init, "test_LCD1602_Init", 25);
+  run_test(test_MX_I2C1_Init_Success, "test_MX_I2C1_Init_Success", 27);
 
   CMock_Guts_MemFreeFinal();
   return UnityEnd();

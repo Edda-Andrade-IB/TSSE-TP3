@@ -9,11 +9,13 @@ extern I2C_HandleTypeDef hi2c1;
 
 
 
+
+
 void setUp(void)
 
 {
 
-
+   HAL_I2C_Init(&hi2c1);
 
 }
 
@@ -23,18 +25,30 @@ void tearDown(void)
 
 {
 
+
+
 }
 
 
 
-void test_LCD1602_Init(void)
+void test_MX_I2C1_Init_Success(void) {
 
-{
 
-    HAL_StatusTypeDef status = HAL_OK;
 
-    HAL_I2C_Init_CMockExpectAndReturn(28, &hi2c1, status);
+    HAL_I2C_Init_ExpectAndReturn(&hi2c1, HAL_OK);
 
-    LCD1602_Init();
+    HAL_I2CEx_ConfigAnalogFilter_CMockExpectAndReturn(30, &hi2c1, 0x00000000U, HAL_OK);
+
+    HAL_I2CEx_ConfigDigitalFilter_CMockExpectAndReturn(31, &hi2c1, 0, HAL_ERROR);
+
+
+
+
+
+    MX_I2C1_Init();
+
+
+
+
 
 }

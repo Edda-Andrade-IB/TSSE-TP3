@@ -13,8 +13,6 @@ static const char* CMockString_HAL_Delay = "HAL_Delay";
 static const char* CMockString_HAL_GetTick = "HAL_GetTick";
 static const char* CMockString_HAL_I2CEx_ConfigAnalogFilter = "HAL_I2CEx_ConfigAnalogFilter";
 static const char* CMockString_HAL_I2CEx_ConfigDigitalFilter = "HAL_I2CEx_ConfigDigitalFilter";
-static const char* CMockString_HAL_I2C_DeInit = "HAL_I2C_DeInit";
-static const char* CMockString_HAL_I2C_Init = "HAL_I2C_Init";
 static const char* CMockString_HAL_I2C_IsDeviceReady = "HAL_I2C_IsDeviceReady";
 static const char* CMockString_HAL_I2C_Master_Receive = "HAL_I2C_Master_Receive";
 static const char* CMockString_HAL_I2C_Master_Transmit = "HAL_I2C_Master_Transmit";
@@ -35,24 +33,6 @@ static const char* CMockString_memset = "memset";
 static const char* CMockString_n = "n";
 static const char* CMockString_pData = "pData";
 static const char* CMockString_s = "s";
-
-typedef struct _CMOCK_HAL_I2C_Init_CALL_INSTANCE
-{
-  UNITY_LINE_TYPE LineNumber;
-  HAL_StatusTypeDef ReturnVal;
-  int CallOrder;
-  I2C_HandleTypeDef* Expected_hi2c;
-
-} CMOCK_HAL_I2C_Init_CALL_INSTANCE;
-
-typedef struct _CMOCK_HAL_I2C_DeInit_CALL_INSTANCE
-{
-  UNITY_LINE_TYPE LineNumber;
-  HAL_StatusTypeDef ReturnVal;
-  int CallOrder;
-  I2C_HandleTypeDef* Expected_hi2c;
-
-} CMOCK_HAL_I2C_DeInit_CALL_INSTANCE;
 
 typedef struct _CMOCK_HAL_I2C_Master_Transmit_CALL_INSTANCE
 {
@@ -204,18 +184,6 @@ typedef struct _CMOCK_HAL_I2CEx_ConfigDigitalFilter_CALL_INSTANCE
 
 static struct mock_stm32_hal_simplyfiedInstance
 {
-  char HAL_I2C_Init_IgnoreBool;
-  HAL_StatusTypeDef HAL_I2C_Init_FinalReturn;
-  char HAL_I2C_Init_CallbackBool;
-  CMOCK_HAL_I2C_Init_CALLBACK HAL_I2C_Init_CallbackFunctionPointer;
-  int HAL_I2C_Init_CallbackCalls;
-  CMOCK_MEM_INDEX_TYPE HAL_I2C_Init_CallInstance;
-  char HAL_I2C_DeInit_IgnoreBool;
-  HAL_StatusTypeDef HAL_I2C_DeInit_FinalReturn;
-  char HAL_I2C_DeInit_CallbackBool;
-  CMOCK_HAL_I2C_DeInit_CALLBACK HAL_I2C_DeInit_CallbackFunctionPointer;
-  int HAL_I2C_DeInit_CallbackCalls;
-  CMOCK_MEM_INDEX_TYPE HAL_I2C_DeInit_CallInstance;
   char HAL_I2C_Master_Transmit_IgnoreBool;
   HAL_StatusTypeDef HAL_I2C_Master_Transmit_FinalReturn;
   char HAL_I2C_Master_Transmit_CallbackBool;
@@ -303,32 +271,6 @@ void mock_stm32_hal_simplyfied_Verify(void)
 {
   UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;
   CMOCK_MEM_INDEX_TYPE call_instance;
-  call_instance = Mock.HAL_I2C_Init_CallInstance;
-  if (Mock.HAL_I2C_Init_IgnoreBool)
-    call_instance = CMOCK_GUTS_NONE;
-  if (CMOCK_GUTS_NONE != call_instance)
-  {
-    UNITY_SET_DETAIL(CMockString_HAL_I2C_Init);
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledLess);
-  }
-  if (Mock.HAL_I2C_Init_CallbackFunctionPointer != NULL)
-  {
-    call_instance = CMOCK_GUTS_NONE;
-    (void)call_instance;
-  }
-  call_instance = Mock.HAL_I2C_DeInit_CallInstance;
-  if (Mock.HAL_I2C_DeInit_IgnoreBool)
-    call_instance = CMOCK_GUTS_NONE;
-  if (CMOCK_GUTS_NONE != call_instance)
-  {
-    UNITY_SET_DETAIL(CMockString_HAL_I2C_DeInit);
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledLess);
-  }
-  if (Mock.HAL_I2C_DeInit_CallbackFunctionPointer != NULL)
-  {
-    call_instance = CMOCK_GUTS_NONE;
-    (void)call_instance;
-  }
   call_instance = Mock.HAL_I2C_Master_Transmit_CallInstance;
   if (Mock.HAL_I2C_Master_Transmit_IgnoreBool)
     call_instance = CMOCK_GUTS_NONE;
@@ -511,198 +453,6 @@ void mock_stm32_hal_simplyfied_Destroy(void)
   memset(&Mock, 0, sizeof(Mock));
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
-}
-
-HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef* hi2c)
-{
-  UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;
-  CMOCK_HAL_I2C_Init_CALL_INSTANCE* cmock_call_instance;
-  UNITY_SET_DETAIL(CMockString_HAL_I2C_Init);
-  cmock_call_instance = (CMOCK_HAL_I2C_Init_CALL_INSTANCE*)CMock_Guts_GetAddressFor(Mock.HAL_I2C_Init_CallInstance);
-  Mock.HAL_I2C_Init_CallInstance = CMock_Guts_MemNext(Mock.HAL_I2C_Init_CallInstance);
-  if (Mock.HAL_I2C_Init_IgnoreBool)
-  {
-    UNITY_CLR_DETAILS();
-    if (cmock_call_instance == NULL)
-      return Mock.HAL_I2C_Init_FinalReturn;
-    memcpy((void*)(&Mock.HAL_I2C_Init_FinalReturn), (void*)(&cmock_call_instance->ReturnVal),
-         sizeof(HAL_StatusTypeDef[sizeof(cmock_call_instance->ReturnVal) == sizeof(HAL_StatusTypeDef) ? 1 : -1])); /* add HAL_StatusTypeDef to :treat_as_array if this causes an error */
-    return cmock_call_instance->ReturnVal;
-  }
-  if (!Mock.HAL_I2C_Init_CallbackBool &&
-      Mock.HAL_I2C_Init_CallbackFunctionPointer != NULL)
-  {
-    HAL_StatusTypeDef cmock_cb_ret = Mock.HAL_I2C_Init_CallbackFunctionPointer(hi2c, Mock.HAL_I2C_Init_CallbackCalls++);
-    UNITY_CLR_DETAILS();
-    return cmock_cb_ret;
-  }
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringCalledMore);
-  cmock_line = cmock_call_instance->LineNumber;
-  if (cmock_call_instance->CallOrder > ++GlobalVerifyOrder)
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledEarly);
-  if (cmock_call_instance->CallOrder < GlobalVerifyOrder)
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledLate);
-  {
-    UNITY_SET_DETAILS(CMockString_HAL_I2C_Init,CMockString_hi2c);
-    UNITY_TEST_ASSERT_EQUAL_MEMORY((void*)(cmock_call_instance->Expected_hi2c), (void*)(hi2c), sizeof(I2C_HandleTypeDef), cmock_line, CMockStringMismatch);
-  }
-  if (Mock.HAL_I2C_Init_CallbackFunctionPointer != NULL)
-  {
-    cmock_call_instance->ReturnVal = Mock.HAL_I2C_Init_CallbackFunctionPointer(hi2c, Mock.HAL_I2C_Init_CallbackCalls++);
-  }
-  UNITY_CLR_DETAILS();
-  return cmock_call_instance->ReturnVal;
-}
-
-void CMockExpectParameters_HAL_I2C_Init(CMOCK_HAL_I2C_Init_CALL_INSTANCE* cmock_call_instance, I2C_HandleTypeDef* hi2c);
-void CMockExpectParameters_HAL_I2C_Init(CMOCK_HAL_I2C_Init_CALL_INSTANCE* cmock_call_instance, I2C_HandleTypeDef* hi2c)
-{
-  cmock_call_instance->Expected_hi2c = hi2c;
-}
-
-void HAL_I2C_Init_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, HAL_StatusTypeDef cmock_to_return)
-{
-  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_HAL_I2C_Init_CALL_INSTANCE));
-  CMOCK_HAL_I2C_Init_CALL_INSTANCE* cmock_call_instance = (CMOCK_HAL_I2C_Init_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
-  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
-  Mock.HAL_I2C_Init_CallInstance = CMock_Guts_MemChain(Mock.HAL_I2C_Init_CallInstance, cmock_guts_index);
-  Mock.HAL_I2C_Init_IgnoreBool = (char)0;
-  cmock_call_instance->LineNumber = cmock_line;
-  cmock_call_instance->ReturnVal = cmock_to_return;
-  Mock.HAL_I2C_Init_IgnoreBool = (char)1;
-}
-
-void HAL_I2C_Init_CMockStopIgnore(void)
-{
-  if(Mock.HAL_I2C_Init_IgnoreBool)
-    Mock.HAL_I2C_Init_CallInstance = CMock_Guts_MemNext(Mock.HAL_I2C_Init_CallInstance);
-  Mock.HAL_I2C_Init_IgnoreBool = (char)0;
-}
-
-void HAL_I2C_Init_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, I2C_HandleTypeDef* hi2c, HAL_StatusTypeDef cmock_to_return)
-{
-  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_HAL_I2C_Init_CALL_INSTANCE));
-  CMOCK_HAL_I2C_Init_CALL_INSTANCE* cmock_call_instance = (CMOCK_HAL_I2C_Init_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
-  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
-  Mock.HAL_I2C_Init_CallInstance = CMock_Guts_MemChain(Mock.HAL_I2C_Init_CallInstance, cmock_guts_index);
-  Mock.HAL_I2C_Init_IgnoreBool = (char)0;
-  cmock_call_instance->LineNumber = cmock_line;
-  cmock_call_instance->CallOrder = ++GlobalExpectCount;
-  CMockExpectParameters_HAL_I2C_Init(cmock_call_instance, hi2c);
-  memcpy((void*)(&cmock_call_instance->ReturnVal), (void*)(&cmock_to_return),
-         sizeof(HAL_StatusTypeDef[sizeof(cmock_to_return) == sizeof(HAL_StatusTypeDef) ? 1 : -1])); /* add HAL_StatusTypeDef to :treat_as_array if this causes an error */
-}
-
-void HAL_I2C_Init_AddCallback(CMOCK_HAL_I2C_Init_CALLBACK Callback)
-{
-  Mock.HAL_I2C_Init_IgnoreBool = (char)0;
-  Mock.HAL_I2C_Init_CallbackBool = (char)1;
-  Mock.HAL_I2C_Init_CallbackFunctionPointer = Callback;
-}
-
-void HAL_I2C_Init_Stub(CMOCK_HAL_I2C_Init_CALLBACK Callback)
-{
-  Mock.HAL_I2C_Init_IgnoreBool = (char)0;
-  Mock.HAL_I2C_Init_CallbackBool = (char)0;
-  Mock.HAL_I2C_Init_CallbackFunctionPointer = Callback;
-}
-
-HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef* hi2c)
-{
-  UNITY_LINE_TYPE cmock_line = TEST_LINE_NUM;
-  CMOCK_HAL_I2C_DeInit_CALL_INSTANCE* cmock_call_instance;
-  UNITY_SET_DETAIL(CMockString_HAL_I2C_DeInit);
-  cmock_call_instance = (CMOCK_HAL_I2C_DeInit_CALL_INSTANCE*)CMock_Guts_GetAddressFor(Mock.HAL_I2C_DeInit_CallInstance);
-  Mock.HAL_I2C_DeInit_CallInstance = CMock_Guts_MemNext(Mock.HAL_I2C_DeInit_CallInstance);
-  if (Mock.HAL_I2C_DeInit_IgnoreBool)
-  {
-    UNITY_CLR_DETAILS();
-    if (cmock_call_instance == NULL)
-      return Mock.HAL_I2C_DeInit_FinalReturn;
-    memcpy((void*)(&Mock.HAL_I2C_DeInit_FinalReturn), (void*)(&cmock_call_instance->ReturnVal),
-         sizeof(HAL_StatusTypeDef[sizeof(cmock_call_instance->ReturnVal) == sizeof(HAL_StatusTypeDef) ? 1 : -1])); /* add HAL_StatusTypeDef to :treat_as_array if this causes an error */
-    return cmock_call_instance->ReturnVal;
-  }
-  if (!Mock.HAL_I2C_DeInit_CallbackBool &&
-      Mock.HAL_I2C_DeInit_CallbackFunctionPointer != NULL)
-  {
-    HAL_StatusTypeDef cmock_cb_ret = Mock.HAL_I2C_DeInit_CallbackFunctionPointer(hi2c, Mock.HAL_I2C_DeInit_CallbackCalls++);
-    UNITY_CLR_DETAILS();
-    return cmock_cb_ret;
-  }
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringCalledMore);
-  cmock_line = cmock_call_instance->LineNumber;
-  if (cmock_call_instance->CallOrder > ++GlobalVerifyOrder)
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledEarly);
-  if (cmock_call_instance->CallOrder < GlobalVerifyOrder)
-    UNITY_TEST_FAIL(cmock_line, CMockStringCalledLate);
-  {
-    UNITY_SET_DETAILS(CMockString_HAL_I2C_DeInit,CMockString_hi2c);
-    UNITY_TEST_ASSERT_EQUAL_MEMORY((void*)(cmock_call_instance->Expected_hi2c), (void*)(hi2c), sizeof(I2C_HandleTypeDef), cmock_line, CMockStringMismatch);
-  }
-  if (Mock.HAL_I2C_DeInit_CallbackFunctionPointer != NULL)
-  {
-    cmock_call_instance->ReturnVal = Mock.HAL_I2C_DeInit_CallbackFunctionPointer(hi2c, Mock.HAL_I2C_DeInit_CallbackCalls++);
-  }
-  UNITY_CLR_DETAILS();
-  return cmock_call_instance->ReturnVal;
-}
-
-void CMockExpectParameters_HAL_I2C_DeInit(CMOCK_HAL_I2C_DeInit_CALL_INSTANCE* cmock_call_instance, I2C_HandleTypeDef* hi2c);
-void CMockExpectParameters_HAL_I2C_DeInit(CMOCK_HAL_I2C_DeInit_CALL_INSTANCE* cmock_call_instance, I2C_HandleTypeDef* hi2c)
-{
-  cmock_call_instance->Expected_hi2c = hi2c;
-}
-
-void HAL_I2C_DeInit_CMockIgnoreAndReturn(UNITY_LINE_TYPE cmock_line, HAL_StatusTypeDef cmock_to_return)
-{
-  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_HAL_I2C_DeInit_CALL_INSTANCE));
-  CMOCK_HAL_I2C_DeInit_CALL_INSTANCE* cmock_call_instance = (CMOCK_HAL_I2C_DeInit_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
-  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
-  Mock.HAL_I2C_DeInit_CallInstance = CMock_Guts_MemChain(Mock.HAL_I2C_DeInit_CallInstance, cmock_guts_index);
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)0;
-  cmock_call_instance->LineNumber = cmock_line;
-  cmock_call_instance->ReturnVal = cmock_to_return;
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)1;
-}
-
-void HAL_I2C_DeInit_CMockStopIgnore(void)
-{
-  if(Mock.HAL_I2C_DeInit_IgnoreBool)
-    Mock.HAL_I2C_DeInit_CallInstance = CMock_Guts_MemNext(Mock.HAL_I2C_DeInit_CallInstance);
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)0;
-}
-
-void HAL_I2C_DeInit_CMockExpectAndReturn(UNITY_LINE_TYPE cmock_line, I2C_HandleTypeDef* hi2c, HAL_StatusTypeDef cmock_to_return)
-{
-  CMOCK_MEM_INDEX_TYPE cmock_guts_index = CMock_Guts_MemNew(sizeof(CMOCK_HAL_I2C_DeInit_CALL_INSTANCE));
-  CMOCK_HAL_I2C_DeInit_CALL_INSTANCE* cmock_call_instance = (CMOCK_HAL_I2C_DeInit_CALL_INSTANCE*)CMock_Guts_GetAddressFor(cmock_guts_index);
-  UNITY_TEST_ASSERT_NOT_NULL(cmock_call_instance, cmock_line, CMockStringOutOfMemory);
-  memset(cmock_call_instance, 0, sizeof(*cmock_call_instance));
-  Mock.HAL_I2C_DeInit_CallInstance = CMock_Guts_MemChain(Mock.HAL_I2C_DeInit_CallInstance, cmock_guts_index);
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)0;
-  cmock_call_instance->LineNumber = cmock_line;
-  cmock_call_instance->CallOrder = ++GlobalExpectCount;
-  CMockExpectParameters_HAL_I2C_DeInit(cmock_call_instance, hi2c);
-  memcpy((void*)(&cmock_call_instance->ReturnVal), (void*)(&cmock_to_return),
-         sizeof(HAL_StatusTypeDef[sizeof(cmock_to_return) == sizeof(HAL_StatusTypeDef) ? 1 : -1])); /* add HAL_StatusTypeDef to :treat_as_array if this causes an error */
-}
-
-void HAL_I2C_DeInit_AddCallback(CMOCK_HAL_I2C_DeInit_CALLBACK Callback)
-{
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)0;
-  Mock.HAL_I2C_DeInit_CallbackBool = (char)1;
-  Mock.HAL_I2C_DeInit_CallbackFunctionPointer = Callback;
-}
-
-void HAL_I2C_DeInit_Stub(CMOCK_HAL_I2C_DeInit_CALLBACK Callback)
-{
-  Mock.HAL_I2C_DeInit_IgnoreBool = (char)0;
-  Mock.HAL_I2C_DeInit_CallbackBool = (char)0;
-  Mock.HAL_I2C_DeInit_CallbackFunctionPointer = Callback;
 }
 
 HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef* hi2c, uint16_t DevAddress, uint8_t* pData, uint16_t Size, uint32_t Timeout)

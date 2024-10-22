@@ -5,11 +5,15 @@
  *      Author: nico
  */
 
-#ifndef API_INC_API_LCD1602_I2C_H_
-#define API_INC_API_LCD1602_I2C_H_
 
 #include <stdint.h>
+#include "stm32_hal_simplyfied.h"// For HAL_GetTick()
 
+void MX_I2C1_Init(void); //Esta función tuve que agregarla porque sino no puedo mockearla
+
+HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef *hi2c);
+
+HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef *hi2c);
 
 
 /**
@@ -50,4 +54,3 @@ void LCD1602_FSM_UpdateDisplay(void);
  */
 void LCD1602_FSM_NextAlgorithm(void);
 
-#endif /* API_INC_API_LCD1602_I2C_H_ */

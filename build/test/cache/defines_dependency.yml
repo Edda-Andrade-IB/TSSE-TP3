@@ -1,7 +1,3 @@
 ---
 src/API_lcd1602_i2c.c:
 - TEST
-build/test/mocks/mock_stm32_hal_simplyfied.c:
-- TEST
-build/test/mocks/mock_API_lcd1602_i2c.c:
-- TEST

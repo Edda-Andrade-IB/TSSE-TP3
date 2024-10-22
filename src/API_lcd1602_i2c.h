@@ -7,13 +7,17 @@
 
 
 #include <stdint.h>
-#include "stm32_hal_simplyfied.h"// For HAL_GetTick()
+//#include "stm32_hal_simplyfied.h"// For HAL_GetTick()
 
 void MX_I2C1_Init(void); //Esta función tuve que agregarla porque sino no puedo mockearla
+
+
 
 HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef *hi2c);
 
 HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef *hi2c);
+
+
 
 
 /**

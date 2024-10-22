@@ -2,8 +2,6 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
-#include "cmock.h"
-#include "mock_stm32_hal_simplyfied.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -21,15 +19,12 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
-  mock_stm32_hal_simplyfied_Init();
 }
 static void CMock_Verify(void)
 {
-  mock_stm32_hal_simplyfied_Verify();
 }
 static void CMock_Destroy(void)
 {
-  mock_stm32_hal_simplyfied_Destroy();
 }
 
 /*=======Test Reset Options=====*/
@@ -82,6 +77,5 @@ int main(void)
   UnityBegin("test_API_lcd1602_i2c.c");
   run_test(test_MX_I2C1_Init_Success, "test_MX_I2C1_Init_Success", 27);
 
-  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }

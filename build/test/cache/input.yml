@@ -86,7 +86,7 @@
   :defines: []
   :includes: []
   :mock_prefix: mock_
-  :include: stm32_hal_simplyfied.h
+  :include: stm32_hal_funciones.h
   :when_no_prototypes: :warn
   :enforce_strict_ordering: true
   :plugins:

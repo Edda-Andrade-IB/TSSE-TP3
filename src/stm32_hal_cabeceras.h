@@ -66,7 +66,9 @@
 #define I2C_STATE_MASTER_BUSY_RX ((uint32_t)(((uint32_t)HAL_I2C_STATE_BUSY_RX & I2C_STATE_MSK) | (uint32_t)HAL_I2C_MODE_MASTER))
 #define I2C_STATE_SLAVE_BUSY_TX ((uint32_t)(((uint32_t)HAL_I2C_STATE_BUSY_TX & I2C_STATE_MSK) | (uint32_t)HAL_I2C_MODE_SLAVE))
 #define I2C_STATE_SLAVE_BUSY_RX ((uint32_t)(((uint32_t)HAL_I2C_STATE_BUSY_RX & I2C_STATE_MSK) | (uint32_t)HAL_I2C_MODE_SLAVE))
-
+#define I2C_CR1_SWRST_Pos         (15U)   
+#define I2C_CR1_SWRST_Msk         (0x1UL << I2C_CR1_SWRST_Pos)  
+#define I2C_CR1_SWRST             I2C_CR1_SWRST_Msk  
 // Typedef struct statements
 typedef __SIZE_TYPE__ size_t;
 
@@ -181,7 +183,7 @@ typedef enum
     HAL_I2C_MODE_MEM = 0x40U
 } HAL_I2C_ModeTypeDef;
 
-typedef struct
+typedef struct I2C_HandleTypeDef
 {
     I2C_TypeDef *Instance;
     I2C_InitTypeDef Init;
@@ -202,26 +204,6 @@ typedef struct
     uint32_t EventCount;
 } I2C_HandleTypeDef;
 
-// Function declarations
-HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c,
-                                          uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c,
-                                         uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_Slave_Transmit(I2C_HandleTypeDef *hi2c,
-                                         uint8_t *pData, uint16_t Size, uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData,
-                                        uint16_t Size, uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_Mem_Write(I2C_HandleTypeDef *hi2c,
-                                    uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize,
-                                    uint8_t *pData, uint16_t Size, uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_Mem_Read(I2C_HandleTypeDef *hi2c, uint16_t DevAddress,
-                                   uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size,
-                                   uint32_t Timeout);
-HAL_StatusTypeDef HAL_I2C_IsDeviceReady(I2C_HandleTypeDef *hi2c,
-                                        uint16_t DevAddress, uint32_t Trials, uint32_t Timeout);
-void HAL_Delay(uint32_t Delay);
-uint32_t HAL_GetTick(void);
-void *memset(void *s, int c, size_t n);
-int assert(int);
-HAL_StatusTypeDef HAL_I2CEx_ConfigAnalogFilter(I2C_HandleTypeDef *hi2c, uint32_t AnalogFilter);
-HAL_StatusTypeDef HAL_I2CEx_ConfigDigitalFilter(I2C_HandleTypeDef *hi2c, uint32_t DigitalFilter);
+
+
+

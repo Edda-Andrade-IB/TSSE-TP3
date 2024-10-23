@@ -2,11 +2,11 @@
  * API_lcd1602_i2c.c
  *
  *  Created on: Aug 9, 2023
-n *      Author: nico
+ *      Author: nico
  */
 
 #include "API_lcd1602_i2c.h"
-#include "stm32_hal_simplyfied.h"// For HAL_GetTick()
+#include "stm32_hal_funciones.h" // For HAL_GetTick()
 #include <stdbool.h>
 #include <string.h>
 
@@ -14,7 +14,7 @@ n *      Author: nico
 #define DISPLAY_SIZE 17
 #define BUFFER_SIZE 256
 #define SLIDE_TIME_MS 500
-#define DEVICE_ADDRESS 0x27 << 1
+#define DEVICE_ADDRESS (0x27 << 1)
 
 typedef enum {
   NO_ANIMATION,
@@ -26,66 +26,11 @@ typedef enum {
 
 typedef bool bool_t;
 
-extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef *hi2c1;
 static display_algorithm current_mode = 0;
 static char DISPLAY_BUFFER[DISPLAY_SIZE];
 static char TEXT_BUFFER[BUFFER_SIZE];
 
-
-//Version simplificada  para poder instanciar el puntero a la estructura I2C_HandleTypeDef
-
-HAL_StatusTypeDef HAL_I2C_Init(I2C_HandleTypeDef *hi2c)
-{
-    uint32_t freqrange, pclk1;
-
-    /* Reset I2C */
-    hi2c->Instance->CR1 |= I2C_CR1_SWRST;
-    hi2c->Instance->CR1 &= ~I2C_CR1_SWRST;
-
-    /* Get PCLK1 frequency */
-    pclk1 = 0;
-
-    /* Calculate frequency range */
-    freqrange = 5;
-
-    
-    /* Enable I2C */
-   
-
-    /* Update state */
-    hi2c->ErrorCode = HAL_I2C_ERROR_NONE;
-    hi2c->State = HAL_I2C_STATE_READY;
-    hi2c->PreviousState = I2C_STATE_NONE;
-    hi2c->Mode = HAL_I2C_MODE_NONE;
-
-    return HAL_OK;
-}
-
-HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef *hi2c) {
-    // Poner el estado del I2C como ocupado
-    hi2c->State = HAL_I2C_STATE_BUSY;
-
-    // Desactivar el reloj del periférico I2C
-    
-
-    // Llamar a la función de DeInit de bajo nivel (GPIO, CLOCK, NVIC)
-    //HAL_I2C_MspDeInit(hi2c);
-
-    // Reiniciar variables de estado
-    hi2c->ErrorCode = HAL_I2C_ERROR_NONE;
-    hi2c->State = HAL_I2C_STATE_RESET;
-    hi2c->PreviousState = I2C_STATE_NONE;
-    hi2c->Mode = HAL_I2C_MODE_NONE;
-
-    // Desbloquear
-
-
-    return HAL_OK;
-}
-
-
- /* Initialize the I2C using the HAL provided funtions.
- */
 void MX_I2C1_Init(void); // tuve que dejar publica esta funcion para poder mockearla
 
 /**
@@ -246,8 +191,7 @@ static void LCD1602_SendCommand(uint8_t command) {
   data[1] = (command & 0xF0) | 0x08;        // High nibble with backlight OFF
   data[2] = ((command & 0x0F) << 4) | 0x0C; // Low nibble with backlight ON
   data[3] = ((command & 0x0F) << 4) | 0x08; // Low nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, data, sizeof(data),
-                          I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(hi2c1, DEVICE_ADDRESS, data, sizeof(data), I2C_TIMEOUT);
   HAL_Delay(2);
 }
 
@@ -258,13 +202,13 @@ static void LCD1602_SendData(uint8_t data) {
    */
 
   uint8_t dat = (data & 0xF0) | 0x0D; // High nibble with backlight ON
-  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = (data & 0xF0) | 0x09; // High nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = ((data & 0x0F) << 4) | 0x0D; // Low nibble with backlight ON
-  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
   dat = ((data & 0x0F) << 4) | 0x09; // Low nibble with backlight OFF
-  HAL_I2C_Master_Transmit(&hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
+  HAL_I2C_Master_Transmit(hi2c1, DEVICE_ADDRESS, &dat, 1, I2C_TIMEOUT);
 }
 
 static void LCD1602_NoAnimationPrint(void) {
@@ -322,25 +266,24 @@ static void LCD1602_SlidePrint(void) {
 }
 
 void MX_I2C1_Init(void) {
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
-  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  assert(HAL_I2C_Init(&hi2c1) == HAL_OK);
+  hi2c1->Instance = I2C1;
+  hi2c1->Init.ClockSpeed = 100000;
+  hi2c1->Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1->Init.OwnAddress1 = 0;
+  hi2c1->Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1->Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1->Init.OwnAddress2 = 0;
+  hi2c1->Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1->Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  //assert(HAL_I2C_Init(hi2c1) == HAL_OK);
 
   /** Configure Analogue filter
    */
-  assert(HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) ==
-         HAL_OK);
+  assert(HAL_I2CEx_ConfigAnalogFilter(hi2c1, I2C_ANALOGFILTER_ENABLE) == HAL_OK);
 
   /** Configure Digital filter
    */
-  assert(HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK);
+  assert(HAL_I2CEx_ConfigDigitalFilter(hi2c1, 0) != HAL_OK);
 }
 
 static void ShiftStringLeft(char *string, int numElements) {

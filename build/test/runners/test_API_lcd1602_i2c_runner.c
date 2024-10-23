@@ -2,6 +2,8 @@
 
 /*=======Automagically Detected Files To Include=====*/
 #include "unity.h"
+#include "cmock.h"
+#include "mock_stm32_hal_funciones.h"
 
 int GlobalExpectCount;
 int GlobalVerifyOrder;
@@ -19,12 +21,15 @@ static void CMock_Init(void)
   GlobalExpectCount = 0;
   GlobalVerifyOrder = 0;
   GlobalOrderError = NULL;
+  mock_stm32_hal_funciones_Init();
 }
 static void CMock_Verify(void)
 {
+  mock_stm32_hal_funciones_Verify();
 }
 static void CMock_Destroy(void)
 {
+  mock_stm32_hal_funciones_Destroy();
 }
 
 /*=======Test Reset Options=====*/
@@ -75,7 +80,8 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_API_lcd1602_i2c.c");
-  run_test(test_MX_I2C1_Init_Success, "test_MX_I2C1_Init_Success", 27);
+  run_test(test_MX_I2C1_Init_Success, "test_MX_I2C1_Init_Success", 80);
 
+  CMock_Guts_MemFreeFinal();
   return UnityEnd();
 }

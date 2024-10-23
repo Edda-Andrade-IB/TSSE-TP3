@@ -1,3 +1,7 @@
 ---
+build/test/mocks/mock_stm32_hal_cabeceras.c:
+- TEST
 src/API_lcd1602_i2c.c:
+- TEST
+build/test/mocks/mock_stm32_hal_funciones.c:
 - TEST

@@ -1,2 +1,0 @@
----
-- src/stm32_hal_cabeceras.h

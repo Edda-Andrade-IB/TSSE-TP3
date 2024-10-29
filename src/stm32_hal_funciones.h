@@ -1,4 +1,6 @@
 #include "stm32_hal_cabeceras.h"
+#include <assert.h>
+#include <string.h>
 
 // Function declarations
 HAL_StatusTypeDef HAL_I2C_Master_Transmit(I2C_HandleTypeDef *hi2c,
@@ -19,7 +21,5 @@ HAL_StatusTypeDef HAL_I2C_IsDeviceReady(I2C_HandleTypeDef *hi2c,
                                         uint16_t DevAddress, uint32_t Trials, uint32_t Timeout);
 void HAL_Delay(uint32_t Delay);
 uint32_t HAL_GetTick(void);
-void *memset(void *s, int c, size_t n);
-int assert(int);
 HAL_StatusTypeDef HAL_I2CEx_ConfigAnalogFilter(I2C_HandleTypeDef *hi2c, uint32_t AnalogFilter);
 HAL_StatusTypeDef HAL_I2CEx_ConfigDigitalFilter(I2C_HandleTypeDef *hi2c, uint32_t DigitalFilter);

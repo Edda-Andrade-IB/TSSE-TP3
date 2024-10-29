@@ -7,7 +7,7 @@
  */
 
 #include "../src/API_lcd1602_i2c.h"
-#include "/home/edda/Documentos/CESE/TSSE/TP3/API_lcd1602_i2c/test/support/Unity/src/unity.h"
+#include "unity.h"
 
 #define I2C_TIMEOUT 1000
 #define DISPLAY_SIZE 17
@@ -71,7 +71,7 @@ HAL_StatusTypeDef HAL_I2C_DeInit(I2C_HandleTypeDef *hi2c)
     return HAL_OK;
 }
 
-I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef * hi2c1 = &(I2C_HandleTypeDef){0};
 
 /**
  * @brief Configuración inicial para cada prueba.
@@ -94,11 +94,11 @@ void tearDown(void)
  */
 void test_MX_I2C1_Init_Success(void)
 {
-   // HAL_I2CEx_ConfigAnalogFilter_ExpectAndReturn(&hi2c1, I2C_ANALOGFILTER_ENABLE, HAL_OK);
-   // HAL_I2CEx_ConfigDigitalFilter_ExpectAndReturn(&hi2c1, 0, HAL_ERROR); // Debería fallar según la implementación
+   HAL_I2CEx_ConfigAnalogFilter_ExpectAndReturn(hi2c1, I2C_ANALOGFILTER_ENABLE, HAL_OK);
+   HAL_I2CEx_ConfigDigitalFilter_ExpectAndReturn(hi2c1, 0, HAL_ERROR); // Debería fallar según la implementación
 
     // Llamar a la función a probar
-    //MX_I2C1_Init();
+    MX_I2C1_Init();
 
     // No se espera que haya ningún fallo, ya que los assert solo fallan si no cumplen
 }

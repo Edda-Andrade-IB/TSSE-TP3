@@ -11,7 +11,8 @@
 			"stm32_hal_simplyfied.h": "c",
 			"api_lcd1602_i2c.h": "c",
 			"stm32f4xx_hal_conf.h": "c",
-			"mock_stm32_hal_simplyfied.h": "c"
+			"mock_stm32_hal_simplyfied.h": "c",
+			"stm32_hal_funciones.h": "c"
 		}
 	}
 }
